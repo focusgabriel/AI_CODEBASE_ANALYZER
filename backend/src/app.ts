@@ -3,6 +3,8 @@ import cors from "cors";
 
 import { env } from "./core/config/env.js";
 import { errorHandler } from "./core/middlewares/errorHandler.js";
+import analysisRoutes from "./routes/analysis.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
 
 const app = express();
 
@@ -15,16 +17,15 @@ app.use(
 
 app.use(express.json());
 
+app.use(errorHandler);
+app.use("/api/v1/analyses", analysisRoutes);
+// app.use("/api/v1/analyses/:upload", uploadRoutes)
+
 app.get("/health", (_, res) => {
   res.status(200).json({
     success: true,
     message: "Backend is running.",
   });
 });
-
-
-
-
-app.use(errorHandler);
 
 export default app;

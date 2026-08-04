@@ -3,8 +3,6 @@ import { env } from "./core/config/env.js";
 import { connectDatabase } from "./core/database/database.js";
 import { logger } from "./core/logger/logger.js";
 
-
-
 await connectDatabase();
 const server = app.listen(env.PORT, () => {
   logger.info(`Server running on http://localhost:${env.PORT}`);
