@@ -11,6 +11,14 @@ import fs from "node:fs";
 import { saveFiles } from "../services/file.services.js";
 import { detectLanguage } from "../utils/language-detector.js";
 import { readFileContent } from "../utils/file-reader.js";
+import { prepareAnalysis } from "../services/analyzer.services.js";
+import { parseFile } from "../services/parser.services.js";
+import { extractMetrics } from "../services/metrics.services.js";
+import { saveMetrics } from "../services/metrics-persistence.services.js";
+import { analyzeRepository } from "../services/analysis-engine.services.js";
+import { buildRepositorySummary } from "../services/summary-repository.js";
+import { generateReport } from "../services/llm.services.js";
+import { saveReport } from "../services/report.services.js";
 
 export async function uploadRepositoryController(
   req: Request,
@@ -42,7 +50,7 @@ export async function uploadRepositoryController(
   // console.log(extractedPath)
   // console.log(files)
 
-  logger.info(files);
+  console.log("files from:", files);
 
   const upload = await createUpload({
     analysisId: objectId,
@@ -64,10 +72,50 @@ export async function uploadRepositoryController(
   );
 
   const content = await readFileContent(files[0]!.path);
-  console.log("file read:", content.substring(0, 500));
+  // console.log("file read:", content.substring(0, 500));
+
+  // const result = await prepareAnalysis(objectId.toString());
+
+  // console.log("=========== resulted files =============")
+  // console.log(result.length);
+  // console.log(result[0]);
+
+  // console.log("========== Parse Files =========");
+  //   const ast = await parseFile(
+  //   result[0]!.language,
+  //   result[0]!.content,
+  // );
+
+  // const metrics = extractMetrics(ast);
+
+  //   await saveMetrics(
+  //     objectId.toString(),
+  //     result[0]!.id.toString(),
+  //     metrics,
+  //   );
+
+  // console.log("Metrics Saved");
+
+  // console.log(metrics);
+
+  await analyzeRepository(objectId.toString());
+
+  const summary = await buildRepositorySummary(
+    objectId.toString(),
+  );
+
+  console.log(summary);
+
+  const report = await generateReport(summary);
+
+  await saveReport(
+    objectId.toString(),
+    report!,
+  );
+  console.log(report);
 
   return res.status(201).json({
-    success: true,
-    data: upload,
+    message:"Repository uploaded successfully"
   });
+
 }
