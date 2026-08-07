@@ -1,39 +1,16 @@
-// import { randomUUID } from "node:crypto";
-// import { CreateAnalysisRequestDto } from "../dtos/analysis.dto.js";
-// import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
-// import { analysisRepository } from "../repositories/analysis.repository.js";
-
 import { randomUUID } from "node:crypto";
 import {
   CreateAnalysisDto,
   CreateAnalysisRequestDto,
   CreateAnalysisResponseDto,
+  NewStatus,
 } from "../dtos/analysis.dto.js";
 import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
-import { createAnalysisRecord } from "../repositories/analysis.repository.js";
+import { createAnalysisRecord, findAnalysisForUser } from "../repositories/analysis.repository.js";
+import { getFilesByAnalysisId } from "../repositories/file.repository.js";
+import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
+import mongoose from "mongoose";
 const analysisId = randomUUID();
-
-// export class AnalysisService {
-//   async createAnalysis(request: CreateAnalysisRequestDto) {
-
-//     const dto = {
-//       userId: request.userId,
-//       name: request.name,
-//       status: AnalysisStatus.PENDING,
-//       sourceType: SourceType.ZIP,
-//       sourceLocation: `/storage${analysisId}/source`,
-//     };
-
-//     const analysis = await analysisRepository.create(dto);
-
-//     return {
-//       analysisId: analysis._id.toString(),
-//       status: analysis.status,
-//     };
-//   }
-// }
-
-// export const analysisService = new AnalysisService();
 
 export async function createAnalysis(
   request: CreateAnalysisRequestDto,
@@ -52,4 +29,21 @@ export async function createAnalysis(
     analysisId: analysis._id.toString(),
     status: analysis.status as AnalysisStatus.PENDING,
   };
+}
+
+export async function updateStatus(
+  analysisId: mongoose.Types.ObjectId, statusUpdate: NewStatus, reportId?:string
+) {
+    const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
+
+    return newResult
+}
+
+export async function getAnalysisForUser(
+  analysisId:string,
+  userId:string,
+) {
+  const userAnalysis = await findAnalysisForUser(analysisId, userId);
+
+  return userAnalysis
 }
