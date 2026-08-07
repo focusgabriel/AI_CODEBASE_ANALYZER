@@ -19,18 +19,25 @@ import { analyzeRepository } from "../services/analysis-engine.services.js";
 import { buildRepositorySummary } from "../services/summary-repository.js";
 import { generateReport } from "../services/llm.services.js";
 import { saveReport } from "../services/report.services.js";
+import { cleanupRepositoryFiles } from "../services/cleanup.services.js";
+import { updateStatus } from "../services/analysis.services.js";
+import { AnalysisStatus } from "../enum/analysis.dto.js";
 
 export async function uploadRepositoryController(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
+
   if (!req.file) {
     return next(new AppError("Repository zip is required", 400));
   }
 
   const { analysisId } = req.params;
+
   const objectId = new mongoose.Types.ObjectId(analysisId as string);
+  try {
+  updateStatus(objectId, "PROCESSING")
 
   const file = req.file;
 
@@ -111,14 +118,27 @@ export async function uploadRepositoryController(
 
   const report = await generateReport(summary);
 
-  await saveReport(
+  const savedReport = await saveReport(
     objectId.toString(),
     report,
   );
+
   console.log(report);
+  console.log("reportId: ", savedReport._id);
+
+  updateStatus(objectId, "COMPLETED", savedReport._id.toString());
+
+  await cleanupRepositoryFiles(
+    file.path,
+    extractedPath,
+  );
 
   return res.status(201).json({
     message:"Repository uploaded successfully"
   });
+  } catch (error) {
+    updateStatus(objectId, "FAILED");
+    next(error)
+  }
 
 }
