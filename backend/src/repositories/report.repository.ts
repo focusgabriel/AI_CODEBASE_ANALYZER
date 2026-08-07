@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { ReportModel } from "../models/report.model.js";
 
 
@@ -11,10 +12,8 @@ export async function createReport(
   });
 }
 
-export async function getReportByAnalysisId(
-  analysisId: string,
+export async function findReportById(
+  reportId: mongoose.Types.ObjectId,
 ) {
-  return ReportModel.findOne({
-    analysisId,
-  })
+  return ReportModel.findById(reportId);
 }
