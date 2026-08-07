@@ -40,6 +40,8 @@ export async function uploadRepositoryController(
     path.parse(file.filename).name,
   );
 
+  console.log(extractedPath);
+
   await extractZip(file.path, extractedPath);
 
   console.log(fs.existsSync(extractedPath));
@@ -47,8 +49,8 @@ export async function uploadRepositoryController(
 
   const files = await scanDirectory(extractedPath);
 
-  // console.log(extractedPath)
-  // console.log(files)
+  console.log(extractedPath)
+  console.log(files)
 
   console.log("files from:", files);
 
@@ -72,6 +74,7 @@ export async function uploadRepositoryController(
   );
 
   const content = await readFileContent(files[0]!.path);
+
   // console.log("file read:", content.substring(0, 500));
 
   // const result = await prepareAnalysis(objectId.toString());
@@ -110,7 +113,7 @@ export async function uploadRepositoryController(
 
   await saveReport(
     objectId.toString(),
-    report!,
+    report,
   );
   console.log(report);
 
