@@ -141,3 +141,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+
+
+storage/uploads/*
+storage/extracted/*
+!storage/uploads/.gitkeep
+!storage/extracted/.gitkeep
