@@ -7,7 +7,7 @@ interface AnalysisProps {
   status: string;
   sourceType: string;
   sourceLocation: string;
-  reportId: mongoose.Types.ObjectId;
+  reportId: mongoose.Types.ObjectId | null;
   startedAt: Date;
   completedAt: Date;
   createdAt: Date;
