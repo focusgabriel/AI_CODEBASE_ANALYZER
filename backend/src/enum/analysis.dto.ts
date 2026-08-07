@@ -7,6 +7,7 @@ export enum AnalysisStatus {
   ANALYZING = "ANALYZING",
   COMPLETED = "COMPLETED",
   FAILED = "FAILED",
+  PROCESSING = "PROCESSING",
 }
 
 export enum SourceType {
