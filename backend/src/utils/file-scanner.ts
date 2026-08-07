@@ -15,7 +15,6 @@ export async function scanDirectory(directory: string): Promise<ScannedFile[]> {
   const files: ScannedFile[] = [];
 
   for (const entry of entries) {
-    console.log("from scanner, the entry name:", entry.name)
     const fullPath = path.join(directory, entry.name);
 
     if (entry.isDirectory()) {
