@@ -20,6 +20,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@babel/parser": "7.29.7",
+    "@babel/traverse": "7.29.7",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -35,6 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/babel__traverse": "7.28.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
