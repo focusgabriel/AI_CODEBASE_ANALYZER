@@ -1,16 +1,34 @@
-import { parse } from "@babel/parser";
+import parser, {
+  type ParserPlugin,
+} from "@babel/parser";
 
-export function parseSource(code: string, language:string) {
-  
-  if(language === "Typescript") {
-    return parse(code, {
-      sourceType: "module",
-      plugins: ["typescript", "jsx"]
-    })
-  }
+export function parseSource(
+  content: string,
+  extension: string,
+) {
+  const plugins = getParserPlugins(extension);
 
-    return parse(code, {
-    sourceType: "module",
-    plugins: ["jsx"]
+  return parser.parse(content, {
+    sourceType: "unambiguous",
+    plugins,
   });
+}
+
+function getParserPlugins(
+  extension: string,
+): ParserPlugin[] {
+  switch (extension.toLowerCase()) {
+    case ".js":
+    case ".jsx":
+      return ["jsx"];
+
+    case ".ts":
+      return ["typescript"];
+
+    case ".tsx":
+      return ["typescript", "jsx"];
+
+    default:
+      return [];
+  }
 }
