@@ -48,7 +48,7 @@ export const createAnalysisController = async (
 };
 
 
-export const getUserAnalysis = async (
+export const getUserAnalysisController = async (
   req:Request,
   res:Response,
   next:NextFunction

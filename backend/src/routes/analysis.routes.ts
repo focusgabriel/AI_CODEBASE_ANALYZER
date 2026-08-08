@@ -11,7 +11,7 @@
 
 import { Router } from "express";
 import { upload } from "../config/multer.js";
-import { createAnalysisController } from "../controllers/analysis.controller.js";
+import { createAnalysisController, getUserAnalysisController } from "../controllers/analysis.controller.js";
 import { uploadRepositoryController } from "../controllers/upload.controller.js";
 
 const router = Router();
@@ -24,4 +24,8 @@ router.post(
   uploadRepositoryController,
 );
 
+router.get(
+  "/:analysisId/:userId", 
+  getUserAnalysisController
+)
 export default router;
