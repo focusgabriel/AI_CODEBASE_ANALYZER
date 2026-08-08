@@ -7,7 +7,21 @@ export interface ScannedFile {
   size: number;
 }
 
-export async function scanDirectory(directory: string): Promise<ScannedFile[]> {
+const IGNORED_DIRECTORIES = new Set([
+  "node_modules",
+  ".git",
+  "dist",
+  "build",
+  "coverage",
+  ".next",
+  ".nuxt",
+  "out",
+  "target",
+]);
+
+export async function scanDirectory(
+  directory: string,
+): Promise<ScannedFile[]> {
   const entries = await fs.readdir(directory, {
     withFileTypes: true,
   });
@@ -18,20 +32,51 @@ export async function scanDirectory(directory: string): Promise<ScannedFile[]> {
     const fullPath = path.join(directory, entry.name);
 
     if (entry.isDirectory()) {
-      files.push(...(await scanDirectory(fullPath)));
-    } else {
-      const stat = await fs.stat(fullPath);
+      if (IGNORED_DIRECTORIES.has(entry.name)) {
+        continue;
+      }
 
-      files.push({
-        path: fullPath,
-        extension: path.extname(fullPath),
-        size: stat.size,
-      });
+      files.push(...(await scanDirectory(fullPath)));
+      continue;
     }
+
+    if (!entry.isFile()) {
+      continue;
+    }
+
+    const stat = await fs.stat(fullPath);
+
+    files.push({
+      path: fullPath,
+      extension: path.extname(entry.name),
+      size: stat.size,
+    });
   }
 
   return files;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // import fs from "node:fs/promises";
 // import path from "node:path";
