@@ -32,16 +32,16 @@ export async function createAnalysis(
 }
 
 export async function updateStatus(
-  analysisId: mongoose.Types.ObjectId, statusUpdate: NewStatus, reportId?:string
+  analysisId: mongoose.Types.ObjectId, statusUpdate: NewStatus, reportId?: string
 ) {
-    const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
+  const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
 
-    return newResult
+  return newResult
 }
 
 export async function getAnalysisForUser(
-  analysisId:string,
-  userId:string,
+  analysisId: string,
+  userId: string,
 ) {
   const userAnalysis = await findAnalysisForUser(analysisId, userId);
 
