@@ -1,6 +1,6 @@
 import { parseSource } from "../utils/ats-parser.js";
 
-export async function parseFile(
+export function parseFile(
   language: string,
   content: string,
 ) {
