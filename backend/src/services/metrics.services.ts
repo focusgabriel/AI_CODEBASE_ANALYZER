@@ -1,4 +1,7 @@
-import traverse from "@babel/traverse";
+import traverseModule from "@babel/traverse";
+
+const traverse =
+  (traverseModule as any).default ?? traverseModule;
 
 export function extractMetrics(ast: any) {
   const metrics = {
@@ -10,7 +13,6 @@ export function extractMetrics(ast: any) {
   };
 
   traverse(ast, {
-
     ImportDeclaration() {
       metrics.imports++;
     },
@@ -38,7 +40,6 @@ export function extractMetrics(ast: any) {
     TSInterfaceDeclaration() {
       metrics.interfaces++;
     },
-
   });
 
   return metrics;
