@@ -6,10 +6,18 @@ export async function createReport(
   analysisId: string,
   content: string,
 ) {
-  return ReportModel.create({
-    analysisId,
-    content,
-  });
+  return ReportModel.findOneAndUpdate(
+    { analysisId },
+    {
+      $set: {
+        content,
+      },
+    },
+    {
+      returnDocument: "after",
+      upsert: true,
+    },
+  );
 }
 
 export async function findReportById(
