@@ -175,28 +175,29 @@ export async function uploadRepositoryController(
       "🔥 ANALYSIS FINISHED"
     );
 
-    console.time("summary");
-    const summary = await buildRepositorySummary(
-      objectId.toString(),
-    );
-    console.timeEnd("summary");
+    // console.time("summary");
+    // const summary = await buildRepositorySummary(
+    //   objectId.toString(),
+    // );
+    // console.timeEnd("summary");
 
-    console.time("llm");
-    const report = await generateReport(summary);
-    console.timeEnd("llm");
+    // console.time("llm");
+    // const report = await generateReport(summary);
+    // console.timeEnd("llm");
 
 
-    console.time("save-report");
-    const savedReport = await saveReport(
-      objectId.toString(),
-      report,
-    );
-    console.timeEnd("save-report");
+    // console.time("save-report");
+    // const savedReport = await saveReport(
+    //   objectId.toString(),
+    //   report,
+    // );
+    // console.timeEnd("save-report");
 
-    console.log(report);
+    // console.log(report);
     // console.log("reportId: ", savedReport._id);
 
-    await updateStatus(objectId, "COMPLETED", savedReport._id.toString());
+    // await updateStatus(objectId, "COMPLETED", savedReport._id.toString());
+    await updateStatus(objectId, "COMPLETED");
 
 
     await cleanupRepositoryFiles(

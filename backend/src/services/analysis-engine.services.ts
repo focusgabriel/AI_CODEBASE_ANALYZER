@@ -1,6 +1,7 @@
 import { prepareAnalysis } from "./analyzer.services.js";
 import { saveMetrics } from "./metrics-persistence.services.js";
 import { extractMetrics } from "./metrics.services.js";
+import { extractPackageMetadata } from "./package-metadata.services.js";
 import { parseFile } from "./parser.services.js";
 
 export async function analyzeRepository(
@@ -12,11 +13,25 @@ export async function analyzeRepository(
   });
 
   const files = await prepareAnalysis(analysisId);
+  let packageMetadata = null;
+
 
   for (const file of files) {
     try {
       console.log("🧠 PARSING FILE:", file.path);
 
+      if (file.path.endsWith("package.json")) {
+        packageMetadata = extractPackageMetadata(
+          file.content,
+        );
+
+        console.log("📦 PACKAGE METADATA:", {
+          path: file.path,
+          metadata: packageMetadata,
+        });
+
+        continue;
+      }
       const ast = parseFile(
         file.extension,
         file.content,
@@ -60,5 +75,6 @@ export async function analyzeRepository(
 
   return {
     totalFiles: files.length,
+    packageMetadata
   };
 }
