@@ -151,3 +151,5 @@ backend/storage
 .env
 .env.*
 *.zip
+
+.env.example
