@@ -144,7 +144,10 @@ vite.config.ts.timestamp-*
 
 
 
-storage/uploads/*
-storage/extracted/*
+backend/storage
 !storage/uploads/.gitkeep
 !storage/extracted/.gitkeep
+
+.env
+.env.*
+*.zip
