@@ -56,7 +56,6 @@ export const getUserAnalysisController = async (
         startedAt: analysis.startedAt,
         completedAt: analysis.completedAt,
         createdAt: analysis.createdAt,
-        updatedAt: analysis.updatedAt,
       }
 
     })
