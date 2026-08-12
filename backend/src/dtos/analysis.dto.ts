@@ -1,5 +1,5 @@
 import mongoose, { ObjectId } from "mongoose";
-import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
+import { AnalysisStatus, AnalysisSourceType } from "../enum/analysis.dto.js";
 
 export interface CreateAnalysisRequestDto {
   userId: string;
@@ -13,7 +13,7 @@ export interface CreateAnalysisDto {
 
   status: AnalysisStatus;
 
-  sourceType: SourceType;
+  sourceType: AnalysisSourceType;
 
   sourceLocation: string;
 }
@@ -25,7 +25,7 @@ export interface analysisDto {
 
   status: AnalysisStatus;
 
-  sourceType: SourceType;
+  sourceType: AnalysisSourceType;
 
   sourceLocation: string;
 
@@ -43,6 +43,7 @@ export interface analysisDto {
 export interface CreateAnalysisResponseDto {
   analysisId: string;
   status: AnalysisStatus;
+  sourceType: AnalysisSourceType;
 }
 
 // export type NewStatus =
