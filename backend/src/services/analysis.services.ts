@@ -4,7 +4,7 @@ import {
   CreateAnalysisRequestDto,
   CreateAnalysisResponseDto,
 } from "../dtos/analysis.dto.js";
-import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
+import { AnalysisSourceType, AnalysisStatus } from "../enum/analysis.dto.js";
 import { createAnalysisRecord, findAnalysisForUser } from "../repositories/analysis.repository.js";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
@@ -18,7 +18,7 @@ export async function createAnalysis(
     userId: request.userId,
     name: request.name,
     status: AnalysisStatus.PENDING,
-    sourceType: SourceType.ZIP,
+    sourceType: AnalysisSourceType.ZIP,
     sourceLocation: `/storage${analysisId}/source`,
   };
 
@@ -26,6 +26,7 @@ export async function createAnalysis(
 
   return {
     analysisId: analysis._id.toString(),
+    sourceType: analysis.sourceType as AnalysisSourceType.ZIP,
     status: analysis.status as AnalysisStatus.PENDING,
   };
 }
