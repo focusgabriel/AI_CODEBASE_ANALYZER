@@ -16,6 +16,7 @@ import { saveReport } from "../services/report.services.js";
 import { cleanupRepositoryFiles } from "../services/cleanup.services.js";
 import { updateStatus } from "../services/analysis.services.js";
 import { logger } from "../core/logger/logger.js";
+import { AnalysisStatus } from "../enum/analysis.dto.js";
 
 export async function uploadRepositoryController(
   req: Request,
@@ -36,7 +37,7 @@ export async function uploadRepositoryController(
   const objectId = new mongoose.Types.ObjectId(analysisId as string);
 
   try {
-    await updateStatus(objectId, "PROCESSING")
+    await updateStatus(objectId, AnalysisStatus.PROCESSING)
 
     const file = req.file;
 
@@ -197,7 +198,7 @@ export async function uploadRepositoryController(
     // console.log("reportId: ", savedReport._id);
 
     // await updateStatus(objectId, "COMPLETED", savedReport._id.toString());
-    await updateStatus(objectId, "COMPLETED");
+    await updateStatus(objectId, AnalysisStatus.COMPLETED );
 
 
     await cleanupRepositoryFiles(
@@ -210,7 +211,7 @@ export async function uploadRepositoryController(
     });
   } catch (error: any) {
     logger.error("Cleanup failed:", error);
-    await updateStatus(objectId, "FAILED");
+    await updateStatus(objectId, AnalysisStatus.FAILED);
     next(error)
   }
 

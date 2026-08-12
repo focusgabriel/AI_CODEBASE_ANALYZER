@@ -3,7 +3,6 @@ import {
   CreateAnalysisDto,
   CreateAnalysisRequestDto,
   CreateAnalysisResponseDto,
-  NewStatus,
 } from "../dtos/analysis.dto.js";
 import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
 import { createAnalysisRecord, findAnalysisForUser } from "../repositories/analysis.repository.js";
@@ -32,7 +31,7 @@ export async function createAnalysis(
 }
 
 export async function updateStatus(
-  analysisId: mongoose.Types.ObjectId, statusUpdate: NewStatus, reportId?: string
+  analysisId: mongoose.Types.ObjectId, statusUpdate: AnalysisStatus, reportId?: string
 ) {
   const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
 

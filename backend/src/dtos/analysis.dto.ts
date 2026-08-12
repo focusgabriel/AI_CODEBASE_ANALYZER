@@ -45,8 +45,8 @@ export interface CreateAnalysisResponseDto {
   status: AnalysisStatus;
 }
 
-export type NewStatus =
-    | "PENDING"
-    | "PROCESSING"
-    | "COMPLETED"
-    | "FAILED";
+// export type NewStatus =
+//     | "PENDING"
+//     | "PROCESSING"
+//     | "COMPLETED"
+//     | "FAILED";
