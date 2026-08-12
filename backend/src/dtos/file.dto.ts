@@ -8,3 +8,4 @@ export interface CreateFileDto {
   size: number;
   status: string;
 }
+
