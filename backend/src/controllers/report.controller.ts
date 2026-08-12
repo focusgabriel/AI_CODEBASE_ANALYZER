@@ -29,7 +29,7 @@ export async function getReportController(
 
     return res.status(200).json({
       success: true,
-      data: report.content,
+      data: report,
     });
   } catch (error) {
     next(error);
