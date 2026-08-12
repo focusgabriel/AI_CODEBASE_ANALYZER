@@ -1,45 +1,37 @@
-import type { Request, Response } from "express";
+// import { NextFunction, Request, Response } from "express";
+// import { AppError } from "../core/errors/AppError.js";
+// import { getReportForUser } from "../services/report.services.js";
 
-import {
-  getAnalysisReport,
-} from "../repositories/analysis-report.repository.js";
+// export async function getReportController(
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) {
+//   const { analysisId, userId } = req.params;
 
-export async function getAnalysisReportController(
-  req: Request,
-  res: Response,
-) {
-  try {
-    const { analysisId } = req.params;
+//   if (!userId || !analysisId) {
+//     return next(
+//       new AppError("Missing analysisId or userId", 400),
+//     );
+//   }
 
-    if (!analysisId) {
-      return res.status(400).json({
-        message: "Analysis ID is required",
-      });
-    }
+//   try {
+//     const report = await getReportForUser(
+//       analysisId as string,
+//       userId as string,
+//     );
 
-    const report = await getAnalysisReport(
-      analysisId as string,
-    );
+//     if (!report) {
+//       return next(
+//         new AppError("Report not found", 404),
+//       );
+//     }
 
-    if (!report) {
-      return res.status(404).json({
-        message: "Analysis report not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      report,
-    });
-  } catch (error) {
-    console.error(
-      "❌ FAILED TO GET ANALYSIS REPORT:",
-      error,
-    );
-
-    return res.status(500).json({
-      success: false,
-      message: "Failed to retrieve analysis report",
-    });
-  }
-}
+//     return res.status(200).json({
+//       success: true,
+//       data: report,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// }
