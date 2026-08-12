@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 export enum AnalysisStatus {
   PENDING = "PENDING",
   UPLOADING = "UPLOADING",
@@ -10,7 +8,7 @@ export enum AnalysisStatus {
   PROCESSING = "PROCESSING",
 }
 
-export enum SourceType {
+export enum AnalysisSourceType {
   ZIP = "ZIP",
   GITHUB = "GITHUB",
 }
