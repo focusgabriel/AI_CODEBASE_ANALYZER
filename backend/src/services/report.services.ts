@@ -4,6 +4,7 @@ import { findAnalysisForUser } from "../repositories/analysis.repository.js";
 import { findReportById } from "../repositories/report.repository.js";
 
 import { createReport } from "../repositories/report.repository.js";
+import { getAnalysisReport } from "../repositories/analysis-report.repository.js";
 
 export async function saveReport(
     analysisId: string,
@@ -32,5 +33,5 @@ export async function getReportForUser(
         throw new AppError("No report found", 400);
     }
 
-    return findReportById(analysis.reportId);
+    return getAnalysisReport(analysis.reportId);
 }
