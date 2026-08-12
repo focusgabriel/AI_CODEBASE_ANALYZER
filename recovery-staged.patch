@@ -1,0 +1,121 @@
+diff --git a/backend/package.json b/backend/package.json
+index 9366de4..f3e73f5 100644
+--- a/backend/package.json
++++ b/backend/package.json
+@@ -22,6 +22,7 @@
+   "dependencies": {
+     "@babel/parser": "7.29.7",
+     "@babel/traverse": "7.29.7",
++    "@google/genai": "^2.16.0",
+     "bcrypt": "^6.0.0",
+     "cors": "^2.8.6",
+     "dotenv": "^17.4.2",
+diff --git a/backend/src/controllers/upload.controller.ts b/backend/src/controllers/upload.controller.ts
+index 2a5fae3..827e6a4 100644
+--- a/backend/src/controllers/upload.controller.ts
++++ b/backend/src/controllers/upload.controller.ts
+@@ -16,6 +16,7 @@ import { saveReport } from "../services/report.services.js";
+ import { cleanupRepositoryFiles } from "../services/cleanup.services.js";
+ import { updateStatus } from "../services/analysis.services.js";
+ import { logger } from "../core/logger/logger.js";
++import { AnalysisStatus } from "../enum/analysis.dto.js";
+ 
+ export async function uploadRepositoryController(
+   req: Request,
+@@ -36,7 +37,7 @@ export async function uploadRepositoryController(
+   const objectId = new mongoose.Types.ObjectId(analysisId as string);
+ 
+   try {
+-    await updateStatus(objectId, "PROCESSING")
++    await updateStatus(objectId, AnalysisStatus.PROCESSING)
+ 
+     const file = req.file;
+ 
+@@ -197,7 +198,7 @@ export async function uploadRepositoryController(
+     // console.log("reportId: ", savedReport._id);
+ 
+     // await updateStatus(objectId, "COMPLETED", savedReport._id.toString());
+-    await updateStatus(objectId, "COMPLETED");
++    await updateStatus(objectId, AnalysisStatus.COMPLETED );
+ 
+ 
+     await cleanupRepositoryFiles(
+@@ -210,7 +211,7 @@ export async function uploadRepositoryController(
+     });
+   } catch (error: any) {
+     logger.error("Cleanup failed:", error);
+-    await updateStatus(objectId, "FAILED");
++    await updateStatus(objectId, AnalysisStatus.FAILED);
+     next(error)
+   }
+ 
+diff --git a/backend/src/core/database/database.ts b/backend/src/core/database/database.ts
+index 6e04fbf..dab78c1 100644
+--- a/backend/src/core/database/database.ts
++++ b/backend/src/core/database/database.ts
+@@ -5,7 +5,6 @@ import { logger } from "../logger/logger.js";
+ export const connectDatabase = async () => {
+   try {
+     await mongoose.connect(env.MONGODB_URI);
+-    console.log(env.MONGODB_URI);
+     logger.info("MongoDB connected.");
+   } catch (error) {
+     logger.fatal(error, "MongoDB connection failed.");
+diff --git a/backend/src/dtos/analysis.dto.ts b/backend/src/dtos/analysis.dto.ts
+index 398f5d6..4d4582d 100644
+--- a/backend/src/dtos/analysis.dto.ts
++++ b/backend/src/dtos/analysis.dto.ts
+@@ -45,8 +45,8 @@ export interface CreateAnalysisResponseDto {
+   status: AnalysisStatus;
+ }
+ 
+-export type NewStatus =
+-    | "PENDING"
+-    | "PROCESSING"
+-    | "COMPLETED"
+-    | "FAILED";
+\ No newline at end of file
++// export type NewStatus =
++//     | "PENDING"
++//     | "PROCESSING"
++//     | "COMPLETED"
++//     | "FAILED";
+\ No newline at end of file
+diff --git a/backend/src/repositories/newstatus.repository.ts b/backend/src/repositories/newstatus.repository.ts
+index 00bafa6..a4928a5 100644
+--- a/backend/src/repositories/newstatus.repository.ts
++++ b/backend/src/repositories/newstatus.repository.ts
+@@ -1,9 +1,10 @@
+ import mongoose from "mongoose";
+-import { NewStatus } from "../dtos/analysis.dto.js";
++
+ import { AnalysisModel } from "../models/analysis.models.js";
++import { AnalysisStatus } from "../enum/analysis.dto.js";
+ 
+ export async function updateAnalysisStatus(
+-  objectId:mongoose.Types.ObjectId, newStatus:NewStatus, reportId?:string
++  objectId:mongoose.Types.ObjectId, newStatus:AnalysisStatus, reportId?:string
+ ) {
+   const updateStatus = AnalysisModel.findByIdAndUpdate( objectId, {status:newStatus, reportId}, {
+     returnDocuent: "after",
+diff --git a/backend/src/services/analysis.services.ts b/backend/src/services/analysis.services.ts
+index 5627771..566215a 100644
+--- a/backend/src/services/analysis.services.ts
++++ b/backend/src/services/analysis.services.ts
+@@ -3,7 +3,6 @@ import {
+   CreateAnalysisDto,
+   CreateAnalysisRequestDto,
+   CreateAnalysisResponseDto,
+-  NewStatus,
+ } from "../dtos/analysis.dto.js";
+ import { AnalysisStatus, SourceType } from "../enum/analysis.dto.js";
+ import { createAnalysisRecord, findAnalysisForUser } from "../repositories/analysis.repository.js";
+@@ -32,7 +31,7 @@ export async function createAnalysis(
+ }
+ 
+ export async function updateStatus(
+-  analysisId: mongoose.Types.ObjectId, statusUpdate: NewStatus, reportId?: string
++  analysisId: mongoose.Types.ObjectId, statusUpdate: AnalysisStatus, reportId?: string
+ ) {
+   const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
+ 
