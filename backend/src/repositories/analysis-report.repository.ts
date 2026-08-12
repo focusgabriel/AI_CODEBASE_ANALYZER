@@ -1,4 +1,5 @@
 
+import mongoose from "mongoose";
 import type {
   LlmAnalysisDto,
 } from "../dtos/llm-analysis.dto.js";
@@ -30,10 +31,18 @@ export async function createAnalysisReport(
   );
 }
 
+// export async function getAnalysisReport(
+//   analysisId: string,
+//   userId: string,
+// ) {
+//   return AnalysisReportModel.findOne({
+//     analysisId,
+//     userId,
+//   }).lean();
+// }
+
 export async function getAnalysisReport(
-  analysisId: string,
+  reportId: mongoose.Types.ObjectId,
 ) {
-  return AnalysisReportModel.findOne({
-    analysisId,
-  }).lean();
+  return AnalysisReportModel.findOne(reportId)
 }

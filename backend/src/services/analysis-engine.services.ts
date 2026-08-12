@@ -1,6 +1,9 @@
+import mongoose from "mongoose";
 import { MetricDto } from "../dtos/metrics.dto.js";
+import { AnalysisStatus } from "../enum/analysis.dto.js";
 import { GeminiProvider } from "../providers/gemini.providers.js";
 import { saveAnalysisReport } from "./analysis-report-persistence.services.js";
+import { updateStatus } from "./analysis.services.js";
 import { prepareAnalysis } from "./analyzer.services.js";
 import { buildLlmAnalysisInput } from "./llm-analysis-input.services.js";
 import { analyzeWithLlm } from "./llm-analysis.services.js";
@@ -222,6 +225,10 @@ export async function analyzeRepository(
       analysisId,
       llmResult,
     );
+
+    const objectId = new mongoose.Types.ObjectId(analysisId as string)
+    await updateStatus(objectId, AnalysisStatus.COMPLETED, report._id.toString() );
+    
 
   console.log("🔥 ANALYSIS ENGINE FINISHED");
 

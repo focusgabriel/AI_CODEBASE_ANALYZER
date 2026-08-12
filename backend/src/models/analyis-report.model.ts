@@ -1,17 +1,7 @@
 import mongoose from "mongoose";
 const analysisReportSchema = new mongoose.Schema(
   {
-    required: [
-      "summary",
-      "scores",
-      "architecture",
-      "codeQuality",
-      "technologies",
-      "security",
-      "recommendations",
-      "risks",
-    ],
-
+    
     scores: {
       architecture: {
         type: Number,
@@ -43,13 +33,6 @@ const analysisReportSchema = new mongoose.Schema(
         min: 0,
         max: 10,
       },
-
-      required: [
-        "architecture",
-        "codeQuality",
-        "technologies",
-        "security",
-      ],
     },
 
     analysisId: {
