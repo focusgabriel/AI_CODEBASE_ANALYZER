@@ -2,11 +2,17 @@ import mongoose from "mongoose";
 
 export interface MetricsDocument {
   analysisId: string;
+
   imports: number;
   exports: number;
   functions: number;
   classes: number;
   interfaces: number;
+
+  totalLines: number;
+  codeLines: number;
+  commentLines: number;
+  blankLines: number;
 }
 
 const metricsSchema = new mongoose.Schema<MetricsDocument>(
@@ -40,6 +46,26 @@ const metricsSchema = new mongoose.Schema<MetricsDocument>(
     },
 
     interfaces: {
+      type: Number,
+      default: 0,
+    },
+
+    totalLines: {
+      type: Number,
+      default: 0,
+    },
+
+    codeLines: {
+      type: Number,
+      default: 0,
+    },
+
+    commentLines: {
+      type: Number,
+      default: 0,
+    },
+
+    blankLines: {
       type: Number,
       default: 0,
     },

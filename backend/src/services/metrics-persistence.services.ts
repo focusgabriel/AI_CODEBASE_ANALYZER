@@ -1,27 +1,16 @@
-import { MetricsModel } from "../models/metrics.model.js";
 import { MetricDto } from "../dtos/metrics.dto.js";
+import { MetricsModel } from "../models/metrics.model.js";
+import {
+  saveMetrics as persistMetrics,
+} from "../repositories/metrics.repository.js";
 
 export async function saveMetrics(
   analysisId: string,
   metrics: MetricDto,
 ) {
-  return MetricsModel.findOneAndUpdate(
-    { analysisId },
-    {
-      $set: {
-        analysisId,
-        imports: metrics.imports,
-        exports: metrics.exports,
-        functions: metrics.functions,
-        classes: metrics.classes,
-        interfaces: metrics.interfaces,
-      },
-    },
-    {
-      new: true,
-      upsert: true,
-      setDefaultsOnInsert: true,
-    },
+  return await persistMetrics(
+    analysisId,
+    metrics,
   );
 }
 

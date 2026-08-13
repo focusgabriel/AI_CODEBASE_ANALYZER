@@ -9,7 +9,10 @@ import { buildLlmAnalysisInput } from "./llm-analysis-input.services.js";
 import { analyzeWithLlm } from "./llm-analysis.services.js";
 import { aggregateMetrics } from "./metrics-aggregation.services.js";
 import { saveMetrics } from "./metrics-persistence.services.js";
-import { extractMetrics } from "./metrics.services.js";
+import {
+  extractLineMetrics,
+  extractMetrics,
+} from "./metrics.services.js";
 import { extractPackageMetadata } from "./package-metadata.services.js";
 import { parseFile } from "./parser.services.js";
 import { buildRepositoryAnalysisContext } from "./repository-analysis-context.services.js";
@@ -45,31 +48,24 @@ export async function analyzeRepository(
   }> = [];
 
   /*
-   * Metrics calculated for individual files.
+   * Per-file metrics remain in memory.
    *
-   * These are kept in memory only.
-   * They are NOT persisted individually.
+   * They are needed by source prioritization,
+   * but they are NOT persisted individually.
    */
   const metricsByPath = new Map<string, MetricDto>();
-
-  /*
-   * All file-level metrics that will later be
-   * combined into one repository-level aggregate.
-   */
-  const collectedMetrics: MetricDto[] = [];
 
   for (const file of files) {
     try {
       console.log("🧠 PARSING FILE:", file.path);
 
-      const fileName = path.basename(file.path).toLowerCase();
+      const fileName = path
+        .basename(file.path)
+        .toLowerCase();
 
-      /*
-       * package.json is handled separately because it
-       * contains metadata rather than source-code AST metrics.
-       */
       if (fileName === "package.json") {
-        const metadata = extractPackageMetadata(file.content);
+        const metadata =
+          extractPackageMetadata(file.content);
 
         packageMetadataFiles.push({
           path: file.path,
@@ -94,54 +90,53 @@ export async function analyzeRepository(
         continue;
       }
 
-      /*
-       * Calculate metrics for this individual file.
-       *
-       * IMPORTANT:
-       * We keep these metrics in memory.
-       * We do NOT save them to MongoDB.
-       */
-      const metrics = extractMetrics(ast);
+      const astMetrics =
+        extractMetrics(ast);
 
-      /*
-       * Keep this because your source-prioritization
-       * logic uses metricsByPath.
-       */
-      metricsByPath.set(file.path, metrics);
+      const lineMetrics =
+        extractLineMetrics(file.content);
 
-      /*
-       * Add this file's metrics to the collection
-       * that will later be aggregated.
-       */
-      collectedMetrics.push(metrics);
+      const metrics: MetricDto = {
+        ...astMetrics,
+        ...lineMetrics,
+      };
 
+      metricsByPath.set(
+        file.path,
+        metrics,
+      );
     } catch (error) {
-      console.error("❌ FAILED TO ANALYZE FILE:", {
-        path: file.path,
-        extension: file.extension,
-        language: file.language,
-        error,
-      });
+      console.error(
+        "❌ FAILED TO ANALYZE FILE:",
+        {
+          path: file.path,
+          extension: file.extension,
+          language: file.language,
+          error,
+        },
+      );
 
       continue;
     }
   }
 
   /*
-   * At this point every analyzable file has been processed.
-   *
-   * Now combine all file-level metrics into ONE
-   * repository-level metrics object.
+   * Aggregate all per-file metrics.
    */
   const repositoryMetrics =
-    aggregateMetrics(collectedMetrics);
+    aggregateMetrics(
+      Array.from(
+        metricsByPath.values(),
+      ),
+    );
 
-  console.log("📊 REPOSITORY METRICS:", repositoryMetrics);
+  console.log(
+    "📊 REPOSITORY METRICS:",
+    repositoryMetrics,
+  );
 
   /*
-   * Persist ONLY the final aggregate.
-   *
-   * There will be one Metrics document for this analysis.
+   * Persist ONLY the aggregate metrics.
    */
   await saveMetrics(
     analysisId,
@@ -165,7 +160,9 @@ export async function analyzeRepository(
     prioritizeSourceFiles(
       candidateSources,
       metricsByPath,
-      new Set(repositoryStructure.entryPoints),
+      new Set(
+        repositoryStructure.entryPoints,
+      ),
     );
 
   const budgetedSources =
@@ -180,41 +177,48 @@ export async function analyzeRepository(
   const uniqueAnalysisSources =
     Array.from(
       new Map(
-        budgetedSources.map((file) => [
-          file.path,
-          file,
-        ]),
+        budgetedSources.map(
+          (file) => [
+            file.path,
+            file,
+          ],
+        ),
       ).values(),
     );
 
   console.log(
     "🎯 SELECTED LLM SOURCES:",
-    uniqueAnalysisSources.map((file) => ({
-      path: file.path,
-      priority: file.priority,
-    })),
+    uniqueAnalysisSources.map(
+      (file) => ({
+        path: file.path,
+        priority: file.priority,
+      }),
+    ),
   );
 
   const technologyProfiles =
     packageMetadataFiles.map(
-      ({ path: packagePath, metadata }) => ({
+      ({
         path: packagePath,
-        technologies: detectTechnologies(metadata),
+        metadata,
+      }) => ({
+        path: packagePath,
+        technologies:
+          detectTechnologies(metadata),
       }),
     );
 
-  console.dir(technologyProfiles, {
-    depth: null,
-  });
+  console.dir(
+    technologyProfiles,
+    {
+      depth: null,
+    },
+  );
 
   const repositoryTechnologies =
     aggregateTechnologyProfiles(
       technologyProfiles,
     );
-
-  console.log(
-    "========================== un-persisted data from metrics ===================================",
-  );
 
   const analysisContext =
     buildRepositoryAnalysisContext({
@@ -227,37 +231,40 @@ export async function analyzeRepository(
       repositoryStructure,
     });
 
-  console.log(
-    "======================== analysisContext ==========================",
+  console.dir(
+    analysisContext,
+    {
+      depth: null,
+    },
   );
-
-  console.dir(analysisContext, {
-    depth: null,
-  });
 
   console.log(
     "🌐 REPOSITORY TECHNOLOGIES:",
     repositoryTechnologies,
   );
 
-  const llmInput = buildLlmAnalysisInput(
-    analysisContext,
-    uniqueAnalysisSources,
-  );
+  const llmInput =
+    buildLlmAnalysisInput(
+      analysisContext,
+      uniqueAnalysisSources,
+    );
 
   console.dir(
     {
       analysisId: llmInput.analysisId,
       repository: llmInput.repository,
       packages: {
-        manifests: llmInput.packages.manifests.length,
+        manifests:
+          llmInput.packages.manifests.length,
         technologies:
           llmInput.packages.technologies,
       },
       selectedSourceFiles:
         llmInput.sourceFiles.length,
     },
-    { depth: null },
+    {
+      depth: null,
+    },
   );
 
   const llmProvider =
@@ -287,7 +294,9 @@ export async function analyzeRepository(
     report._id.toString(),
   );
 
-  console.log("🔥 ANALYSIS ENGINE FINISHED");
+  console.log(
+    "🔥 ANALYSIS ENGINE FINISHED",
+  );
 
   return {
     analysisContext,

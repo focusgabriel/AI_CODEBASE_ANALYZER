@@ -11,6 +11,11 @@ export function aggregateMetrics(
       total.classes += metric.classes ?? 0;
       total.interfaces += metric.interfaces ?? 0;
 
+      total.totalLines += metric.totalLines ?? 0;
+      total.codeLines += metric.codeLines ?? 0;
+      total.commentLines += metric.commentLines ?? 0;
+      total.blankLines += metric.blankLines ?? 0;
+
       return total;
     },
     {
@@ -19,6 +24,11 @@ export function aggregateMetrics(
       functions: 0,
       classes: 0,
       interfaces: 0,
+
+      totalLines: 0,
+      codeLines: 0,
+      commentLines: 0,
+      blankLines: 0,
     },
   );
 }

@@ -1,28 +1,40 @@
 import { getMetricsByAnalysisId } from "../repositories/metrics.repository.js";
 
+export async function buildRepositorySummary(
+  analysisId: string,
+) {
+  const metrics =
+    await getMetricsByAnalysisId(analysisId);
 
-export async function buildRepositorySummary(analysisId: string){
-  const metrics = await getMetricsByAnalysisId(analysisId);
+  if (!metrics) {
+    return {
+      totalFiles: 0,
 
-  const summary = {
-    totalFiles: metrics.length,
+      imports: 0,
+      exports: 0,
+      functions: 0,
+      interfaces: 0,
+      classes: 0,
 
-    imports: 0,
-    exports: 0,
-    functions: 0,
-    interfaces: 0,
-    classes: 0,
-    // types:0,
-  };
-
-  for(const metric of metrics) {
-    summary.imports += metric.imports as number;
-    summary.exports += metric.exports as number ;
-    summary.functions += metric.functions as number;
-    summary.interfaces += metric.interfaces as number;
-    summary.classes += metric.classes as number;
-    // summary.types += metric.types as number;
+      totalLines: 0,
+      codeLines: 0,
+      commentLines: 0,
+      blankLines: 0,
+    };
   }
 
-  return summary;
+  return {
+    totalFiles: 0,
+
+    imports: metrics.imports,
+    exports: metrics.exports,
+    functions: metrics.functions,
+    interfaces: metrics.interfaces,
+    classes: metrics.classes,
+
+    totalLines: metrics.totalLines,
+    codeLines: metrics.codeLines,
+    commentLines: metrics.commentLines,
+    blankLines: metrics.blankLines,
+  };
 }

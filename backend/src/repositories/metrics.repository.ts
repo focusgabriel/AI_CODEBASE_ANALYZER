@@ -1,11 +1,11 @@
 import { MetricsModel } from "../models/metrics.model.js";
-import type { aggregateMetrics } from "../services/metrics-aggregation.services.js";
+import { MetricDto } from "../dtos/metrics.dto.js";
 
-export async function saveAggregateMetrics(
+export async function saveMetrics(
   analysisId: string,
-  metrics: typeof aggregateMetrics,
+  metrics: MetricDto,
 ) {
-  return MetricsModel.findOneAndUpdate(
+  return await MetricsModel.findOneAndUpdate(
     { analysisId },
     {
       $set: {
@@ -16,7 +16,7 @@ export async function saveAggregateMetrics(
     {
       new: true,
       upsert: true,
-      setDefaultsOnInsert: true,
+      runValidators: true,
     },
   );
 }
@@ -24,11 +24,7 @@ export async function saveAggregateMetrics(
 export async function getMetricsByAnalysisId(
   analysisId: string,
 ) {
-  return MetricsModel.findOne({ analysisId }).lean();
+  return await MetricsModel.findOne({
+    analysisId,
+  });
 }
-
-// export async function getMetricsByAnalysis(analysisId:string, userId:string) {
-//   return MetricsModel.find({
-//     analysisId
-//   })
-// }
