@@ -2,8 +2,8 @@
 
 body {
   font-family: 'Inter', -apple-system, sans-serif;
-  background: #0a0a1a;
-  color: #f1f1f1;
+  /* background: #0a0a1a; */
+  /* color: #f1f1f1; */
 }
 
 @layer utilities {
@@ -18,4 +18,175 @@ body {
   .btnStarted {
     @apply bg-linear-to-r from-blue-500 to-purple-500 px-4 py-1 rounded-xl
   }
+
+
+
+  .fieldClass {
+    @apply min-h-[3.5rem] w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-base text-slate-900 shadow-[0_20px_50px_-20px_rgba(15,23,42,0.08)] outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-200/40;
+  }
+
+  .labelClass {
+    @apply text-sm font-semibold text-slate-700;
+  }
+
+  .auth-shell {
+    position: relative;
+    /* background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(241,245,249,0.98)); */
+  }
+
+  .auth-shell-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(99,102,241,0.16), transparent 14%),
+      radial-gradient(circle at 85% 15%, rgba(99,102,241,0.08), transparent 18%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .auth-action-btn {
+    @apply inline-flex w-full items-center justify-center rounded-full bg-linear-to-r from-indigo-600 to-indigo-500 px-6 py-3 text-base font-semibold text-white transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-300/50;
+  }
+
+.auth-footer-link {
+    @apply font-semibold text-indigo-600 transition hover:text-indigo-700;
+  }
+
+  .auth-card {
+    @apply rounded-[2rem] border border-slate-200 bg-white shadow-[0_40px_90px_-30px_rgba(15,23,42,0.08)];
+  }
+
+  .auth-hero-card {
+    @apply relative overflow-hidden rounded-[1.75rem] border-amber-600 bg-white p-6 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.08)];
+  }
+
+  .successMsg {
+    @apply relative overflow-hidden;
+  }
+
+  .successMsg::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 0.35rem;
+    width: 100%;
+    background: #6366f1;
+    transform-origin: left;
+    animation: progress-decrease 4s linear forwards;
+  }
+
+  .filterStyle {
+    @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500
+  }
+
+  .button_analytics {
+    @apply inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-600 to-indigo-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-200/50 transition-all duration-200 hover:from-indigo-700 hover:to-indigo-800 hover:shadow-md active:scale-[0.97] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+  }
+  .button_addTask {
+    @apply w-full rounded-xl bg-linear-to-r from-indigo-600 to-indigo-700 px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:from-indigo-700 hover:to-indigo-800 hover:shadow-md active:scale-[0.98]
+  }
+  .button_prev {
+    @apply inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400
+  }
+  .button_next {
+    @apply inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-600 to-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition duration-200 hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500
+  }
+  @keyframes progress-decrease {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .auth-card {
+      @apply max-w-full rounded-xl px-4 py-6;
+    }
+
+    .auth-shell {
+      @apply px-4 py-6;
+    }
+
+    .fieldClass {
+      @apply min-h-12 rounded-lg px-4 py-3;
+    }
+
+    .auth-action-btn {
+      @apply py-3 rounded-lg;
+    }
+
+    .hoverDisplay{
+      @apply fixed inset-y-0 left-0 z-50 w-16 hover:w-64 transition-all duration-300 ease-in-out overflow-hidden
+    }
+  }
+
+  /* === Sidebar: Bottom nav below 620px === */
+  @media (max-width: 600px) {
+    .sidebar-xs-bottom {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 50 !important;
+      width: 100% !important;
+      height: auto !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-around !important;
+      border-top: 1px solid #e2e8f0 !important;
+      background: #ffffff !important;
+      padding: 0 !important;
+      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-xs-bottom nav {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: space-around !important;
+      width: 100% !important;
+      padding: 0 4px !important;
+    }
+
+    .sidebar-xs-bottom nav a {
+      flex: 1 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      height: 52px !important;
+      margin: 4px 0 !important;
+      font-size: 10px !important;
+      border-radius: 8px !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .sidebar-xs-bottom > div:not(nav):not(:first-child):not(:last-child) {
+      display: none !important;
+    }
+
+    .main-with-bottom-sidebar {
+      padding-bottom: 64px !important;
+    }
+  }
+
+
+
+  /* === Sidebar: Left side between 621px and 767px === */
+  @media (min-width: 621px) and (max-width: 1023px) {
+    .sidebar-xs-bottom {
+      width: 56px !important;
+      min-width: 56px !important;
+      border-right: 1px solid #e2e8f0 !important;
+      background: #ffffff !important;
+    }
+
+    .sidebar-xs-bottom nav a span {
+      display: none !important;
+    }
+  }
+
+
 }
