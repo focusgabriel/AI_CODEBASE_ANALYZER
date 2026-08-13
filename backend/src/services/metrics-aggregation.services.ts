@@ -10,7 +10,6 @@ export async function aggregateMetrics(analysisId: string) {
       total.functions += metric.functions ?? 0;
       total.classes += metric.classes ?? 0;
       total.interfaces += metric.interfaces ?? 0;
-
       return total;
     },
     {
@@ -19,6 +18,7 @@ export async function aggregateMetrics(analysisId: string) {
       functions: 0,
       classes: 0,
       interfaces: 0,
+      // types: 0,
     },
   );
 }

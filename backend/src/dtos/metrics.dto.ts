@@ -4,4 +4,5 @@ export interface MetricDto {
   functions: number,
   classes: number,
   interfaces: number,
+  // types: number,
 }

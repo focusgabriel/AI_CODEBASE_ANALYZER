@@ -12,6 +12,7 @@ export async function buildRepositorySummary(analysisId: string){
     functions: 0,
     interfaces: 0,
     classes: 0,
+    // types:0,
   };
 
   for(const metric of metrics) {
@@ -20,6 +21,7 @@ export async function buildRepositorySummary(analysisId: string){
     summary.functions += metric.functions as number;
     summary.interfaces += metric.interfaces as number;
     summary.classes += metric.classes as number;
+    // summary.types += metric.types as number;
   }
 
   return summary;

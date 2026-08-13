@@ -29,6 +29,7 @@ const metricsSchema = new mongoose.Schema({
   functions: Number,
   classes: Number,
   interfaces: Number,
+  // types: Number,
 
 },
   {

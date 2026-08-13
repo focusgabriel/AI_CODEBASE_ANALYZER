@@ -28,6 +28,7 @@ export function prioritizeSourceFiles(
         priority += metrics.functions * 3;
         priority += metrics.classes * 5;
         priority += metrics.interfaces * 2;
+        // priority += metrics.types * 2;
 
         // Files importing other modules are more likely
         // to participate in application architecture.

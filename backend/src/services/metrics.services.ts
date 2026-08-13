@@ -1,4 +1,5 @@
 import traverseModule from "@babel/traverse";
+import { getMetricsByAnalysisId } from "../repositories/metrics.repository.js";
 
 const traverse =
   (traverseModule as any).default ?? traverseModule;
@@ -10,6 +11,7 @@ export function extractMetrics(ast: any) {
     functions: 0,
     classes: 0,
     interfaces: 0,
+    // types: 0,
   };
 
   traverse(ast, {
@@ -40,7 +42,15 @@ export function extractMetrics(ast: any) {
     TSInterfaceDeclaration() {
       metrics.interfaces++;
     },
+
+    // TSTypeAliasDeclaration() {
+    //   metrics.types++;
+    // }
   });
 
   return metrics;
+}
+
+export async function gettingMetricsByAnalysis(analysisId:string){
+  return await getMetricsByAnalysisId(analysisId);
 }
