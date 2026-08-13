@@ -33,10 +33,7 @@ const Login = () => {
         duration: 3000,
       });
       await checkAuth();
-
-      setTimeout(() => {
-        navigate("/overview");
-      }, 500);
+      navigate("/overview");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(
