@@ -1,8 +1,8 @@
-import { getMetricsByAnalysisId } from "../repositories/metrics.repository.js";
+import { MetricDto } from "../dtos/metrics.dto.js";
 
-export async function aggregateMetrics(analysisId: string) {
-  const metrics = await getMetricsByAnalysisId(analysisId);
-
+export function aggregateMetrics(
+  metrics: MetricDto[],
+): MetricDto {
   return metrics.reduce(
     (total, metric) => {
       total.imports += metric.imports ?? 0;
@@ -10,6 +10,7 @@ export async function aggregateMetrics(analysisId: string) {
       total.functions += metric.functions ?? 0;
       total.classes += metric.classes ?? 0;
       total.interfaces += metric.interfaces ?? 0;
+
       return total;
     },
     {

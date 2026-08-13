@@ -44,7 +44,19 @@ export async function analyzeRepository(
     metadata: ReturnType<typeof extractPackageMetadata>;
   }> = [];
 
+  /*
+   * Metrics calculated for individual files.
+   *
+   * These are kept in memory only.
+   * They are NOT persisted individually.
+   */
   const metricsByPath = new Map<string, MetricDto>();
+
+  /*
+   * All file-level metrics that will later be
+   * combined into one repository-level aggregate.
+   */
+  const collectedMetrics: MetricDto[] = [];
 
   for (const file of files) {
     try {
@@ -52,6 +64,10 @@ export async function analyzeRepository(
 
       const fileName = path.basename(file.path).toLowerCase();
 
+      /*
+       * package.json is handled separately because it
+       * contains metadata rather than source-code AST metrics.
+       */
       if (fileName === "package.json") {
         const metadata = extractPackageMetadata(file.content);
 
@@ -78,21 +94,27 @@ export async function analyzeRepository(
         continue;
       }
 
-      // console.log("✅ AST CREATED:", file.path);
-
+      /*
+       * Calculate metrics for this individual file.
+       *
+       * IMPORTANT:
+       * We keep these metrics in memory.
+       * We do NOT save them to MongoDB.
+       */
       const metrics = extractMetrics(ast);
 
+      /*
+       * Keep this because your source-prioritization
+       * logic uses metricsByPath.
+       */
       metricsByPath.set(file.path, metrics);
 
-      // console.log(metrics);
+      /*
+       * Add this file's metrics to the collection
+       * that will later be aggregated.
+       */
+      collectedMetrics.push(metrics);
 
-      await saveMetrics(
-        analysisId,
-        file.id.toString(),
-        metrics,
-      );
-
-      // console.log("💾 METRICS SAVED:", file.path);
     } catch (error) {
       console.error("❌ FAILED TO ANALYZE FILE:", {
         path: file.path,
@@ -105,10 +127,26 @@ export async function analyzeRepository(
     }
   }
 
+  /*
+   * At this point every analyzable file has been processed.
+   *
+   * Now combine all file-level metrics into ONE
+   * repository-level metrics object.
+   */
   const repositoryMetrics =
-    await aggregateMetrics(analysisId);
+    aggregateMetrics(collectedMetrics);
 
   console.log("📊 REPOSITORY METRICS:", repositoryMetrics);
+
+  /*
+   * Persist ONLY the final aggregate.
+   *
+   * There will be one Metrics document for this analysis.
+   */
+  await saveMetrics(
+    analysisId,
+    repositoryMetrics,
+  );
 
   const selectedSources =
     selectSourceFiles(
@@ -174,7 +212,10 @@ export async function analyzeRepository(
       technologyProfiles,
     );
 
-  console.log("========================== un-persisted data from metrics ===================================")
+  console.log(
+    "========================== un-persisted data from metrics ===================================",
+  );
+
   const analysisContext =
     buildRepositoryAnalysisContext({
       analysisId,
@@ -186,7 +227,10 @@ export async function analyzeRepository(
       repositoryStructure,
     });
 
-  console.log("======================== analysisContext ==========================")
+  console.log(
+    "======================== analysisContext ==========================",
+  );
+
   console.dir(analysisContext, {
     depth: null,
   });
@@ -232,9 +276,16 @@ export async function analyzeRepository(
       llmResult,
     );
 
-    const objectId = new mongoose.Types.ObjectId(analysisId as string)
-    await updateStatus(objectId, AnalysisStatus.COMPLETED, report._id.toString() );
-    
+  const objectId =
+    new mongoose.Types.ObjectId(
+      analysisId,
+    );
+
+  await updateStatus(
+    objectId,
+    AnalysisStatus.COMPLETED,
+    report._id.toString(),
+  );
 
   console.log("🔥 ANALYSIS ENGINE FINISHED");
 
