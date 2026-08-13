@@ -17,3 +17,7 @@ export async function RefreshTokenCreation(userId: string, refreshToken: string)
     refreshToken
   })
 }
+
+export async function getUser(userId:string){
+  return authModel.findById(userId);
+}
