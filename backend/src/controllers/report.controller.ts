@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
 import { getReportForUser } from "../services/report.services.js";
+import { getAllAnalysisReport } from "../services/analysis-report-persistence.services.js";
+import mongoose from "mongoose";
 
 export async function getReportController(
   req: Request,
@@ -34,5 +36,36 @@ export async function getReportController(
     });
   } catch (error) {
     next(error);
+  }
+}
+
+
+export async function getAllReportsController(
+  req:Request,
+  res:Response,
+  next:NextFunction
+) {
+  try {
+    const user = req.user!.id
+
+    if(!user) {
+      throw new AppError("User not Found", 404);
+    } 
+
+    // if (!mongoose.Types.ObjectId.isValid(user as string)) {
+    //   return next(
+    //     new AppError("Invalid analysis ID", 400),
+    //   );
+    // }
+    // const objectId = new mongoose.Types.ObjectId(user as string)
+
+    const reports = await getAllAnalysisReport(user);
+
+    return res.status(200).json({
+      success: true,
+      reports
+    })
+  } catch (error) {
+    next(error)
   }
 }
