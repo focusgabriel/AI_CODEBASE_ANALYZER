@@ -30,13 +30,13 @@ const Register = () => {
       setIsRegistering(true);
       await refreshClient.post("/auth/register", newUser);
 
-      toast.success("Registration successful! Check your email to verify your account.", {
+      toast.success("Registration successful! You can now sign in.", {
         position: "top-right",
-        duration: 5000,
+        duration: 3000,
       });
 
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 1000);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -143,7 +143,7 @@ const Register = () => {
 
             <p className="mt-6 text-center text-sm text-slate-500">
               Already have an account?{" "}
-              <Link to="/" className="auth-footer-link">
+              <Link to="/login" className="auth-footer-link">
                 Sign in
               </Link>
             </p>
