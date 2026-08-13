@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import refreshClient from "../api/fetch";
 import { AuthContext, type User } from "../lib/AuthContext";
@@ -13,7 +13,7 @@ export function AuthProvider({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const { data } = await refreshClient.get("/auth/me");
       setUser(data.user);
@@ -22,22 +22,29 @@ export function AuthProvider({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const logout = () => {
-    setUser(null);
-  };
+  const logout = useCallback(async () => {
+    try {
+      await refreshClient.post("/auth/logout");
+    } catch {
+      // Even if the server call fails, clear local state
+    } finally {
+      setUser(null);
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
 
   // Check auth when app loads
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   // Listen for automatic logout events from the interceptor
   useEffect(() => {
     const handleLogout = () => {
       setUser(null);
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     };
 
     window.addEventListener("auth:logout", handleLogout);
