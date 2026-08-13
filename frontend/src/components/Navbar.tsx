@@ -1,5 +1,7 @@
 /** @format */
 
+import { Link } from "react-router-dom";
+
 // import Button from "./Button"
 
 const Navbar = () => {
@@ -12,8 +14,12 @@ const Navbar = () => {
       </div>
       <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
         <p className="text-sm text-[#f1f1f1]">Dashboard</p>
-        <button className="btnSignin text-sm px-4 py-2">Sign in</button>
-        <button className="btnStarted text-sm px-4 py-2">Get Started</button>
+        <Link to="/login" className="btnSignin text-sm px-4 py-2">
+          Sign in
+        </Link>
+        <Link to="/register" className="btnStarted text-sm px-4 py-2">
+          Get Started
+        </Link>
       </div>
     </nav>
   );
