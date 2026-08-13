@@ -2,8 +2,8 @@ export interface UserDto{
   name: string,
   email: string,
   password: string,
-  verificationToken: string,
-  verificationTokenExpires: Date
+  // verificationToken: string,
+  // verificationTokenExpires: Date
 }
 
 export interface UserDtoRespone {
@@ -16,6 +16,9 @@ export interface UserDtoRespone {
 }
 
 export interface LoginDtoResponse {
+  userId: string,
   email: string,
-  password: string
+  password: string,
+  accessToken: string,
+  refreshToken: string
 }
