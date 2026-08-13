@@ -14,22 +14,22 @@
 // };
 
 
-import apiInstance from "../../config/brevo.js";
-import passwordResetTemplate from "./templates/passwordResetTemplate.js";
+// import apiInstance from "../../config/brevo.js";
+// import passwordResetTemplate from "./templates/passwordResetTemplate.js";
 
-export const sendResetPasswordEmail = async (
-  email: string,
-  resetLink: string,
-  newUser:string
-) => {
-  await apiInstance.sendTransacEmail({
-    sender: {
-      name: "Trackio",
-      email: "charlesuchendu750@gmail.com",
+// export const sendResetPasswordEmail = async (
+//   email: string,
+//   resetLink: string,
+//   newUser:string
+// ) => {
+//   await apiInstance.sendTransacEmail({
+//     sender: {
+//       name: "Trackio",
+//       email: "charlesuchendu750@gmail.com",
       
-    },
-    to: [{ email }],
-    subject: "Reset your Trackio Password",
-    htmlContent: passwordResetTemplate(resetLink, newUser),
-  });
-};
+//     },
+//     to: [{ email }],
+//     subject: "Reset your Trackio Password",
+//     htmlContent: passwordResetTemplate(resetLink, newUser),
+//   });
+// };
