@@ -29,6 +29,7 @@ export async function uploadRepositoryController(
   }
 
   const { analysisId } = req.params;
+  const userId = req.user!.id;
 
   if (!mongoose.Types.ObjectId.isValid(analysisId as string)) {
     return next(
@@ -126,6 +127,7 @@ export async function uploadRepositoryController(
     const analysisResult =
       await analyzeRepository(
         objectId.toString(),
+        userId
       );
 
     console.timeEnd("analysis");
