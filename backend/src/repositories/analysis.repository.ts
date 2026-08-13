@@ -16,3 +16,11 @@ export async function findAnalysisForUser(
     userId,
   })
 }
+
+export async function findUserAnalysis(
+  userId: string
+) {
+  return AnalysisModel.find({
+    userId
+  })
+}

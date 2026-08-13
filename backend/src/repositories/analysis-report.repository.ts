@@ -1,17 +1,19 @@
 
-import mongoose from "mongoose";
+import mongoose, { mongo, Mongoose } from "mongoose";
 import type {
   LlmAnalysisDto,
 } from "../dtos/llm-analysis.dto.js";
 import { AnalysisReportModel } from "../models/analyis-report.model.js";
+import { AnalysisModel } from "../models/analysis.models.js";
 
 export async function createAnalysisReport(
   analysisId: string,
+  userId: string,
   report: LlmAnalysisDto,
 ) {
 
   return AnalysisReportModel.findOneAndUpdate(
-    { analysisId },
+    { analysisId, userId },
     {
       $set: {
         summary: report.summary,
@@ -31,18 +33,19 @@ export async function createAnalysisReport(
   );
 }
 
-// export async function getAnalysisReport(
-//   analysisId: string,
-//   userId: string,
-// ) {
-//   return AnalysisReportModel.findOne({
-//     analysisId,
-//     userId,
-//   }).lean();
-// }
 
 export async function getAnalysisReport(
   reportId: mongoose.Types.ObjectId,
 ) {
   return AnalysisReportModel.findOne(reportId)
+}
+
+export async function getAnalysisReports(
+  userId: string
+) {
+  const reports = await AnalysisReportModel.find({
+    userId
+  }).sort({createdAt: -1}).lean();
+
+  return reports;
 }

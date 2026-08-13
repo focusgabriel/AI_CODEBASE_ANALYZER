@@ -10,6 +10,7 @@ export async function getFilesByAnalysisId(
 ) {
   console.log("🔎 GET FILES FOR ANALYSIS:", analysisId);
   const files = await FileModel.find({ analysisId });
+  console.log("=========================== Files Length ==============================")
   console.log("🔎 FILE RECORDS FOUND:", files.length);
 
   return files;
