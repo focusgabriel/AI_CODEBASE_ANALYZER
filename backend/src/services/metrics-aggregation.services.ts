@@ -18,7 +18,6 @@ export async function aggregateMetrics(analysisId: string) {
       functions: 0,
       classes: 0,
       interfaces: 0,
-      // types: 0,
     },
   );
 }

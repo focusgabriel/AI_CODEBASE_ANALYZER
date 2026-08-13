@@ -174,6 +174,7 @@ export async function analyzeRepository(
       technologyProfiles,
     );
 
+  console.log("========================== un-persisted data from metrics ===================================")
   const analysisContext =
     buildRepositoryAnalysisContext({
       analysisId,

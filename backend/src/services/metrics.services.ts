@@ -11,7 +11,6 @@ export function extractMetrics(ast: any) {
     functions: 0,
     classes: 0,
     interfaces: 0,
-    // types: 0,
   };
 
   traverse(ast, {
@@ -42,10 +41,6 @@ export function extractMetrics(ast: any) {
     TSInterfaceDeclaration() {
       metrics.interfaces++;
     },
-
-    // TSTypeAliasDeclaration() {
-    //   metrics.types++;
-    // }
   });
 
   return metrics;
