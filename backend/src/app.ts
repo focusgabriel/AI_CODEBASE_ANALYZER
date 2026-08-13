@@ -6,6 +6,7 @@ import { errorHandler } from "./core/middlewares/errorHandler.js";
 import analysisRoutes from "./routes/analysis.routes.js";
 import reportRoutes from "./routes/report.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import metricsRoutes from "./routes/metrics.routes.js";
 import cookieParser from "cookie-parser";
 
 const app: Application = express();
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use("/api/v1/analyses", analysisRoutes);
 app.use("/api/v1/reports", reportRoutes);
 app.use("/api/v1", authRoutes);
+app.use("/api/v1/metrics", metricsRoutes);
 // app.use("/api/v1/analyses/:upload", uploadRoutes)
 app.use(errorHandler);
 
