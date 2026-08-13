@@ -8,7 +8,8 @@ export const createAnalysisController = async (
   next: NextFunction,
 ) => {
   try {
-    const { userId, name } = req.body;
+    const { name } = req.body;
+    const userId = req.user!.id;
 
     const analysis = await createAnalysis({
       userId,
@@ -31,7 +32,8 @@ export const getUserAnalysisController = async (
   next:NextFunction
 ) => {
   try {
-    const {analysisId, userId} = req.params
+    const {analysisId } = req.params
+    const userId = req.user!.id
 
     if(!analysisId || !userId) {
       throw new AppError("Analysis ID and user ID are required", 400);
