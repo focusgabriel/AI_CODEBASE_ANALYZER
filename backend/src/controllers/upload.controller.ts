@@ -1,6 +1,3 @@
-
-
-
 import { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import path from "node:path";
