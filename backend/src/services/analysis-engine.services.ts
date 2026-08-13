@@ -23,6 +23,7 @@ import path from "node:path";
 
 export async function analyzeRepository(
   analysisId: string,
+  userId: string,
 ) {
   console.log("🚨🚨 ANALYSIS REQUEST START", {
     analysisId,
@@ -77,11 +78,13 @@ export async function analyzeRepository(
         continue;
       }
 
-      console.log("✅ AST CREATED:", file.path);
+      // console.log("✅ AST CREATED:", file.path);
 
       const metrics = extractMetrics(ast);
 
       metricsByPath.set(file.path, metrics);
+
+      // console.log(metrics);
 
       await saveMetrics(
         analysisId,
@@ -89,7 +92,7 @@ export async function analyzeRepository(
         metrics,
       );
 
-      console.log("💾 METRICS SAVED:", file.path);
+      // console.log("💾 METRICS SAVED:", file.path);
     } catch (error) {
       console.error("❌ FAILED TO ANALYZE FILE:", {
         path: file.path,
@@ -182,6 +185,7 @@ export async function analyzeRepository(
       repositoryStructure,
     });
 
+  console.log("======================== analysisContext ==========================")
   console.dir(analysisContext, {
     depth: null,
   });
@@ -223,6 +227,7 @@ export async function analyzeRepository(
   const report =
     await saveAnalysisReport(
       analysisId,
+      userId,
       llmResult,
     );
 

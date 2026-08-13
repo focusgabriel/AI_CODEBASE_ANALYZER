@@ -11,7 +11,7 @@
 
 import { Router } from "express";
 import { upload } from "../config/multer.js";
-import { createAnalysisController, getUserAnalysisController } from "../controllers/analysis.controller.js";
+import { createAnalysisController, getAllAnalysisForUserController, getUserAnalysisController } from "../controllers/analysis.controller.js";
 import { uploadRepositoryController } from "../controllers/upload.controller.js";
 import { errorHandler } from "../core/middlewares/errorHandler.js";
 import { authMiddleware } from "../core/middlewares/authMiddleware.js";
@@ -31,5 +31,11 @@ router.get(
   "/:analysisId/", 
   authMiddleware,
   getUserAnalysisController
+)
+
+router.get(
+  "/",
+  authMiddleware,
+  getAllAnalysisForUserController
 )
 export default router;

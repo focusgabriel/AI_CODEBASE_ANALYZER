@@ -1,12 +1,15 @@
+import mongoose from "mongoose";
 import { AnalysisReportDto } from "../dtos/AnalysisReportDto.js";
 import type { LlmAnalysisDto } from "../dtos/llm-analysis.dto.js";
 
 import {
   createAnalysisReport,
+  getAnalysisReports,
 } from "../repositories/analysis-report.repository.js";
 
 export async function saveAnalysisReport(
   analysisId: string,
+  userId: string,
   report: LlmAnalysisDto,
 ) {
   const {
@@ -38,6 +41,13 @@ export async function saveAnalysisReport(
 
   return createAnalysisReport(
     analysisId,
+    userId,
     analysisReport,
   );
+}
+
+export async function getAllAnalysisReport(
+  userId: string
+) {
+  return await getAnalysisReports(userId);
 }

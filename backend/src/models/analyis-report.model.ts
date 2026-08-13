@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 const analysisReportSchema = new mongoose.Schema(
   {
-    
     scores: {
       architecture: {
         type: Number,
@@ -40,6 +39,12 @@ const analysisReportSchema = new mongoose.Schema(
       required: true,
       unique: true,
       ref: "Analysis",
+    },
+
+    userId: {
+      type: String,
+      ref: "Users",
+      required: true,
     },
 
     summary: {
