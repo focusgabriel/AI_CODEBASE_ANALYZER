@@ -1,6 +1,6 @@
 import { AppError } from "../core/errors/AppError.js";
 import { UserDto, UserDtoRespone } from "../dtos/auth.dto.js";
-import { LoginAccont, RefreshTokenCreation, RegisterAccount } from "../repositories/auth.repository.js";
+import { getUser, LoginAccont, RefreshTokenCreation, RegisterAccount } from "../repositories/auth.repository.js";
 import bcrypt from "bcrypt";
 
 interface CreateUser {
@@ -52,4 +52,17 @@ export async function RefreshTokenCreate(
   }
 
   return user;
+}
+
+export async function getCurrentUser(
+  userId: string
+) {
+  const user = await getUser(userId);
+
+  if(!user) {
+    throw new AppError("Unauthorized", 404);
+  }
+
+  return user;
+
 }
