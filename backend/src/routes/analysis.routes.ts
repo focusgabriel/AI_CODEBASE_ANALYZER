@@ -13,19 +13,23 @@ import { Router } from "express";
 import { upload } from "../config/multer.js";
 import { createAnalysisController, getUserAnalysisController } from "../controllers/analysis.controller.js";
 import { uploadRepositoryController } from "../controllers/upload.controller.js";
+import { errorHandler } from "../core/middlewares/errorHandler.js";
+import { authMiddleware } from "../core/middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", createAnalysisController);
+router.post("/", authMiddleware, createAnalysisController);
 
 router.post(
   "/:analysisId/upload",
   upload.single("repository"),
+  authMiddleware,
   uploadRepositoryController,
 );
 
 router.get(
-  "/:analysisId/:userId", 
+  "/:analysisId/", 
+  authMiddleware,
   getUserAnalysisController
 )
 export default router;
