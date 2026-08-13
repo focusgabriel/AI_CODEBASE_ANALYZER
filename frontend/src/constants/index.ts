@@ -1,3 +1,5 @@
+import { BarChart3, FileText, LayoutDashboard, Lightbulb, Settings } from "lucide-react";
+
 export const process = [
   {title:"Upload ZIP"},
   {title:"AI Analyzes"},
@@ -13,11 +15,13 @@ export const footerLinks = [
 ]
 
 export const navItems = [
-  {name:"Overview", href:"#" },
-  {name:"Reports", href:"#" },
-  {name:"Analytics", href:"#" },
-  {name:"Uploads", href:"#" },
+  { name: "Overview", icon: LayoutDashboard, href:"/overview"},
+  { name: "Reports", icon: FileText, href:"#" },
+  { name: "Analytics", icon: BarChart3, href:"#" },
+  { name: "Insights", icon: Lightbulb, href:"#"  },
+  { name: "Settings", icon: Settings , href:"#" },
 ];
+
 
 export type Registration = {
   name: string,
@@ -28,6 +32,7 @@ export type Registration = {
 
 export const PUBLIC_ROUTES = [
   "/",
+  "/login",
   "/register",
   // "/forgotPassword",
   // "/verify-email",

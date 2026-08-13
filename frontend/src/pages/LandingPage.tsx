@@ -1,0 +1,15 @@
+import Footer from "../components/Footer"
+import Hero from "../components/Hero"
+import Navbar from "../components/Navbar"
+
+const LandingPage = () => {
+  return (
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8 bg-[#0a0a1a] text-white">
+      <Navbar />
+      <Hero />
+      <Footer />
+    </div>
+  )
+}
+
+export default LandingPage
