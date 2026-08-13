@@ -1,74 +1,71 @@
-import axios,{
+import axios, {
   type AxiosError,
   type AxiosRequestConfig,
 } from "axios";
 import { PUBLIC_ROUTES } from "../constants";
-// import toast from "react-hot-toast";
-
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
+
 const refreshClient = axios.create({
-  // baseURL: import.meta.env.VITE_API_URL,
-  baseURL: "http://localhost:3000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
 const tokenRefreshClient = axios.create({
-  // baseURL: import.meta.env.VITE_API_URL,
-  baseURL: "http://localhost:3000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
-// response
-  refreshClient.interceptors.response.use(
-    
-  (response) => {
-    return response
-  },
-  
-  async(error: AxiosError) => {
-    
-    const originalRequest = error.config as CustomAxiosRequestConfig;
+// Endpoints that should never trigger a token refresh
+const AUTH_ENDPOINTS = ["/auth/login", "/auth/register"];
 
-    if(error.response?.status === 401 && !originalRequest._retry){
+refreshClient.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
 
-      originalRequest._retry = true
+    // Nothing to retry or refresh without a config
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
 
-      if (!originalRequest) {
-        return Promise.reject(error);
-      }
-      try { 
+    const isAuthEndpoint = AUTH_ENDPOINTS.some(
+      (route) => originalRequest.url?.includes(route),
+    );
 
-      await tokenRefreshClient.post("/refresh", {}, {
-        withCredentials: true,
-      })
+    const shouldRefresh =
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint;
 
+    if (shouldRefresh) {
+      originalRequest._retry = true;
 
-      return refreshClient(originalRequest)
+      try {
+        await tokenRefreshClient.post("/refresh", {}, {
+          withCredentials: true,
+        });
 
-    } catch(err) {
-        // toast.error(err.response?.data?.message ?? "Session expired. Please log in again.", {
-        //   position: "top-right",
-        //   duration: 5000
-        // });
-        const isAuthPage = PUBLIC_ROUTES.some((route) =>
-          window.location.pathname === route ||
-          window.location.pathname.startsWith(route + "/")
+        return refreshClient(originalRequest);
+      } catch (refreshError) {
+        const isAuthPage = PUBLIC_ROUTES.some(
+          (route) =>
+            window.location.pathname === route ||
+            window.location.pathname.startsWith(route + "/"),
         );
 
         if (!isAuthPage) {
           window.dispatchEvent(new Event("auth:logout"));
         }
 
-
-        return Promise.reject(error);
+        return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  }
-)
+  },
+);
 
 export default refreshClient;
