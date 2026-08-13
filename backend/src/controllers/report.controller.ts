@@ -7,7 +7,8 @@ export async function getReportController(
   res: Response,
   next: NextFunction,
 ) {
-  const { analysisId, userId } = req.params;
+  const { analysisId } = req.params;
+  const userId = req.user!.id;
 
   if (!userId || !analysisId) {
     return next(
