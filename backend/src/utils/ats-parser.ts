@@ -27,6 +27,9 @@ function getParserPlugins(
 
     case ".tsx":
       return ["typescript", "jsx"];
+    
+    // case ".py":
+    //   return ["python"]
 
     default:
       return [];
