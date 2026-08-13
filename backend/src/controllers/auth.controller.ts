@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { LoginToAccount, RefreshTokenCreate, RegisterNewAccount } from "../services/auth.services.js";
+import { getCurrentUser, LoginToAccount, RefreshTokenCreate, RegisterNewAccount } from "../services/auth.services.js";
 import crypto from "crypto"
 import bcrypt  from "bcrypt"
 // import { sendVerificationEmail } from "../utils/emailSender/verificationEmail.js";
@@ -70,7 +70,7 @@ export async function LoginAccountController(
       throw new AppError("Invalid Credentials", 400);
     }
 
-    console.log(user._id.toString())
+    console.log("User:", user._id.toString())
 
     const accessToken = generateAccessToken( user._id.toString() );
     const refreshToken = generateRefreshToken( user._id.toString() );
@@ -143,7 +143,7 @@ export async function RefreshTokenController(
 
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "lax" as const,
       path: "/",
     };
@@ -162,11 +162,61 @@ export async function RefreshTokenController(
     });
 
     return res.status(200).json({
-      success: 200,
+      success: true,
       message: "Refresh token activated"
     });
 
   } catch (error) {
     next(error)
+  }
+}
+
+export async function LogoutAccountController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getCurrentUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const user = await getCurrentUser(req.user!.id)
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      }
+    })
+
+  } catch (error) {
+    next(error);
   }
 }
