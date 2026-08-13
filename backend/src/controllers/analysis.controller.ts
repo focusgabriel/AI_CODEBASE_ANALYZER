@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createAnalysis, getAnalysisForUser } from "../services/analysis.services.js";
+import { createAnalysis, getAllAnalysisForUser, getAnalysisForUser } from "../services/analysis.services.js";
 import { AppError } from "../core/errors/AppError.js";
 
 export const createAnalysisController = async (
@@ -64,4 +64,23 @@ export const getUserAnalysisController = async (
   } catch (error) {
     next(error);
   }
+}
+
+export async function getAllAnalysisForUserController(
+  req:Request,
+  res:Response,
+  next:NextFunction
+) {
+  const user = req.user!.id
+
+  if(!user) {
+    throw new AppError("UnAuthorized", 404);
+  }
+
+  const getAnalysis = await getAllAnalysisForUser(user)
+
+  return res.status(200).json({
+    success: true,
+    getAnalysis
+  })
 }
