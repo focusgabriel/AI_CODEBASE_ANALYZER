@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { readFileContent } from "../utils/file-reader.js";
 import { SUPPORTED_LANGUAGES } from "../utils/supported-language.js";
+import { AnalysisStatus } from "../enum/analysis.dto.js";
 
 export async function prepareAnalysis(
   analysisId: string,
@@ -30,6 +31,7 @@ export async function prepareAnalysis(
         path: file.path,
         extension: file.extension,
         language: file.language,
+        status: AnalysisStatus.PROCESSING,
         content,
       });
 
