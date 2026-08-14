@@ -1,9 +1,10 @@
+import mongoose from "mongoose";
 import type {
   RepositoryAnalysisDto,
 } from "../dtos/repository-analysis.dto.js";
 
 export interface AnalysisInput {
-  analysisId: string;
+  analysisId: mongoose.Types.ObjectId;
 
   repository: {
     totalFiles: number;

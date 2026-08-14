@@ -35,14 +35,14 @@ const analysisReportSchema = new mongoose.Schema(
     },
 
     analysisId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
       unique: true,
       ref: "Analysis",
     },
 
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: true,
     },

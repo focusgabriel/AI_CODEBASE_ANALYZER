@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { CreateFileDto } from "../dtos/file.dto.js";
 import { FileModel } from "../models/file.model.js";
 
@@ -6,7 +7,7 @@ export async function createFiles(files: CreateFileDto[]) {
 }
 
 export async function getFilesByAnalysisId(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   console.log("🔎 GET FILES FOR ANALYSIS:", analysisId);
   const files = await FileModel.find({ analysisId });

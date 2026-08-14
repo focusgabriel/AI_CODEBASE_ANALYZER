@@ -8,8 +8,8 @@ import {
 } from "../repositories/analysis-report.repository.js";
 
 export async function saveAnalysisReport(
-  analysisId: string,
-  userId: string,
+  analysisId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId,
   report: LlmAnalysisDto,
 ) {
   const {
@@ -47,7 +47,7 @@ export async function saveAnalysisReport(
 }
 
 export async function getAllAnalysisReport(
-  userId: string
+  userId: mongoose.Types.ObjectId
 ) {
   return await getAnalysisReports(userId);
 }

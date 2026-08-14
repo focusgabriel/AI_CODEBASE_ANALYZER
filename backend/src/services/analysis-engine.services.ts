@@ -25,8 +25,8 @@ import { detectTechnologies } from "./technology-detection.services.js";
 import path from "node:path";
 
 export async function analyzeRepository(
-  analysisId: string,
-  userId: string,
+  analysisId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId,
 ) {
   console.log("🚨🚨 ANALYSIS REQUEST START", {
     analysisId,

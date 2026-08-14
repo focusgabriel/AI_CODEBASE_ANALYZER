@@ -4,9 +4,10 @@ import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { readFileContent } from "../utils/file-reader.js";
 import { SUPPORTED_LANGUAGES } from "../utils/supported-language.js";
 import { AnalysisStatus } from "../enum/analysis.dto.js";
+import mongoose from "mongoose";
 
 export async function prepareAnalysis(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   const files = await getFilesByAnalysisId(analysisId);
 

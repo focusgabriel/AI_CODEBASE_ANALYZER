@@ -1,5 +1,5 @@
 
-import mongoose, { mongo, Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import type {
   LlmAnalysisDto,
 } from "../dtos/llm-analysis.dto.js";
@@ -7,8 +7,8 @@ import { AnalysisReportModel } from "../models/analyis-report.model.js";
 import { AnalysisModel } from "../models/analysis.models.js";
 
 export async function createAnalysisReport(
-  analysisId: string,
-  userId: string,
+  analysisId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId,
   report: LlmAnalysisDto,
 ) {
 
@@ -41,7 +41,7 @@ export async function getAnalysisReport(
 }
 
 export async function getAnalysisReports(
-  userId: string
+  userId: mongoose.Types.ObjectId
 ) {
   const reports = await AnalysisReportModel.find({
     userId

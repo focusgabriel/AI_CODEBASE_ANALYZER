@@ -7,6 +7,7 @@ import {
 } from "../services/technology-aggregation.services.js";
 import { MetricDto } from "./metrics.dto.js";
 import { RepositoryStructure } from "../services/repository-structure.services.js";
+import mongoose from "mongoose";
 
 export interface PackageMetadataEntry {
   path: string;
@@ -19,7 +20,7 @@ export interface TechnologyProfileEntry {
 }
 
 export interface RepositoryAnalysisDto {
-  analysisId: string;
+  analysisId: mongoose.Types.ObjectId;
 
   totalFiles: number;
 

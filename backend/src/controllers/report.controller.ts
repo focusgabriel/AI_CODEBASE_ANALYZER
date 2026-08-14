@@ -52,6 +52,16 @@ export async function getAllReportsController(
       throw new AppError("User not Found", 404);
     } 
 
+    if (!mongoose.Types.ObjectId.isValid(user as string)) {
+      return next(
+        new AppError("Invalid analysis ID", 400),
+      );
+    }
+
+    const UserId = new mongoose.Types.ObjectId(
+      user as string
+    );
+
     // if (!mongoose.Types.ObjectId.isValid(user as string)) {
     //   return next(
     //     new AppError("Invalid analysis ID", 400),
@@ -59,7 +69,7 @@ export async function getAllReportsController(
     // }
     // const objectId = new mongoose.Types.ObjectId(user as string)
 
-    const reports = await getAllAnalysisReport(user);
+    const reports = await getAllAnalysisReport(UserId);
 
     return res.status(200).json({
       success: true,

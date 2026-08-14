@@ -1,9 +1,10 @@
 
+import mongoose from "mongoose";
 import { RepositoryAnalysisContextDto } from "../dtos/repository-analysis-context.services.js";
 import type { PrioritizedSourceFile } from "./source-prioritization.services.js";
 
 export interface LlmAnalysisInput {
-  analysisId: string;
+  analysisId: mongoose.Types.ObjectId;
 
   repository: {
     totalFiles: number;

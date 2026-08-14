@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { MetricDto } from "../dtos/metrics.dto.js";
 import { MetricsModel } from "../models/metrics.model.js";
 import {
@@ -5,7 +6,7 @@ import {
 } from "../repositories/metrics.repository.js";
 
 export async function saveMetrics(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
   metrics: MetricDto,
 ) {
   return await persistMetrics(

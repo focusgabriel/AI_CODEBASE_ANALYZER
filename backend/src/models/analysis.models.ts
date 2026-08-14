@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { AnalysisStatus, AnalysisSourceType } from "../enum/analysis.dto.js";
 
 interface AnalysisProps {
-  userId: string;
+  userId: mongoose.Types.ObjectId;
   name: string;
   status: string;
   sourceType: string;
@@ -17,7 +17,7 @@ interface AnalysisProps {
 export const analysisSchema = new mongoose.Schema<AnalysisProps>(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Users",
       required: true,
     },

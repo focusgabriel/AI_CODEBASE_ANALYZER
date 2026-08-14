@@ -1,7 +1,8 @@
+import mongoose from "mongoose";
 import { getMetricsByAnalysisId } from "../repositories/metrics.repository.js";
 
 export async function buildRepositorySummary(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   const metrics =
     await getMetricsByAnalysisId(analysisId);

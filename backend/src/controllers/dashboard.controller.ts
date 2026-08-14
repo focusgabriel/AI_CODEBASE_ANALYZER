@@ -5,6 +5,7 @@ import { getCurrentUser } from "../services/auth.services.js";
 import { Request, Response, NextFunction } from "express";
 import { getReportForUser } from "../services/report.services.js";
 import { getAllAnalysisReport } from "../services/analysis-report-persistence.services.js";
+import mongoose from "mongoose";
 
 
 export async function DashboardController(
@@ -21,13 +22,23 @@ export async function DashboardController(
       throw new AppError("UnAuthorized", 404);
     }
 
+
+    if (!mongoose.Types.ObjectId.isValid(user as string)) {
+      return next(
+        new AppError("Invalid analysis ID", 400),
+      );
+    }
+
+    const UserId = new mongoose.Types.ObjectId(
+      user as string
+    );
     const getAnalysis = await getAllAnalysisForUser(user);
 
     if(!getAnalysis) {
       throw new AppError("Analysis not Found", 404);
     }
 
-    const reports = await getAllAnalysisReport(user);
+    const reports = await getAllAnalysisReport(UserId);
 
     if(!reports) {
       throw new AppError("Reports not Found", 404);

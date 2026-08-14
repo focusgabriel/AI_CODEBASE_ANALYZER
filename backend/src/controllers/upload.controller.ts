@@ -34,8 +34,17 @@ export async function uploadRepositoryController(
     );
   }
 
+  if (!mongoose.Types.ObjectId.isValid(userId as string)) {
+    return next(
+      new AppError("Invalid analysis ID", 400),
+    );
+  }
+
   const objectId = new mongoose.Types.ObjectId(
     analysisId as string
+  );
+  const UserId = new mongoose.Types.ObjectId(
+    userId as string
   );
 
   const file = req.file;
@@ -123,8 +132,8 @@ export async function uploadRepositoryController(
 
     const analysisResult =
       await analyzeRepository(
-        objectId.toString(),
-        userId
+        objectId,
+        UserId
       );
 
     console.timeEnd("analysis");

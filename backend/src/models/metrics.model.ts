@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface MetricsDocument {
-  analysisId: string;
+  analysisId: mongoose.Types.ObjectId;
 
   imports: number;
   exports: number;
@@ -18,7 +18,7 @@ export interface MetricsDocument {
 const metricsSchema = new mongoose.Schema<MetricsDocument>(
   {
     analysisId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "Analysis",
       unique: true,

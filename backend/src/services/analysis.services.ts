@@ -9,6 +9,8 @@ import { createAnalysisRecord, findAnalysisForUser, findUserAnalysis } from "../
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
 import mongoose from "mongoose";
+import { AppError } from "../core/errors/AppError.js";
+import { getMetricsByUser } from "../repositories/metrics.repository.js";
 const analysisId = randomUUID();
 
 export async function createAnalysis(
@@ -52,4 +54,25 @@ export async function getAllAnalysisForUser(
   userId:string
 ) {
   return await findUserAnalysis(userId);
+}
+
+export async function getAllMetricsForUser(
+  userId:string
+) {
+  const Metrics = await findUserAnalysis(userId);
+
+  if(!Metrics) {
+    throw new AppError("No Metrics Found", 404);
+  }
+
+  let metric;
+  for(metric of Metrics){
+
+    return metric._id;
+
+  }
+
+  const getMetrics = await getMetricsByUser(metric!);
+
+  return getMetrics;
 }
