@@ -270,6 +270,7 @@ export async function analyzeRepository(
   const llmProvider =
     new GeminiProvider();
 
+  console.log("=============== Generating Report ================")
   const llmResult =
     await analyzeWithLlm(
       llmInput,

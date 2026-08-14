@@ -47,7 +47,7 @@ Evaluate credentials/secrets, authentication/authorization,
 input validation, dependency risks, unsafe patterns, and other
 security concerns.
 
-Return only numeric scores between 0 and 10.
+Rate the project on a scale of 0 to 100. return only numeric value
 
 Do NOT calculate an overall score.
 The backend will calculate the overall score.
