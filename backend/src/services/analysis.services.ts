@@ -18,7 +18,7 @@ export async function createAnalysis(
 ): Promise<CreateAnalysisResponseDto> {
   const dto: CreateAnalysisDto = {
     userId: request.userId,
-    name: request.name,
+    // name: request.name,
     status: AnalysisStatus.PENDING,
     sourceType: AnalysisSourceType.ZIP,
     sourceLocation: `/storage${analysisId}/source`,
