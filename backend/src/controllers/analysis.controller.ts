@@ -8,12 +8,12 @@ export const createAnalysisController = async (
   next: NextFunction,
 ) => {
   try {
-    const { name } = req.body;
+    // const { name } = req.body;
     const userId = req.user!.id;
 
     const analysis = await createAnalysis({
       userId,
-      name,
+      // name,
     });
 
     return res.status(201).json({
@@ -40,7 +40,6 @@ export const getUserAnalysisController = async (
     }
 
     const analysis = await getAnalysisForUser(analysisId as string, userId as string);
-
     if (!analysis) {
       return next(
         new AppError("Analysis not found", 404),
