@@ -7,6 +7,7 @@ import analysisRoutes from "./routes/analysis.routes.js";
 import reportRoutes from "./routes/report.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import metricsRoutes from "./routes/metrics.routes.js";
+import fileRoutes from "./routes/file.routes.js";
 import cookieParser from "cookie-parser";
 import dashboardRoutes from "./routes/dashboard.routes.js"
 
@@ -31,6 +32,7 @@ app.use("/api/v1/reports", reportRoutes);
 app.use("/api/v1", authRoutes);
 app.use("/api/v1/metrics", metricsRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/files", fileRoutes);
 // app.use("/api/v1/analyses/:upload", uploadRoutes)
 app.use(errorHandler);
 
