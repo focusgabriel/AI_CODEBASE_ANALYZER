@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { AppError } from "../core/errors/AppError.js";
 import { extractZip } from "../utils/unzip.js";
-import { createUpload } from "../services/upload.services.js";
+import { createUpload, getUploadRecordByAnalysisId } from "../services/upload.services.js";
 import { scanDirectory } from "../utils/file-scanner.js";
 import { replaceAnalysisFiles } from "../services/file.services.js";
 import { detectLanguage } from "../utils/language-detector.js";
@@ -170,6 +170,7 @@ export async function uploadRepositoryController(
         "Repository analyzed successfully",
       analysis: analysisResult,
     });
+    
   } catch (error:any) {
     logger.error(
       "Repository analysis failed:",
@@ -205,4 +206,44 @@ export async function uploadRepositoryController(
 
     next(error);
   }
+}
+
+
+
+
+
+
+export async function getUploadRecordController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+
+  const { uploadId, analysisId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(uploadId as string)) {
+    return next(
+      new AppError("Invalid analysis ID", 400),
+    );
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(analysisId as string)) {
+    return next(
+      new AppError("Invalid analysis ID", 400),
+    );
+  }
+
+  const objectId = new mongoose.Types.ObjectId(
+    uploadId as string
+  );
+  const AnalysisId = new mongoose.Types.ObjectId(
+    analysisId as string
+  );
+
+  const uploadResult = await getUploadRecordByAnalysisId(objectId, AnalysisId);
+
+  return res.status(200).json({
+    success: true,
+    uploadResult
+  })
 }

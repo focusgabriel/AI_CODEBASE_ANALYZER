@@ -1,13 +1,13 @@
 import { Router } from "express";
 
 import { createAnalysisController } from "../controllers/analysis.controller.js";
-import { uploadRepositoryController } from "../controllers/upload.controller.js";
+import { getUploadRecordController, uploadRepositoryController } from "../controllers/upload.controller.js";
 import { upload } from "../config/multer.js";
 import { authMiddleware } from "../core/middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/", authMiddleware, createAnalysisController);
+// router.post("/", authMiddleware, createAnalysisController);
 
 router.post(
   "/:analysisId/upload",
@@ -15,5 +15,7 @@ router.post(
   authMiddleware,
   uploadRepositoryController,
 );
+
+router.get("/:uploadId/:analysisId", authMiddleware, getUploadRecordController);
 
 export default router;
