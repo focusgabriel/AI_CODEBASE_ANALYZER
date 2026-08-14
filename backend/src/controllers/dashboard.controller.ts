@@ -6,6 +6,7 @@ import { Request, Response, NextFunction } from "express";
 import { getReportForUser } from "../services/report.services.js";
 import { getAllAnalysisReport } from "../services/analysis-report-persistence.services.js";
 import mongoose from "mongoose";
+import { gettingMetricsByUser } from "../services/metrics.services.js";
 
 
 export async function DashboardController(
@@ -38,11 +39,16 @@ export async function DashboardController(
       throw new AppError("Analysis not Found", 404);
     }
 
+    // Getting All Report for the authenticated User
     const reports = await getAllAnalysisReport(UserId);
 
     if(!reports) {
       throw new AppError("Reports not Found", 404);
     }
+
+
+    // Get All Metrics By the Authenticated User
+    const metrics = await gettingMetricsByUser(UserId);
 
     return res.status(200).json({
 
@@ -60,7 +66,10 @@ export async function DashboardController(
 
 
     // Getting All Report for the authenticated User
-    reports
+    reports,
+
+    // Get All Metrics By the Authenticated User
+    metrics
     
     })
   } catch (error) {

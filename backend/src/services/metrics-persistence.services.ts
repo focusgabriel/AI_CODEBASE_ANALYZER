@@ -16,7 +16,7 @@ export async function saveMetrics(
 }
 
 export async function getMetricsByAnalysisId(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   return MetricsModel.findOne({
     analysisId,

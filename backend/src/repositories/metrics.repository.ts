@@ -49,7 +49,7 @@ export async function getMetricsByAnalysisId(
 }
 
 export async function getMetricsByUserId(
-  userId: string,
+  userId: mongoose.Types.ObjectId,
 ) {
   return await MetricsModel.aggregate([
     {
@@ -67,8 +67,7 @@ export async function getMetricsByUserId(
 
     {
       $match: {
-        "analysis.userId":
-          new mongoose.Types.ObjectId(userId),
+        "analysis.userId": userId,
       },
     },
 

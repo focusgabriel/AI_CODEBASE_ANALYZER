@@ -2,6 +2,7 @@ import traverseModule from "@babel/traverse";
 import { MetricDto } from "../dtos/metrics.dto.js";
 import { getMetricsByAnalysisId } from "./metrics-persistence.services.js";
 import { getMetricsByUserId } from "../repositories/metrics.repository.js";
+import mongoose from "mongoose";
 
 const traverse =
   (traverseModule as any).default ?? traverseModule;
@@ -118,7 +119,7 @@ export function extractLineMetrics(
 
 
 export async function gettingMetricsByAnalysis(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   return await getMetricsByAnalysisId(
     analysisId,
@@ -126,7 +127,7 @@ export async function gettingMetricsByAnalysis(
 }
 
 export async function gettingMetricsByUser(
-  userId: string,
+  userId: mongoose.Types.ObjectId,
 ) {
   return await getMetricsByUserId(
     userId,

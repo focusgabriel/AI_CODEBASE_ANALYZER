@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
 import { gettingMetricsByAnalysis, gettingMetricsByUser } from "../services/metrics.services.js";
 import { getAllMetricsForUser } from "../services/analysis.services.js";
+import mongoose, { mongo } from "mongoose";
 
 export async function getMetricsByAnalysisController(
   req:Request,
@@ -15,7 +16,9 @@ export async function getMetricsByAnalysisController(
     throw new AppError("UserId and AnalysisId are required", 400);
   } 
 
-  const response = await gettingMetricsByAnalysis(analysisId as string);
+  const objectId = new mongoose.Types.ObjectId(analysisId as string)
+
+  const response = await gettingMetricsByAnalysis(objectId);
 
   return res.status(200).json({
     success: true,
@@ -59,8 +62,18 @@ export async function getUserMetricsController(
       );
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userId as string)) {
+      return next(
+        new AppError("Invalid analysis ID", 400),
+      );
+    }
+
+    const user = new mongoose.Types.ObjectId(
+      userId as string
+    );
+
     const metrics =
-      await gettingMetricsByUser(userId);
+      await gettingMetricsByUser(user);
 
     return res.status(200).json({
       success: true,
