@@ -8,6 +8,7 @@ import { getAllAnalysisReport } from "../services/analysis-report-persistence.se
 import mongoose from "mongoose";
 import { gettingMetricsByUser } from "../services/metrics.services.js";
 import { gettingFilesByUser } from "../services/file.services.js";
+import { getAllUploads } from "../services/upload.services.js";
 
 
 export async function DashboardController(
@@ -54,13 +55,14 @@ export async function DashboardController(
     // Get All Files By the Authenticated User --> this file i don't think i would evevn want to add it up here, i just need the size and language.
     const files = await gettingFilesByUser(UserId);
 
+    const uploads = await getAllUploads(UserId);
+
     return res.status(200).json({
 
     success: true,
 
     // getting the current user Endpoint.
     authUser: {
-      id: currentUser._id.toString(),
       name: currentUser.name,
       email: currentUser.email,
     },
@@ -79,6 +81,14 @@ export async function DashboardController(
     File: {
       size: files.map((file) => file.size),
       language: files.map((file) => file.language)
+    },
+
+    // Get All Uploads By the AUthenticated User.
+    Uploads: {
+      originalFileName: uploads.map((upload) => upload.originalFileName),
+      analysisId: uploads.map((upload) => upload.analysisId),
+      uploadId: uploads.map((upload) => upload._id.toString()),
+      created_at: uploads.map((upload) => upload.createdAt),
     }
     })
   } catch (error) {

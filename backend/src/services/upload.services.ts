@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 import { UploadResponseDto } from "../dtos/upload.dto.js";
-import { createUploadRecord, getUploadRecord } from "../repositories/upload.repository.js";
+import { createUploadRecord, getUploadByUserId, getUploadRecord } from "../repositories/upload.repository.js";
 import { AppError } from "../core/errors/AppError.js";
 
 interface UploadRequest {
@@ -34,4 +34,17 @@ export async function getUploadRecordByAnalysisId(
   }
 
   return getUploadRecord(uploadId, analysisId)
+}
+
+
+
+
+
+
+export async function getAllUploads(
+  userId: mongoose.Types.ObjectId,
+) {
+  return await getUploadByUserId(
+    userId,
+  );
 }

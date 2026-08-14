@@ -4,7 +4,6 @@ import path from "node:path";
 
 import { AppError } from "../core/errors/AppError.js";
 import { extractZip } from "../utils/unzip.js";
-import { createUpload, getUploadRecordByAnalysisId } from "../services/upload.services.js";
 import { scanDirectory } from "../utils/file-scanner.js";
 import { replaceAnalysisFiles } from "../services/file.services.js";
 import { detectLanguage } from "../utils/language-detector.js";
@@ -13,6 +12,7 @@ import { cleanupRepositoryFiles } from "../services/cleanup.services.js";
 import { getAnalysisId, updateStatus } from "../services/analysis.services.js";
 import { logger } from "../core/logger/logger.js";
 import { AnalysisStatus } from "../enum/analysis.dto.js";
+import { createUpload, getAllUploads, getUploadRecordByAnalysisId } from "../services/upload.services.js";
 
 export async function uploadRepositoryController(
   req: Request,
@@ -246,4 +246,36 @@ export async function getUploadRecordController(
     success: true,
     uploadResult
   })
+}
+
+
+export async function getUploadByUserController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  
+  const user = req.user!.id;
+
+  if(!user){
+    throw new AppError("Can't find Upload Records", 404);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(user as string)) {
+    return next(
+      new AppError("Invalid analysis ID", 400),
+    );
+  }
+  
+  const UserId = new mongoose.Types.ObjectId(
+    user as string
+  );
+
+  const uploads = await getAllUploads(UserId);
+
+  return res.status(200).json({
+    success: true,
+    uploads
+  })
+
 }
