@@ -105,7 +105,7 @@ export async function uploadRepositoryController(
     console.time("save-files");
 
     await replaceAnalysisFiles(
-      objectId.toString(),
+      objectId,
       files.map((file) => ({
         analysisId: objectId,
         path: file.path,
@@ -114,7 +114,7 @@ export async function uploadRepositoryController(
           file.extension,
         ),
         size: file.size,
-        status: "PENDING",
+        status: AnalysisStatus.COMPLETED,
       })),
     );
 

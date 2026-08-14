@@ -7,6 +7,7 @@ import { getReportForUser } from "../services/report.services.js";
 import { getAllAnalysisReport } from "../services/analysis-report-persistence.services.js";
 import mongoose from "mongoose";
 import { gettingMetricsByUser } from "../services/metrics.services.js";
+import { gettingFilesByUser } from "../services/file.services.js";
 
 
 export async function DashboardController(
@@ -50,6 +51,9 @@ export async function DashboardController(
     // Get All Metrics By the Authenticated User
     const metrics = await gettingMetricsByUser(UserId);
 
+    // Get All Files By the Authenticated User --> this file i don't think i would evevn want to add it up here, i just need the size and language.
+    const files = await gettingFilesByUser(UserId);
+
     return res.status(200).json({
 
     success: true,
@@ -69,8 +73,13 @@ export async function DashboardController(
     reports,
 
     // Get All Metrics By the Authenticated User
-    metrics
+    metrics,
     
+    // Get All Files By the AUthenticated User.
+    File: {
+      size: files.map((file) => file.size),
+      language: files.map((file) => file.language)
+    }
     })
   } catch (error) {
     next(error);

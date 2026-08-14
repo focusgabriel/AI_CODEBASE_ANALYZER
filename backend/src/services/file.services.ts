@@ -1,7 +1,10 @@
+import mongoose from "mongoose";
 import { CreateFileDto } from "../dtos/file.dto.js";
 import {
   createFiles,
   deleteFilesByAnalysisId,
+  getFilesByAnalysisId,
+  getFilesByUserId,
 } from "../repositories/file.repository.js";
 
 // export async function replaceAnalysisFiles(
@@ -16,7 +19,7 @@ import {
 
 
 export async function replaceAnalysisFiles(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
   files: CreateFileDto[],
 ) {
   const deleted = await deleteFilesByAnalysisId(
@@ -30,4 +33,22 @@ export async function replaceAnalysisFiles(
   console.log("📁 NEW FILE RECORDS CREATED:", created.length);
 
   return created;
+}
+
+
+export async function gettingFilesByUser(
+  userId: mongoose.Types.ObjectId,
+) {
+  return await getFilesByUserId(
+    userId,
+  );
+}
+
+
+export async function gettingFilesByAnalysisId(
+  analysisId: mongoose.Types.ObjectId,
+) {
+  return await getFilesByAnalysisId(
+    analysisId,
+  );
 }

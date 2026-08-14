@@ -19,12 +19,64 @@ export async function getFilesByAnalysisId(
 
 
 export async function deleteFilesByAnalysisId(
-  analysisId: string,
+  analysisId: mongoose.Types.ObjectId,
 ) {
   return FileModel.deleteMany({ analysisId });
 }
 
+// export async function getFilesByAnalysisId(
+//   analysisId: mongoose.Types.ObjectId,
+// ) {
+//   return FileModel.findOne({analysisId});
+// }
 
+
+export async function getFilesByUserId(
+  userId: mongoose.Types.ObjectId,
+) {
+  return await FileModel.aggregate([
+    {
+      $lookup: {
+        from: "analyses",
+        localField: "analysisId",
+        foreignField: "_id",
+        as: "analysis",
+      },
+    },
+
+    {
+      $unwind: "$analysis",
+    },
+
+    {
+      $match: {
+        "analysis.userId": userId,
+      },
+    },
+
+    {
+      $project: {
+        _id: 1,
+        analysisId: 1,
+
+        path: 1,
+        extension: 1,
+        language: 1,
+        size: 1,
+        status: 1,
+
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ]);
+}
 
 
 // export async function getFilesByAnalysisId(

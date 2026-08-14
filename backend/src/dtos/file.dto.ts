@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { AnalysisStatus } from "../enum/analysis.dto.js";
 
 export interface CreateFileDto {
   analysisId: mongoose.Types.ObjectId;
@@ -6,6 +7,6 @@ export interface CreateFileDto {
   extension: string;
   language: string;
   size: number;
-  status: string;
+  status: AnalysisStatus;
 }
 
