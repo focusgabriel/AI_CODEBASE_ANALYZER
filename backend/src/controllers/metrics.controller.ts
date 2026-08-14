@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
-import { gettingMetricsByAnalysis } from "../services/metrics.services.js";
+import { gettingMetricsByAnalysis, gettingMetricsByUser } from "../services/metrics.services.js";
 import { getAllMetricsForUser } from "../services/analysis.services.js";
 
 export async function getMetricsByAnalysisController(
@@ -40,4 +40,33 @@ export async function getAllMetricsController(
     success: true,
     metrics
   })
+}
+
+
+
+export async function getUserMetricsController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      throw new AppError(
+        "Unauthorized",
+        401,
+      );
+    }
+
+    const metrics =
+      await gettingMetricsByUser(userId);
+
+    return res.status(200).json({
+      success: true,
+      metrics,
+    });
+  } catch (error) {
+    next(error);
+  }
 }
