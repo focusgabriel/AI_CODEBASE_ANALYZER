@@ -1,7 +1,7 @@
 /** @format */
 
 import { Route, Routes, useLocation } from "react-router-dom";
-import PublicRoute from "./constants/PublicRoutes";
+import PublicRoute from "./components/PublicRoutes";
 import LandingPage from "./pages/LandingPage";
 import Register from "./auth/register";
 import Login from "./auth/login";

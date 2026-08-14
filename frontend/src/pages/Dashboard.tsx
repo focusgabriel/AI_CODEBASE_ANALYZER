@@ -1,8 +1,19 @@
+import MainView from "../components/MainView"
+import SideView from "../components/SideView"
+
 const Dashboard = () => {
   return (
-    <div className="p-2">
-      <h1>Welcome, Back</h1>
-    </div>
+    <section className="p-2 flex justify-between">
+
+      <div className="w-[58%] mx-2">
+        <MainView />
+      </div>
+
+      <div className="w-[38%] mx-2">
+        <SideView />
+      </div>    
+
+    </section>
   )
 }
 
