@@ -8,20 +8,22 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
 
-const refreshClient = axios.create({
+const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  // baseURL: "http://localhost:5051/api/v1",
   withCredentials: true,
 });
 
 const tokenRefreshClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  // baseURL: "http://localhost:5051/api/v1",
   withCredentials: true,
 });
 
 // Endpoints that should never trigger a token refresh
 const AUTH_ENDPOINTS = ["/auth/login", "/auth/register"];
 
-refreshClient.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
@@ -48,7 +50,7 @@ refreshClient.interceptors.response.use(
           withCredentials: true,
         });
 
-        return refreshClient(originalRequest);
+        return api(originalRequest);
       } catch (refreshError) {
         const isAuthPage = PUBLIC_ROUTES.some(
           (route) =>
@@ -68,4 +70,4 @@ refreshClient.interceptors.response.use(
   },
 );
 
-export default refreshClient;
+export default api;

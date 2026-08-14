@@ -7,7 +7,7 @@ import { LoaderCircle, LogIn } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useAuth } from "../lib/useAuth";
-import refreshClient from "../api/fetch";
+import api from "../api/fetch";
 
 const Login = () => {
   const { checkAuth } = useAuth();
@@ -26,7 +26,7 @@ const Login = () => {
 
     try {
       setSignin(true);
-      await refreshClient.post("/auth/login", credentials);
+      await api.post("/auth/login", credentials);
 
       toast.success("Login successful!", {
         position: "top-right",

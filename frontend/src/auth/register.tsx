@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Loader } from "lucide-react";
-import refreshClient from "../api/fetch";
+import api from "../api/fetch";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Register = () => {
 
     try {
       setIsRegistering(true);
-      await refreshClient.post("/auth/register", newUser);
+      await api.post("/auth/register", newUser);
 
       toast.success("Registration successful! You can now sign in.", {
         position: "top-right",
