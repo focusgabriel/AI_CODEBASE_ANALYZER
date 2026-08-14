@@ -3,13 +3,13 @@ import { AnalysisStatus, AnalysisSourceType } from "../enum/analysis.dto.js";
 
 export interface CreateAnalysisRequestDto {
   userId: string;
-  name: string;
+  // name: string;
 }
 
 export interface CreateAnalysisDto {
   userId: string;
 
-  name: string;
+  // name: string;
 
   status: AnalysisStatus;
 
