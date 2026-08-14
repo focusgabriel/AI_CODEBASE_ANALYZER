@@ -25,7 +25,7 @@ export const analysisSchema = new mongoose.Schema<AnalysisProps>(
     name: {
       type: String,
       trim: true,
-      required: true,
+      // required: true,
     },
 
     status: {

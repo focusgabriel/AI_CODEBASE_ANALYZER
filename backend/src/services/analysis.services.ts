@@ -5,7 +5,7 @@ import {
   CreateAnalysisResponseDto,
 } from "../dtos/analysis.dto.js";
 import { AnalysisSourceType, AnalysisStatus } from "../enum/analysis.dto.js";
-import { createAnalysisRecord, findAnalysisForUser, findUserAnalysis } from "../repositories/analysis.repository.js";
+import { createAnalysisRecord, findAnalysisById, findAnalysisForUser, findUserAnalysis } from "../repositories/analysis.repository.js";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
 import mongoose from "mongoose";
@@ -75,4 +75,19 @@ export async function getAllMetricsForUser(
   const getMetrics = await getMetricsByUser(metric!);
 
   return getMetrics;
+}
+
+
+
+export async function getAnalysisId(
+  analysisId: mongoose.Types.ObjectId,
+  repositoryName: string,
+  statusUpdate: string
+) {
+
+  return findAnalysisById(
+    analysisId,
+    repositoryName,
+    statusUpdate
+  )
 }

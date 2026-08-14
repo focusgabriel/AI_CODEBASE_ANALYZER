@@ -10,7 +10,7 @@ import { replaceAnalysisFiles } from "../services/file.services.js";
 import { detectLanguage } from "../utils/language-detector.js";
 import { analyzeRepository } from "../services/analysis-engine.services.js";
 import { cleanupRepositoryFiles } from "../services/cleanup.services.js";
-import { updateStatus } from "../services/analysis.services.js";
+import { getAnalysisId, updateStatus } from "../services/analysis.services.js";
 import { logger } from "../core/logger/logger.js";
 import { AnalysisStatus } from "../enum/analysis.dto.js";
 
@@ -99,6 +99,18 @@ export async function uploadRepositoryController(
       extractedPath,
     });
 
+
+    let repositoryName = path.basename(
+      file.originalname,
+      path.extname(file.originalname)
+    ).trim();
+
+    let removedZip = repositoryName.replace(/\.zip$/, "");
+    await getAnalysisId(
+      objectId,
+      removedZip,
+      AnalysisStatus.PROCESSING
+    )
     /*
      * 4. Persist discovered repository files
      */

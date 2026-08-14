@@ -11,10 +11,6 @@ export const createAnalysisController = async (
     const { name } = req.body;
     const userId = req.user!.id;
 
-    if(name === "") {
-      throw new AppError("Name is required", 401);
-    }
-
     const analysis = await createAnalysis({
       userId,
       name,
