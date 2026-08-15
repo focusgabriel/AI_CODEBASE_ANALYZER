@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import refreshClient from "../api/fetch";
+import api from "../api/fetch";
 import { AuthContext, type User } from "../lib/AuthContext";
 
 export function AuthProvider({
@@ -15,7 +15,7 @@ export function AuthProvider({
 
   const checkAuth = useCallback(async () => {
     try {
-      const { data } = await refreshClient.get("/auth/me");
+      const { data } = await api.get("/auth/me");
       setUser(data.user);
     } catch {
       setUser(null);
@@ -26,7 +26,7 @@ export function AuthProvider({
 
   const logout = useCallback(async () => {
     try {
-      await refreshClient.post("/auth/logout");
+      await api.post("/auth/logout");
     } catch {
       // Even if the server call fails, clear local state
     } finally {

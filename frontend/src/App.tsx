@@ -6,7 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import Register from "./auth/register";
 import Login from "./auth/login";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./components/Dashboard";
 import { Toaster } from "react-hot-toast";
 import { PUBLIC_ROUTES } from "./constants";
 import SideBar from "./components/SideBar";
