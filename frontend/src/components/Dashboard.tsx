@@ -10,6 +10,7 @@ import AnalysisField from "./AnalysisField";
 import OverallCodebaseScore from "./OverallCodebaseScore";
 import CodeScores from "./CodeScores";
 import ReportField from "./ReportField";
+import ScoreTrend from "./ScoreTrend";
 
 const Dashboard = () => {
   // const { id } = useParams();
@@ -44,8 +45,9 @@ const Dashboard = () => {
         <CodeScores />
       </div>
 
-      <div className="flex justify-between items-center gap-4 border mt-6 border-amber-300">
+      <div className="flex justify-between gap-4 border mt-6 border-amber-300">
         <ReportField />
+        <ScoreTrend />
       </div>
       
     </section>
