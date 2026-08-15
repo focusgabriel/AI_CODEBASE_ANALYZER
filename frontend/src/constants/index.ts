@@ -38,3 +38,10 @@ export const PUBLIC_ROUTES = [
   // "/verify-email",
   // "/reset-password",
 ];
+
+export const Mock = [
+  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
+  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
+  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
+  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
+]
