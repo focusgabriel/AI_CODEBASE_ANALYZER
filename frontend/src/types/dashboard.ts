@@ -1,5 +1,3 @@
-import type { AnalysisProps, MetricsProps, ReportsProps } from "../constants/dashboard";
-
 export interface UserProps {
   name: string,
   email: string,
