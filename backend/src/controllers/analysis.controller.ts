@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createAnalysis, getAllAnalysisForUser, getAnalysisForUser } from "../services/analysis.services.js";
+import { createAnalysis, getAllAnalysisForUser, getAnalysisForUser, getScoreTrend } from "../services/analysis.services.js";
 import { AppError } from "../core/errors/AppError.js";
 
 export const createAnalysisController = async (
@@ -82,4 +82,27 @@ export async function getAllAnalysisForUserController(
     success: true,
     getAnalysis
   })
+}
+
+
+
+
+export async function getScoreTrendController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const userId = req.user!.id;
+
+    const scoreTrend =
+      await getScoreTrend(userId);
+
+    return res.status(200).json({
+      success: true,
+      data: scoreTrend,
+    });
+  } catch (error) {
+    next(error);
+  }
 }
