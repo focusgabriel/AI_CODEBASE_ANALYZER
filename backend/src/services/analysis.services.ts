@@ -5,7 +5,7 @@ import {
   CreateAnalysisResponseDto,
 } from "../dtos/analysis.dto.js";
 import { AnalysisSourceType, AnalysisStatus } from "../enum/analysis.dto.js";
-import { createAnalysisRecord, findAnalysisById, findAnalysisForUser, findUserAnalysis } from "../repositories/analysis.repository.js";
+import { createAnalysisRecord, findAnalysisById, findAnalysisForUser, findUserAnalysis, getUserScoreTrend } from "../repositories/analysis.repository.js";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
 import mongoose from "mongoose";
@@ -90,4 +90,49 @@ export async function getAnalysisId(
     repositoryName,
     statusUpdate
   )
+}
+
+
+
+export async function getScoreTrend(
+  userId: string,
+) {
+
+  if(!userId){
+    throw new AppError("Unauthorized User", 401);
+  }
+  
+  const trend =
+    await getUserScoreTrend(userId);
+
+  const scores = trend
+    .map((item) => item?.score)
+    .filter((score): score is number => score !== undefined);
+
+  const highestScore =
+    scores.length > 0
+      ? Math.max(...scores)
+      : 0;
+
+  const lowestScore =
+    scores.length > 0
+      ? Math.min(...scores)
+      : 0;
+
+  const averageScore =
+    scores.length > 0
+      ? Math.round(
+          scores.reduce(
+            (total, score) => total + score,
+            0,
+          ) / scores.length,
+        )
+      : 0;
+
+  return {
+    trend,
+    highestScore,
+    lowestScore,
+    averageScore,
+  };
 }
