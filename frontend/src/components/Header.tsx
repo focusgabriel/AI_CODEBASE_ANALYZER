@@ -121,10 +121,11 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-30 mb-5 px-4 sm:px-6 lg:px-8 py-3 transition-all duration-300 ${
+        className={`sticky top-0 z-30 mb-5 borderBottom px-4 sm:px-6 lg:px-8 py-3 transition-all duration-300 ${
           scrolled
             ? "bg-white/80 shadow-[0_1px_3px_0_rgba(0,0,0,0.04),0_1px_2px_-1px_rgba(0,0,0,0.02)] backdrop-blur-xl"
             : "bg-transparent"
+            
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
