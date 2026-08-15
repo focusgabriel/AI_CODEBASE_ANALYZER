@@ -1,11 +1,17 @@
 import type { JSX } from "react/jsx-runtime";
 
+// interface injectScoreCard {
+//   score: number
+// }
+
 interface AnalysisProps {
   icon: string,
   alt: string,
   title: string,
   content: string,
-  score?: JSX.Element
+  // attribute: number,
+  // score?: React.ComponentType<injectScoreCard>
+  score?: string
 }
 
 export const AnalysisCard = ({icon, alt, title, content, score}: AnalysisProps) => {
@@ -21,7 +27,8 @@ export const AnalysisCard = ({icon, alt, title, content, score}: AnalysisProps) 
       </div>
 
       <div className=" flex justify-end items-center">
-        <p>{score}</p>
+        {/* <Content score={attribute} /> */}
+        {score}
       </div>
     </div>
   )
