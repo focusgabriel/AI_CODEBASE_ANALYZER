@@ -11,7 +11,7 @@ interface AnalysisProps {
   content: string,
   // attribute: number,
   // score?: React.ComponentType<injectScoreCard>
-  score?: string
+  score?: JSX.Element
 }
 
 export const AnalysisCard = ({icon, alt, title, content, score}: AnalysisProps) => {

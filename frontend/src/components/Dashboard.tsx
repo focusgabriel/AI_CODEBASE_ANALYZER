@@ -9,6 +9,7 @@ import ScoreCircle from "./Score";
 import AnalysisField from "./AnalysisField";
 import OverallCodebaseScore from "./OverallCodebaseScore";
 import CodeScores from "./CodeScores";
+import ReportField from "./ReportField";
 
 const Dashboard = () => {
   // const { id } = useParams();
@@ -29,7 +30,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <section className="px-2">
+    <section className="px-2 pb-8">
       
       <div className="flex justify-between w-full border-5 border-amber-50">
           <UploadRepository />
@@ -44,7 +45,7 @@ const Dashboard = () => {
       </div>
 
       <div className="flex justify-between items-center gap-4 border mt-6 border-amber-300">
-        
+        <ReportField />
       </div>
       
     </section>

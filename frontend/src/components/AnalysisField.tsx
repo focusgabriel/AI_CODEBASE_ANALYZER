@@ -9,7 +9,8 @@ const AnalysisField = () => {
         <p className="text-shadow-black font-semibold text-[14px]">Recent Analysis</p>
         <p className="text-gray-700 font-light text-[14px]">View All  </p>
       </div>
-      <AnalysisCard icon="/image/py.png" alt="python" title="E-Commerce" content="analyzed May 4" score={<ScoreCircle score={60}/>} />
+      <AnalysisCard icon="/image/py.png" alt="python" title="E-Commerce" content="analyzed May 4" score={<ScoreCircle score={50} /> }  /> 
+       
       
     </div>
   )

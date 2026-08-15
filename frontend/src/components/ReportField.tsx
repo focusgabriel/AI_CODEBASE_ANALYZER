@@ -2,9 +2,17 @@ import { AnalysisCard } from "./AnalysisCard"
 
 const ReportField = () => {
   return (
-    <div>
-      <AnalysisCard icon="/images/c++.png" alt="C++" title="Hardcoding Env Variables in your code" content="use .env for sensitive information"  />
-    </div>
+    <section className="border border-orange-500 w-full">
+      <div className="flex justify-between items-center borderBottom *:font-semibold *:text-[#848484] *:text-[14px]">
+        <p>Top Issues</p>
+        <p>Recommendations</p>
+        <p>Architecture</p>
+        <p>Security</p>
+        <p>Risks</p>
+        <p>Overview</p>
+      </div>
+    
+    </section>
   )
 }
 
