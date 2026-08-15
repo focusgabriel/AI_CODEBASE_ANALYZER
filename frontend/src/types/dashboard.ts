@@ -73,11 +73,16 @@ export interface Reports {
   }
 }
 
+export interface Score {
+  trend: string[],
+}
+
 export interface DashboardResponse {
   authUser: UserProps,
   getAnalysis: Analysis[],
   metrics: Metrics[],
   File: Files,
   Uploads: Uploads[],
-  reports: Reports[]
+  reports: Reports[],
+  trend: Score[]
 }
