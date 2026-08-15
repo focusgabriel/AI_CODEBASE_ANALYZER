@@ -1,6 +1,6 @@
 
 import { AppError } from "../core/errors/AppError.js";
-import { getAllAnalysisForUser, getAnalysisForUser } from "../services/analysis.services.js";
+import { getAllAnalysisForUser, getAnalysisForUser, getScoreTrend } from "../services/analysis.services.js";
 import { getCurrentUser } from "../services/auth.services.js";
 import { Request, Response, NextFunction } from "express";
 import { getReportForUser } from "../services/report.services.js";
@@ -57,6 +57,8 @@ export async function DashboardController(
 
     const uploads = await getAllUploads(UserId);
 
+    const scoreTrend = await getScoreTrend(UserId.toString());
+
     return res.status(200).json({
 
     success: true,
@@ -89,7 +91,11 @@ export async function DashboardController(
       analysisId: uploads.map((upload) => upload.analysisId),
       uploadId: uploads.map((upload) => upload._id.toString()),
       created_at: uploads.map((upload) => upload.createdAt),
-    }
+    },
+
+    // the overall score for each analysis
+    scoreTrend,
+
     })
   } catch (error) {
     next(error);
