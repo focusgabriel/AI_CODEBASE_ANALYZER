@@ -25,7 +25,7 @@ Analyze ONLY the evidence provided.
 Do not invent functionality, technologies,
 architecture, vulnerabilities, or problems.
 
-For each category, provide a score from 0 to 10.
+For each category, provide a score from 0 to 100.
 
 Scoring criteria:
 
