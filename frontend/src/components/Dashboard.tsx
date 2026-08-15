@@ -8,6 +8,7 @@ import HowItWorks from "./HowItWorks";
 import ScoreCircle from "./Score";
 import AnalysisField from "./AnalysisField";
 import OverallCodebaseScore from "./OverallCodebaseScore";
+import CodeScores from "./CodeScores";
 
 const Dashboard = () => {
   // const { id } = useParams();
@@ -37,8 +38,13 @@ const Dashboard = () => {
           {/* <ScoreCircle score={70} /> */}
       </div>
 
-      <div>
+      <div className="flex justify-between items-center gap-4 border mt-6 border-amber-300">
         <OverallCodebaseScore score={50} />
+        <CodeScores />
+      </div>
+
+      <div className="flex justify-between items-center gap-4 border mt-6 border-amber-300">
+        
       </div>
       
     </section>
