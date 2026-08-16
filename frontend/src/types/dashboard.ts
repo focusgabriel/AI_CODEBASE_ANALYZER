@@ -34,7 +34,7 @@ export interface Files {
   language: string[]
 }
 
-export interface Uploads {
+export interface uploadsFiles {
   originalFileName: string,
   analysisId: string,
   uploadId: string,
@@ -92,7 +92,7 @@ export interface DashboardResponse {
   getAnalysis: Analysis[],
   metrics: Metrics[],
   File: Files,
-  Uploads: Uploads[],
+  Uploads: uploadsFiles[],
   reports: Reports[],
   scoreTrend: ScoreTrend;
 }
