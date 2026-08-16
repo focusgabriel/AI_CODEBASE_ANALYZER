@@ -17,6 +17,9 @@ export async function findAnalysisForUser(
     _id: analysisId,
     userId,
   })
+  .sort({
+    createdAt: -1,
+  })
 }
 
 export async function findUserAnalysis(
@@ -24,6 +27,9 @@ export async function findUserAnalysis(
 ) {
   return AnalysisModel.find({
     userId
+  })
+  .sort({
+    createdAt: -1,
   })
 }
 
@@ -44,7 +50,10 @@ export async function findAnalysisById(
   {
     new: true,
   },
-);
+)
+.sort({
+  createdAt: -1,
+});
 }
 
 
