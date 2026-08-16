@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   FileArchive,
   FolderArchive,
-  Sparkles,
   UploadCloud,
 } from "lucide-react";
 import {
@@ -45,12 +44,13 @@ const UploadRepository = () => {
       await uploadRepository(analysisId, file);
       // if it succeeds then.
       // navigate(`/analysis/${analysisId}`);
-    } catch (uploadError: any) {
-      setError(
-        uploadError?.response?.data?.message ??
-          uploadError?.message ??
-          "Upload failed. Please try again.",
-      );
+    } catch (uploadError: unknown) {
+      const message =
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Upload failed. Please try again.";
+
+      setError(message);
     } finally {
       setIsUploading(false);
     }
@@ -69,32 +69,28 @@ const UploadRepository = () => {
   };
 
   return (
-    <section className="relative  overflow-hidden sm:px-6 lg:px-8 border border-amber-300">
-      
+    <section className="relative h-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-24 top-12 rounded-full " />
-        <div className="absolute -right-16 bottom-0 rounded-full " />
+        <div className="absolute -left-24 top-12 rounded-full" />
+        <div className="absolute -right-16 bottom-0 rounded-full" />
       </div>
 
-      <div className="relative max-w-lg">
-        <h1>Upload & Analyze Codebase</h1>
-        {/* <div className="mb-8 text-center">
-          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-200">
-            <FolderArchive size={27} strokeWidth={2.2} />
+      <div className="relative flex h-full flex-col">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-200">
+            <FolderArchive size={20} strokeWidth={2.2} />
           </div>
-          <p className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-700">
-            <Sparkles size={14} /> Repository analysis
-          </p>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Upload your codebase
-          </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500 sm:text-base">
-            Drop in a ZIP archive and we’ll map your project, surface insights,
-            and get your analysis ready.
-          </p>
-        </div> */}
+          <div className="min-w-0">
+            <h2 className="truncate text-[15px] font-bold tracking-tight text-slate-900">
+              Upload & Analyze Codebase
+            </h2>
+            <p className="text-[12px] text-slate-500">
+              Drop a ZIP and get AI-powered insights
+            </p>
+          </div>
+        </div>
 
-        <div className="rounded-[2rem] sm:p-6">
+        <div className="flex-1">
           <input
             ref={inputRef}
             className="sr-only"
@@ -107,7 +103,7 @@ const UploadRepository = () => {
 
           <div
             aria-describedby="upload-help"
-            className={`group relative flex min-h-80 cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border-2 w-[440px] border-dashed px-6 py-10 text-center transition-all duration-300 ${
+            className={`group relative flex min-h-80 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[1.5rem] border-2 border-dashed px-6 py-10 text-center transition-all duration-300 ${
               isDragging
                 ? "scale-[1.01] border-indigo-500 bg-indigo-50 shadow-inner shadow-indigo-100"
                 : "border-slate-200 bg-slate-50/70 hover:border-indigo-300 hover:bg-indigo-50/40"
@@ -169,7 +165,7 @@ const UploadRepository = () => {
                 <p className="mt-2 text-sm text-slate-500">
                   or click anywhere in this area to browse
                 </p>
-                <span className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition-transform group-hover:-translate-y-0.5">
+                <span className="mt-6 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition-transform group-hover:-translate-y-0.5">
                   <UploadCloud size={17} /> Choose ZIP file
                 </span>
                 <p
