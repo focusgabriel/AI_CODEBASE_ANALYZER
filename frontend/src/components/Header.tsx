@@ -137,9 +137,9 @@ const Header = () => {
 
             <div className="min-w-0">
               <h1 className="truncate text-base font-bold text-slate-900 sm:text-lg">
-                {pageInfo.title}
+                {pageInfo?.title}
               </h1>
-              <p className="hidden lg:inline text-[14px] text-slate-400 tracking-wide">{pageInfo.subtitle}</p>
+              <p className="hidden lg:inline text-[14px] text-slate-400 tracking-wide">{pageInfo?.subtitle}</p>
               <div className="hidden items-center gap-1.5 text-xs text-slate-400 sm:flex">
                 <CalendarDays size={12} strokeWidth={1.5} />
                 <span>{dateStr}</span>
@@ -153,7 +153,7 @@ const Header = () => {
           {/* ── Right: Actions ── */}
           <div className="flex items-center gap-1 sm:gap-2">
             <Link
-              to="/task"
+              to="upload"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-linear-to-br from-indigo-600 to-indigo-700 px-3.5 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all duration-200 hover:from-indigo-700 hover:to-indigo-800 hover:shadow-md hover:shadow-indigo-200 active:scale-[0.97]"
             >
               <Plus size={16} strokeWidth={2.5} />
@@ -162,7 +162,7 @@ const Header = () => {
 
             {/* Add Transaction — mobile FAB */}
             <Link
-              to="/task"
+              to="/upload"
               className="flex sm:hidden h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-indigo-600 to-indigo-700 text-white shadow-sm shadow-indigo-200 transition-all duration-200 active:scale-90"
             >
               <Plus size={18} strokeWidth={2.5} />
