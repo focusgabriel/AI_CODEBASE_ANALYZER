@@ -34,17 +34,40 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section className="w-full max-w-[320px] h-80 rounded-2xl border border-[#eeeef7] bg-white px-[30px] py-7">
-      <h2 className="mb-7 text-[17px] font-bold leading-tight text-[#17172a]">
-        How it works
-      </h2>
-
-      <div className="flex flex-col">
-        {steps.map((step, index) => (
-          <div
-            key={step.number}
-            className="relative flex min-h-[76px]"
+    <section className="flex h-auto w-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-5 flex items-center gap-2.5">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-600">
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
+            <path d="M12 2v4" />
+            <path d="M12 18v4" />
+            <path d="M4.93 4.93l2.83 2.83" />
+            <path d="M16.24 16.24l2.83 2.83" />
+            <path d="M2 12h4" />
+            <path d="M18 12h4" />
+            <path d="M4.93 19.07l2.83-2.83" />
+            <path d="M16.24 7.76l2.83-2.83" />
+          </svg>
+        </div>
+        <h2 className="text-[16px] font-bold leading-tight text-[#17172a]">
+          How it works
+        </h2>
+
+        
+      </div>
+
+      
+
+      <div className="flex flex-1 flex-col justify-between">
+        {steps.map((step, index) => (
+          <div key={step.number} className="relative flex min-h-[76px]">
             {/* Number */}
             <div
               className="
@@ -88,9 +111,13 @@ const HowItWorks = () => {
             )}
           </div>
         ))}
+
+        
       </div>
+       
+      
     </section>
   );
-}
+};
 
 export default HowItWorks;
