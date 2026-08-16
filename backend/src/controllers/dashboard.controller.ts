@@ -82,7 +82,8 @@ export async function DashboardController(
     // Get All Files By the AUthenticated User.
     File: {
       size: files.map((file) => file.size),
-      language: files.map((file) => file.language)
+      language: files.map((file) => file.language),
+      extension: files.map((file) => file.extension),
     },
 
     // Get All Uploads By the AUthenticated User.
