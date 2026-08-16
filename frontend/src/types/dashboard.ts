@@ -4,6 +4,7 @@ export interface UserProps {
 }
 
 export interface Analysis {
+  _id: string,
   userId: string,
   name: string,
   status: string,
@@ -73,8 +74,17 @@ export interface Reports {
   }
 }
 
-export interface Score {
-  trend: string[],
+export interface ScoreTrendItem {
+  analysisId: string;
+  score: number;
+  date: string;
+}
+
+export interface ScoreTrend {
+  trend: ScoreTrendItem[];
+  highestScore: number;
+  lowestScore: number;
+  averageScore: number;
 }
 
 export interface DashboardResponse {
@@ -84,5 +94,5 @@ export interface DashboardResponse {
   File: Files,
   Uploads: Uploads[],
   reports: Reports[],
-  trend: Score[]
+  scoreTrend: ScoreTrend;
 }
