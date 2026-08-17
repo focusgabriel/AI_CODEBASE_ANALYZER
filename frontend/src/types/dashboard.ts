@@ -53,7 +53,7 @@ export interface Reports {
   },
   codeQuality: {
     strengths: string[],
-    weakness: string[],
+    weaknesses: string[],
   } ,
   risks: string[],
   scores: {
