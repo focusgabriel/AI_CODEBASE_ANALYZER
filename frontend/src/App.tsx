@@ -115,7 +115,7 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AnalyticsPage
-                  getAnalysis={dashboardData?.getAnalysis}
+                  // getAnalysis={dashboardData?.getAnalysis}
                   scoreTrend={
                     dashboardData?.scoreTrend ?? {
                       trend: [],
