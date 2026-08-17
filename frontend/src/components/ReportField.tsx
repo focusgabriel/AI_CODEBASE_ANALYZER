@@ -1,10 +1,11 @@
 /** @format */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import {
   AlertTriangle,
-  ArrowBigRightDash,
+  ArrowRight,
   Inbox,
   Lightbulb,
   ShieldAlert,
@@ -99,7 +100,6 @@ const ReportField = ({ reports, getAnalysis }: ReportsData) => {
   // Single source of truth for the active tab, with a default so the UI
   // always has something on screen from the very first render.
   const [activeTab, setActiveTab] = useState<ReportTab>("topIssues");
-  const [showAll, setShowAll] = useState(false);
 
   const getName = new Map<string, string>(
     (getAnalysis ?? []).map(item => [item._id, item.name]),
@@ -123,10 +123,10 @@ const ReportField = ({ reports, getAnalysis }: ReportsData) => {
   };
 
   const hasReports = reportList.length > 0;
-  const visibleReports = showAll ? reportList : reportList.slice(0, 5);
+  const visibleReports = reportList.slice(0, 5);
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-orange-200 bg-white shadow-sm">
+    <section className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40">
       {/* —— Tabs —— */}
       <div className="flex flex-wrap items-center gap-1 border-b border-gray-100 p-2">
         {TAB_CONFIG.map(({ id, label, icon: Icon }) => {
@@ -171,7 +171,7 @@ const ReportField = ({ reports, getAnalysis }: ReportsData) => {
       {/* key={activeTab} remounts the list on every tab switch, replaying the
           fade-slide animation so the user gets clear visual confirmation the
           data changed. */}
-      <div className="min-h-[230px]">
+      <div className="min-h-[230px] flex-1">
         {!hasReports ? (
           <div className="flex flex-col items-center justify-center gap-3 px-6 py-12 text-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50">
@@ -207,19 +207,13 @@ const ReportField = ({ reports, getAnalysis }: ReportsData) => {
 
       {/* —— View all / Show less —— */}
       {hasReports && (
-        <button
-          type="button"
-          onClick={() => setShowAll(prev => !prev)}
-          className="flex w-full cursor-pointer items-center justify-center gap-1.5 bg-linear-to-r from-indigo-50 to-violet-50 px-4 py-3 text-[14px] font-semibold text-indigo-700 transition-all duration-200 hover:from-indigo-100 hover:to-violet-100 hover:text-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 active:bg-indigo-100"
+        <Link
+          to="/reports"
+          className="group flex w-full items-center justify-center gap-1.5 bg-linear-to-r from-indigo-50 to-violet-50 px-4 py-3 text-[14px] font-semibold text-indigo-700 transition-all duration-200 hover:from-indigo-100 hover:to-violet-100 hover:text-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
-          {showAll ? "Show Less" : "View All"} ({reportList.length}{" "}
-          {plural(reportList.length, "report")})
-          <ArrowBigRightDash
-            className={`h-4 w-4 transition-transform duration-300 ${
-              showAll ? "-rotate-90" : "rotate-90"
-            }`}
-          />
-        </button>
+          View all reports ({reportList.length} {plural(reportList.length, "report")})
+          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+        </Link>
       )}
     </section>
   );
