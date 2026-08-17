@@ -1,4 +1,4 @@
-import { BarChart3, FileText, LayoutDashboard, Lightbulb, Settings } from "lucide-react";
+import { BarChart3, BookCheck, FileText, LayoutDashboard, Lightbulb, Settings } from "lucide-react";
 
 export const process = [
   {title:"Upload ZIP"},
@@ -18,7 +18,7 @@ export const navItems = [
   { name: "Overview", icon: LayoutDashboard, href:"/overview"},
   { name: "Reports", icon: FileText, href:"/reports" },
   { name: "Analytics", icon: BarChart3, href:"/analytics" },
-  { name: "Insights", icon: Lightbulb, href:"#"  },
+  { name: "Metrics", icon: BookCheck, href:"/metrics"  },
   { name: "Settings", icon: Settings , href:"#" },
 ];
 
@@ -38,10 +38,3 @@ export const PUBLIC_ROUTES = [
   // "/verify-email",
   // "/reset-password",
 ];
-
-export const Mock = [
-  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
-  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
-  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
-  {repository: "AI_Codebase_Analyzer", language: "Typescript", analysisDate: "Aug 15 2026", status: "COMPLETED", score: "80/100" },
-]
