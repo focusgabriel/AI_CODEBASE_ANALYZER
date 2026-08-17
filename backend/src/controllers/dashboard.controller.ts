@@ -1,6 +1,6 @@
 
 import { AppError } from "../core/errors/AppError.js";
-import { getAllAnalysisForUser, getAnalysisForUser, getScoreTrend } from "../services/analysis.services.js";
+import { getAllAnalysisForUser, getAnalysisCount, getAnalysisForUser, getScoreTrend, getUserIdByAnalysis } from "../services/analysis.services.js";
 import { getCurrentUser } from "../services/auth.services.js";
 import { Request, Response, NextFunction } from "express";
 import { getReportForUser } from "../services/report.services.js";
@@ -20,7 +20,6 @@ export async function DashboardController(
     const user = req.user!.id
     const currentUser = await getCurrentUser(user);
 
-
     if(!user) {
       throw new AppError("UnAuthorized", 404);
     }
@@ -35,7 +34,8 @@ export async function DashboardController(
     const UserId = new mongoose.Types.ObjectId(
       user as string
     );
-    const getAnalysis = await getAllAnalysisForUser(user);
+
+    const getAnalysis = await getUserIdByAnalysis(user)
 
     if(!getAnalysis) {
       throw new AppError("Analysis not Found", 404);
@@ -55,6 +55,7 @@ export async function DashboardController(
     // Get All Files By the Authenticated User --> this file i don't think i would evevn want to add it up here, i just need the size and language.
     const files = await gettingFilesByUser(UserId);
 
+    // get all uploads by the authenticated user
     const uploads = await getAllUploads(UserId);
 
     const scoreTrend = await getScoreTrend(UserId.toString());
@@ -71,7 +72,6 @@ export async function DashboardController(
     
     // Getting All Analysis for the authenticated User only.
     getAnalysis,
-
 
     // Getting All Report for the authenticated User
     reports,
