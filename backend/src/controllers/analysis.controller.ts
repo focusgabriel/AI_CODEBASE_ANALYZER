@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createAnalysis, getAllAnalysisForUser, getAnalysisForUser, getScoreTrend } from "../services/analysis.services.js";
+import { createAnalysis, deleteAnalysis, getAllAnalysisForUser, getAnalysisForUser, getScoreTrend, renameAnalysis } from "../services/analysis.services.js";
 import { AppError } from "../core/errors/AppError.js";
 
 export const createAnalysisController = async (
@@ -82,6 +82,55 @@ export async function getAllAnalysisForUserController(
     success: true,
     getAnalysis
   })
+}
+
+export async function deleteAnalysisController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { analysisId } = req.params;
+    const userId = req.user!.id;
+
+    if (!analysisId) {
+      throw new AppError("Analysis ID is required", 400);
+    }
+
+    const deleted = await deleteAnalysis(analysisId as string, userId);
+
+    return res.status(200).json({
+      success: true,
+      data: deleted,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function renameAnalysisController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { analysisId } = req.params;
+    const userId = req.user!.id;
+    const { name } = req.body;
+
+    if (!analysisId) {
+      throw new AppError("Analysis ID is required", 400);
+    }
+
+    const updated = await renameAnalysis(analysisId as string, userId, name);
+
+    return res.status(200).json({
+      success: true,
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 
 
