@@ -14,9 +14,9 @@ interface CodeInfo {
   security?: string,
   performance?: string,
   goodPractice?: string,
-  testing?: string,
+  technologies?: string,
 }
-const CodeScores = ({codeQuality, security,maintainability }: CodeInfo) => {
+const CodeScores = ({codeQuality, security,maintainability,technologies }: CodeInfo) => {
   return (
     <section className="w-full">
       {/* Section title */}
@@ -64,8 +64,8 @@ const CodeScores = ({codeQuality, security,maintainability }: CodeInfo) => {
           />
           <ScoreCards
             icon={FlaskConical}
-            overview="Test Coverage"
-            score="60"
+            overview="Technologies"
+            score={technologies}
             color="#EC4899"
             lightColor="#FDF2F8"
           />
