@@ -1,7 +1,7 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { Code2 } from "lucide-react";
+import { Code2, Sparkles, TrendingUp } from "lucide-react";
 import type { DashboardResponse } from "../types/dashboard";
 import api from "../api/fetch";
 import UploadRepository from "../pages/Upload";
@@ -184,17 +184,35 @@ const Dashboard = () => {
       </div>
 
       {/* —— Reports + trend —— */}
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-5">
-        <div className="lg:col-span-3">
+      <section className="relative mt-6 overflow-hidden rounded-3xl border border-slate-200/80 bg-linear-to-br from-white via-white to-indigo-50/40 p-3 shadow-[0_16px_45px_-32px_rgba(15,23,42,0.28)] sm:p-5">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-indigo-100/50 blur-3xl" />
+        <div className="relative mb-4 flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-200">
+              <Sparkles className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">Analysis insights</h2>
+              <p className="mt-0.5 text-[12px] text-slate-500 sm:text-[13px]">Explore key findings alongside your codebase score history.</p>
+            </div>
+          </div>
+          <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-semibold text-indigo-700">
+            <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+            Live analysis overview
+          </div>
+        </div>
+        <div className="relative grid grid-cols-1 items-stretch gap-4 lg:grid-cols-5 lg:gap-5">
+        <div className="flex min-w-0 lg:col-span-3">
           <ReportField
             reports={dashboardData?.reports ?? []}
             getAnalysis={dashboardData?.getAnalysis ?? []}
           />
         </div>
-        <div className="lg:col-span-2">
+        <div className="flex min-w-0 lg:col-span-2">
           <ScoreTrend />
         </div>
-      </div>
+        </div>
+      </section>
     </section>
   );
 };
