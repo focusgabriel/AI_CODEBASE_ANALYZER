@@ -9,7 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Area,
 } from "recharts";
 import { getScoreTrend } from "../services/analysisScores.services";
 
@@ -88,7 +87,7 @@ export default function ScoreTrend() {
   );
 
   return (
-    <div className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="h-full w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/40 sm:p-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
