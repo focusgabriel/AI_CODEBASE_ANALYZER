@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   const reports = dashboardData?.reports ?? [];
 
-  const averageOf = (key: "codeQuality" | "security" | "architecture") => {
+  const averageOf = (key: "codeQuality" | "security" | "architecture" | "technologies") => {
     if (reports.length === 0) return 0;
 
     const total = reports.reduce((sum, item) => sum + item.scores[key], 0);
@@ -69,6 +69,7 @@ const Dashboard = () => {
   const codeQualityOverall = averageOf("codeQuality");
   const securityOverall = averageOf("security");
   const architectureOverall = averageOf("architecture");
+  const technologiesOverall = averageOf("technologies");
 
   const loc = dashboardData?.File.size.reduce(
     (value, sum) => value + sum,
@@ -178,6 +179,7 @@ const Dashboard = () => {
           codeQuality={codeQualityOverall.toFixed(1)}
           security={securityOverall.toFixed(1)}
           maintainability={architectureOverall.toFixed(1)}
+          technologies={technologiesOverall.toFixed(1)}
         />
       </div>
 
