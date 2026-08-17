@@ -4,7 +4,7 @@ import UploadRepository from "./Upload"
 const UploadPage = () => {
   return (
     <div className="max-w-[80%] mx-auto">
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <UploadRepository />
     </div>
   )

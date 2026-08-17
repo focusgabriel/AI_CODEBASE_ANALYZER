@@ -11,14 +11,12 @@ import { Toaster } from "react-hot-toast";
 import { PUBLIC_ROUTES } from "./constants";
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
-import ReportPage from "./pages/ReportPage";
-import Analytics from "./pages/AnalyticsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import api from "./api/fetch";
 import { useEffect, useState } from "react";
 import type { DashboardResponse } from "./types/dashboard";
-import UploadRepository from "./pages/Upload";
-import UploadPage from "./pages/uploadPage";
+import UploadPage from "./pages/UploadPage";
+import ReportPage from "./pages/ReportPage";
 
 const App = () => {
   const location = useLocation();
@@ -100,7 +98,7 @@ const App = () => {
             path="/reports"
             element={
               <ProtectedRoute>
-                <ReportPage />
+                <ReportPage reports={dashboardData?.reports} getAnalysis={dashboardData?.getAnalysis} />
               </ProtectedRoute>
             }
           />
