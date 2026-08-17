@@ -6,7 +6,7 @@ interface ReportsProps {
   content: string;
   issues?: JSX.Element | string;
   /** Visual accent applied to the icon, badge and hover ring. */
-  tone?: "indigo" | "red" | "amber" | "blue" | "green" | "violet";
+  tone?: "indigo" | "red" | "amber" | "blue" | "green" | "violet" | "orange" | "pink";
 }
 
 const TONE_STYLES: Record<
@@ -55,6 +55,20 @@ const TONE_STYLES: Record<
     groupHover: "hover:border-violet-200 hover:shadow-violet-100",
     bar: "bg-violet-400",
   },
+  orange: {
+    icon: "bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white",
+    badge:
+      "border-orange-200 bg-orange-50 text-orange-700 group-hover:border-orange-600 group-hover:bg-orange-600 group-hover:text-white",
+    groupHover: "hover:border-orange-200 hover:shadow-orange-100",
+    bar: "bg-orange-400",
+  },
+  pink: {
+    icon: "bg-pink-50 text-pink-600 group-hover:bg-pink-600 group-hover:text-white",
+    badge:
+      "border-pink-200 bg-pink-50 text-pink-700 group-hover:border-pink-600 group-hover:bg-pink-600 group-hover:text-white",
+    groupHover: "hover:border-pink-200 hover:shadow-pink-100",
+    bar: "bg-pink-400",
+  },
 };
 
 export const ReportsCard = ({
@@ -85,7 +99,7 @@ export const ReportsCard = ({
           <h2 className="max-w-[60%] truncate text-[13px] font-semibold text-gray-900">
             {title}
           </h2>
-          <p className="mt-0.5 line-clamp-2 w-[90%] text-[13px] leading-relaxed text-gray-500">
+          <p className="mt-0.5 w-[90%] text-[13px] leading-relaxed text-gray-500">
             {content}
           </p>
         </div>
