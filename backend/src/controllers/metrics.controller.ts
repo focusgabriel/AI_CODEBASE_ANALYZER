@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
-import { gettingMetricsByAnalysis, gettingMetricsByUser } from "../services/metrics.services.js";
-import { getAllMetricsForUser } from "../services/analysis.services.js";
+import { getAllMetricsForUser, gettingMetricsByAnalysis, gettingMetricsByUser } from "../services/metrics.services.js";
 import mongoose, { mongo } from "mongoose";
 
 export async function getMetricsByAnalysisController(
