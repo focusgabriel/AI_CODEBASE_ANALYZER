@@ -17,11 +17,11 @@ export async function getMetricsByAnalysisController(
 
   const objectId = new mongoose.Types.ObjectId(analysisId as string)
 
-  const response = await gettingMetricsByAnalysis(objectId);
+  const metrics = await gettingMetricsByAnalysis(objectId);
 
   return res.status(200).json({
     success: true,
-    response
+    metrics
   })
 }
 
