@@ -5,7 +5,7 @@ import {
   CreateAnalysisResponseDto,
 } from "../dtos/analysis.dto.js";
 import { AnalysisSourceType, AnalysisStatus } from "../enum/analysis.dto.js";
-import { createAnalysisRecord, findAnalysisById, findAnalysisForUser, findUserAnalysis, getUserScoreTrend } from "../repositories/analysis.repository.js";
+import { createAnalysisRecord, deleteAnalysisForUser, findAnalysisById, findAnalysisForUser, findUserAnalysis, getUserScoreTrend, updateAnalysisNameForUser } from "../repositories/analysis.repository.js";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
 import mongoose from "mongoose";
@@ -54,6 +54,41 @@ export async function getAllAnalysisForUser(
   userId:string
 ) {
   return await findUserAnalysis(userId);
+}
+
+export async function deleteAnalysis(
+  analysisId: string,
+  userId: string,
+) {
+  const deleted = await deleteAnalysisForUser(analysisId, userId);
+
+  if (!deleted) {
+    throw new AppError("Analysis not found", 404);
+  }
+
+  return deleted;
+}
+
+export async function renameAnalysis(
+  analysisId: string,
+  userId: string,
+  name: string,
+) {
+  if (!name || !name.trim()) {
+    throw new AppError("Analysis name is required", 400);
+  }
+
+  const updated = await updateAnalysisNameForUser(
+    analysisId,
+    userId,
+    name.trim(),
+  );
+
+  if (!updated) {
+    throw new AppError("Analysis not found", 404);
+  }
+
+  return updated;
 }
 
 export async function getAllMetricsForUser(
