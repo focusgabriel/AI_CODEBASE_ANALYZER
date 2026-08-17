@@ -123,7 +123,7 @@ const ReportField = ({ reports, getAnalysis }: ReportsData) => {
   };
 
   const hasReports = reportList.length > 0;
-  const visibleReports = reportList.slice(0, 5);
+  const visibleReports = reportList.slice(0, 3);
 
   return (
     <section className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/40">
