@@ -5,10 +5,10 @@ import {
   CreateAnalysisResponseDto,
 } from "../dtos/analysis.dto.js";
 import { AnalysisSourceType, AnalysisStatus } from "../enum/analysis.dto.js";
-import { createAnalysisRecord, deleteAnalysisForUser, findAnalysisById, findAnalysisForUser, findUserAnalysis, getUserScoreTrend, updateAnalysisNameForUser } from "../repositories/analysis.repository.js";
+import { AnalysisPaginationCount, createAnalysisRecord, deleteAnalysisForUser, findAnalysisById, findAnalysisForUser, findUserAnalysis, findUserAnalysisMetric, findUserIdByAnalysis, getUserScoreTrend, updateAnalysisNameForUser } from "../repositories/analysis.repository.js";
 import { getFilesByAnalysisId } from "../repositories/file.repository.js";
 import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
-import mongoose from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import { AppError } from "../core/errors/AppError.js";
 import { getMetricsByUser } from "../repositories/metrics.repository.js";
 const analysisId = randomUUID();
@@ -16,7 +16,7 @@ const analysisId = randomUUID();
 export async function createAnalysis(
   request: CreateAnalysisRequestDto,
 ): Promise<CreateAnalysisResponseDto> {
-  const dto: CreateAnalysisDto = {
+    const dto: CreateAnalysisDto = {
     userId: request.userId,
     // name: request.name,
     status: AnalysisStatus.PENDING,
@@ -33,6 +33,7 @@ export async function createAnalysis(
   };
 }
 
+//  updating the status of the analysis from Pending to Completed as so on. during the lifecycle of the analysis
 export async function updateStatus(
   analysisId: mongoose.Types.ObjectId, statusUpdate: AnalysisStatus, reportId?: string
 ) {
@@ -41,6 +42,7 @@ export async function updateStatus(
   return newResult
 }
 
+// to get analysis by the authenticated user and the analysisId meaning a particular analysis.
 export async function getAnalysisForUser(
   analysisId: string,
   userId: string,
@@ -51,9 +53,26 @@ export async function getAnalysisForUser(
 }
 
 export async function getAllAnalysisForUser(
-  userId:string
+  filter:any,
+  sortOption: Record<string, SortOrder>,
+  skip: number,
+  filterNumber: number,
 ) {
-  return await findUserAnalysis(userId);
+  return await findUserAnalysis(filter, sortOption, skip, filterNumber);
+}
+
+// getting the total pagination count.
+export async function getAnalysisCount(
+  filter: any
+) {
+  return await AnalysisPaginationCount(filter)
+}
+
+// getting the authenticated user id for the analysis userId field
+export async function getUserIdByAnalysis(
+  userId: string
+) {
+  return await findUserIdByAnalysis(userId)
 }
 
 export async function deleteAnalysis(
@@ -90,29 +109,6 @@ export async function renameAnalysis(
 
   return updated;
 }
-
-export async function getAllMetricsForUser(
-  userId:string
-) {
-  const Metrics = await findUserAnalysis(userId);
-
-  if(!Metrics) {
-    throw new AppError("No Metrics Found", 404);
-  }
-
-  let metric;
-  for(metric of Metrics){
-
-    return metric._id;
-
-  }
-
-  const getMetrics = await getMetricsByUser(metric!);
-
-  return getMetrics;
-}
-
-
 
 export async function getAnalysisId(
   analysisId: mongoose.Types.ObjectId,
