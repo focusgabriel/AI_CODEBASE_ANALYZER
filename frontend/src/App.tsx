@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import type { DashboardResponse } from "./types/dashboard";
 import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
+import Metrics from "./pages/MetricsPage";
+import AnalysisOverview from "./pages/AnalysisOverview";
+
 
 const App = () => {
   const location = useLocation();
@@ -41,7 +44,8 @@ const App = () => {
     void getDashboard();
   }, []);
 
-  const reports = dashboardData?.reports ?? [];
+
+  // const reports = dashboardData?.reports ?? [];
 
   return (
     <div
@@ -107,6 +111,22 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <UploadPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analyses/:analysisId"
+            element={
+              <ProtectedRoute>
+                <AnalysisOverview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/metrics"
+            element={
+              <ProtectedRoute>
+                <Metrics analyses={dashboardData?.getAnalysis} initialAnalysisId="6a7e84d5565febbea73ca69e" />
               </ProtectedRoute>
             }
           />
