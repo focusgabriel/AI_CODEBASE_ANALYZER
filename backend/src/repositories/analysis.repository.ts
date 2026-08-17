@@ -51,7 +51,7 @@ export async function findUserAnalysisMetric(
 export async function findUserIdByAnalysis(
   userId: string
 ) {
-  return AnalysisModel.find({userId})
+  return AnalysisModel.find({userId}).sort({createdAt: -1})
 }
 
 
