@@ -34,6 +34,37 @@ export async function findUserAnalysis(
 }
 
 
+export async function deleteAnalysisForUser(
+  analysisId: string,
+  userId: string,
+) {
+  return AnalysisModel.findOneAndDelete({
+    _id: analysisId,
+    userId,
+  });
+}
+
+export async function updateAnalysisNameForUser(
+  analysisId: string,
+  userId: string,
+  name: string,
+) {
+  return AnalysisModel.findOneAndUpdate(
+    {
+      _id: analysisId,
+      userId,
+    },
+    {
+      $set: {
+        name,
+      },
+    },
+    {
+      new: true,
+    },
+  );
+}
+
 export async function findAnalysisById(
   analysisId: mongoose.Types.ObjectId,
   repositoryName: string,
