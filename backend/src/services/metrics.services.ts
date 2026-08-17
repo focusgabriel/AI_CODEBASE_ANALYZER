@@ -1,8 +1,10 @@
 import traverseModule from "@babel/traverse";
 import { MetricDto } from "../dtos/metrics.dto.js";
 import { getMetricsByAnalysisId } from "./metrics-persistence.services.js";
-import { getMetricsByUserId } from "../repositories/metrics.repository.js";
+import { getMetricsByUser, getMetricsByUserId } from "../repositories/metrics.repository.js";
 import mongoose from "mongoose";
+import { findUserAnalysisMetric } from "../repositories/analysis.repository.js";
+import { AppError } from "../core/errors/AppError.js";
 
 const traverse =
   (traverseModule as any).default ?? traverseModule;
@@ -132,4 +134,26 @@ export async function gettingMetricsByUser(
   return await getMetricsByUserId(
     userId,
   );
+}
+
+// getting metrics of an authenticated user analyzed project
+export async function getAllMetricsForUser(
+  userId:string
+) {
+  const Metrics = await findUserAnalysisMetric(userId);
+
+  if(!Metrics) {
+    throw new AppError("No Metrics Found", 404);
+  }
+
+  let metric;
+  for(metric of Metrics){
+
+    return metric._id;
+
+  }
+
+  const getMetrics = await getMetricsByUser(metric!);
+
+  return getMetrics;
 }
