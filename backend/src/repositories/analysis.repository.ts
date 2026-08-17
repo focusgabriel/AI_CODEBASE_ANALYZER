@@ -1,6 +1,6 @@
 
 
-import mongoose from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import { CreateAnalysisDto } from "../dtos/analysis.dto.js";
 import { AnalysisModel } from "../models/analysis.models.js";
 import { AnalysisReportModel } from "../models/analyis-report.model.js";
@@ -23,14 +23,35 @@ export async function findAnalysisForUser(
 }
 
 export async function findUserAnalysis(
+  // userId: string,
+  filter: any,
+  sortOption: Record<string, SortOrder>,
+  skip: number,
+  limitNumber: number
+) {
+  return AnalysisModel
+    .find(filter)
+    .sort(sortOption)
+    .skip(skip)
+    .limit(limitNumber)
+}
+
+export async function AnalysisPaginationCount(
+  filter: any
+) {
+  return AnalysisModel.countDocuments(filter)
+}
+
+export async function findUserAnalysisMetric(
   userId: string
 ) {
-  return AnalysisModel.find({
-    userId
-  })
-  .sort({
-    createdAt: -1,
-  })
+  return AnalysisModel.find({userId})
+}
+
+export async function findUserIdByAnalysis(
+  userId: string
+) {
+  return AnalysisModel.find({userId})
 }
 
 
@@ -60,7 +81,7 @@ export async function updateAnalysisNameForUser(
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 }
@@ -79,7 +100,7 @@ export async function findAnalysisById(
     },
   },
   {
-    new: true,
+    returnDocument: "after",
   },
 )
 .sort({
