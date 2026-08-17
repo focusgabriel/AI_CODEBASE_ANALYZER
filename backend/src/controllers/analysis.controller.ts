@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createAnalysis, deleteAnalysis, getAllAnalysisForUser, getAnalysisForUser, getScoreTrend, renameAnalysis } from "../services/analysis.services.js";
+import { createAnalysis, deleteAnalysis, getAllAnalysisForUser, getAnalysisCount, getAnalysisForUser, getScoreTrend, renameAnalysis } from "../services/analysis.services.js";
 import { AppError } from "../core/errors/AppError.js";
 
 export const createAnalysisController = async (
@@ -9,7 +9,9 @@ export const createAnalysisController = async (
 ) => {
   try {
     // const { name } = req.body;
+
     const userId = req.user!.id;
+    
 
     const analysis = await createAnalysis({
       userId,
@@ -70,17 +72,81 @@ export async function getAllAnalysisForUserController(
   res:Response,
   next:NextFunction
 ) {
-  const user = req.user!.id
+  
+  const { page, limit, name, status, search, sort,order } = req.query;
+  // const user = req.user!.id
 
-  if(!user) {
+  const filter:any = {
+    userId: req.user!.id
+  }
+
+  if(!filter) {
     throw new AppError("UnAuthorized", 404);
   }
 
-  const getAnalysis = await getAllAnalysisForUser(user)
+  if(name) {
+    filter.name = name
+  }
+
+  if(status) {
+    filter.status = status
+  }
+
+  if(search) {
+    filter.$or = [
+      {
+        name: {
+          $regex: search,
+          $options: "i"
+        }
+      }, 
+
+      {
+        status: {
+          $regex: search,
+          $options: "i",
+        }
+      }
+    ]
+  };
+
+  const sortOption: Record<string, 1 | -1> = {
+    createdAt: -1
+  }
+
+  if(sort) {
+    sortOption[sort as string] = order === "asc" ? 1 : -1;
+  }
+
+  const requestedPage = Number(page);
+  const requestedLimit = Number(limit);
+  const limitNumber = Number.isFinite(requestedLimit)
+    ? Math.min(Math.max(Math.floor(requestedLimit), 1), 100)
+    : 10;
+  const total = await getAnalysisCount(filter);
+  const totalPages = Math.max(Math.ceil(total / limitNumber), 1);
+  const pageNumber = Number.isFinite(requestedPage)
+    ? Math.min(Math.max(Math.floor(requestedPage), 1), totalPages)
+    : 1;
+
+  const skip = (pageNumber - 1) * limitNumber;
+  
+  const getAnalysis = await getAllAnalysisForUser(
+    filter,
+    sortOption,
+    skip,
+    limitNumber
+  )
 
   return res.status(200).json({
     success: true,
-    getAnalysis
+    getAnalysis,
+    pagination: {
+      page: pageNumber,
+      limit: limitNumber,
+      total,
+      totalLimit: totalPages
+    }
   })
 }
 
