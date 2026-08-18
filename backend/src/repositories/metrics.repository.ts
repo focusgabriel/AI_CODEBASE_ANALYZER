@@ -1,6 +1,6 @@
 import { MetricsModel } from "../models/metrics.model.js";
 import { MetricDto } from "../dtos/metrics.dto.js";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 export async function saveMetrics(
   analysisId: mongoose.Types.ObjectId,
@@ -100,4 +100,15 @@ export async function getMetricsByUserId(
       },
     },
   ]);
+}
+
+
+export async function getMetricsByFileId(
+  analysisId: string,
+  // fileId: string,
+) {
+  return MetricsModel.find({
+    analysisId: new mongoose.Types.ObjectId(analysisId),
+    // fileId: new mongoose.Types.ObjectId(fileId),
+  }).lean();
 }

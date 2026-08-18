@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getMetricsByAnalysisController, getUserMetricsController } from "../controllers/metrics.controller.js";
+import { getCodebaseExplorerController, getMetricsByAnalysisController, getUserMetricsController } from "../controllers/metrics.controller.js";
 import { authMiddleware } from "../core/middlewares/authMiddleware.js";
 
 const router = Router();
@@ -11,4 +11,9 @@ router.get(
   getUserMetricsController,
 );
 
+router.get(
+  "/analyses/:analysisId/explorer",
+  authMiddleware,
+  getCodebaseExplorerController,
+);
 export default router;

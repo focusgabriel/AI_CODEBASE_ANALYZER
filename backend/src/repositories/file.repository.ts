@@ -92,3 +92,22 @@ export async function getFilesByUserId(
 
 //   return files;
 // }
+
+export async function getFileById(
+  analysisId: string,
+  fileId: string,
+) {
+  return FileModel.findOne({
+    _id: new mongoose.Types.ObjectId(fileId),
+    analysisId: new mongoose.Types.ObjectId(analysisId),
+  }).lean();
+}
+
+export async function analyzeSourceFile(
+  content: string,
+  fileName: string
+) {
+  return FileModel.findOne({
+    
+  })
+}

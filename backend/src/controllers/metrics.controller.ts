@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
 import { getAllMetricsForUser, gettingMetricsByAnalysis, gettingMetricsByUser } from "../services/metrics.services.js";
 import mongoose, { mongo } from "mongoose";
+import { getCodebaseExplorer } from "../services/codebase-services.services.js";
 
 export async function getMetricsByAnalysisController(
   req:Request,
@@ -80,5 +81,43 @@ export async function getUserMetricsController(
     });
   } catch (error) {
     next(error);
+  }
+}
+
+
+export async function getCodebaseExplorerController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const { analysisId } = req.params;
+
+    if (!analysisId) {
+      return res.status(400).json({
+        success: false,
+        message: "Analysis ID is required",
+      });
+    }
+
+    const files =
+      await getCodebaseExplorer(
+        analysisId as string,
+      );
+
+    return res.status(200).json({
+      success: true,
+      data: files,
+    });
+  } catch (error) {
+    console.error(
+      "Failed to retrieve codebase explorer:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to retrieve codebase explorer",
+    });
   }
 }
