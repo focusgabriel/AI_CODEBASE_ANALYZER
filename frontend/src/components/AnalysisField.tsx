@@ -62,7 +62,7 @@ const AnalysisField = ({ getAnalysis, scoreTrend }: AnalysisData) => {
         </button>
       </div>
 
-      <div className="flex-1 space-y-1 overflow-y-auto pr-1">
+      <div className="flex-1 space-y-1 py-4 overflow-y-auto pr-1">
         {reportData.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50">
