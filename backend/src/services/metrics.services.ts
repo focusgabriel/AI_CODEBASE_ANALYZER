@@ -157,3 +157,38 @@ export async function getAllMetricsForUser(
 
   return getMetrics;
 }
+
+
+
+
+
+
+
+
+
+import { parseFile } from "./parser.services.js";
+
+export function extractFileMetrics(
+  extension: string,
+  content: string,
+): MetricDto | null {
+  const ast = parseFile(
+    extension,
+    content,
+  );
+
+  if (!ast) {
+    return null;
+  }
+
+  const astMetrics =
+    extractMetrics(ast);
+
+  const lineMetrics =
+    extractLineMetrics(content);
+
+  return {
+    ...astMetrics,
+    ...lineMetrics,
+  };
+}
