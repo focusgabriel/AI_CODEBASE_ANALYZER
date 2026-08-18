@@ -3,6 +3,7 @@ import { CreateFileDto } from "../dtos/file.dto.js";
 import {
   createFiles,
   deleteFilesByAnalysisId,
+  getFileById,
   getFilesByAnalysisId,
   getFilesByUserId,
 } from "../repositories/file.repository.js";
@@ -50,5 +51,15 @@ export async function gettingFilesByAnalysisId(
 ) {
   return await getFilesByAnalysisId(
     analysisId,
+  );
+}
+
+export async function getAnalysisFile(
+  analysisId: string,
+  fileId: string,
+) {
+  return getFileById(
+    analysisId,
+    fileId,
   );
 }
