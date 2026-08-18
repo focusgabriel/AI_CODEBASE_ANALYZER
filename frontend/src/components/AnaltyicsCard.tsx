@@ -1,4 +1,5 @@
 import { FileArchive, Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { JSX } from "react/jsx-runtime";
 
 interface analytics {
@@ -8,6 +9,7 @@ interface analytics {
   score?: JSX.Element;
   onEdit?: () => void;
   onDelete?: () => void;
+  onClick?: string;
 }
 
 export const AnaltyicsCard = ({
@@ -17,10 +19,13 @@ export const AnaltyicsCard = ({
   score,
   onEdit,
   onDelete,
+  onClick,
 }: analytics) => {
   const isCompleted = status === "COMPLETED";
+  
 
   return (
+    <Link to={`/analyses/${onClick}`} >
     <div className="group w-full rounded-xl border border-transparent bg-white px-3 py-2.5 transition-all duration-200 hover:border-slate-100 hover:bg-slate-50/70">
       <div className="grid grid-cols-12 items-center gap-3">
         {/* Title column */}
@@ -80,5 +85,6 @@ export const AnaltyicsCard = ({
         </div>
       </div>
     </div>
+    </Link>
   );
 };
