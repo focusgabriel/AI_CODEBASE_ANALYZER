@@ -11,6 +11,7 @@ import OverallCodebaseScore from "./OverallCodebaseScore";
 import CodeScores from "./CodeScores";
 import ReportField from "./ReportField";
 import ScoreTrend from "./ScoreTrend";
+import { Link } from "react-router-dom";
 
 /** Counts up from 0 to target when the component mounts. */
 const useCountUp = (target: number, duration = 1200) => {
@@ -58,7 +59,9 @@ const Dashboard = () => {
 
   const reports = dashboardData?.reports ?? [];
 
-  const averageOf = (key: "codeQuality" | "security" | "architecture" | "technologies") => {
+  const averageOf = (
+    key: "codeQuality" | "security" | "architecture" | "technologies",
+  ) => {
     if (reports.length === 0) return 0;
 
     const total = reports.reduce((sum, item) => sum + item.scores[key], 0);
@@ -71,10 +74,8 @@ const Dashboard = () => {
   const architectureOverall = averageOf("architecture");
   const technologiesOverall = averageOf("technologies");
 
-  const loc = dashboardData?.File.size.reduce(
-    (value, sum) => value + sum,
-    0,
-  ) ?? 0;
+  const loc =
+    dashboardData?.File.size.reduce((value, sum) => value + sum, 0) ?? 0;
 
   const animatedLoc = useCountUp(loc);
 
@@ -192,8 +193,12 @@ const Dashboard = () => {
               <Sparkles className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">Analysis insights</h2>
-              <p className="mt-0.5 text-[12px] text-slate-500 sm:text-[13px]">Explore key findings alongside your codebase score history.</p>
+              <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
+                Analysis insights
+              </h2>
+              <p className="mt-0.5 text-[12px] text-slate-500 sm:text-[13px]">
+                Explore key findings alongside your codebase score history.
+              </p>
             </div>
           </div>
           <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-[11px] font-semibold text-indigo-700">
@@ -202,17 +207,20 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="relative grid grid-cols-1 items-stretch gap-4 lg:grid-cols-5 lg:gap-5">
-        <div className="flex min-w-0 lg:col-span-3">
-          <ReportField
-            reports={dashboardData?.reports ?? []}
-            getAnalysis={dashboardData?.getAnalysis ?? []}
-          />
-        </div>
-        <div className="flex min-w-0 lg:col-span-2">
-          <ScoreTrend />
-        </div>
+          <div className="flex min-w-0 lg:col-span-3">
+            <ReportField
+              reports={dashboardData?.reports ?? []}
+              getAnalysis={dashboardData?.getAnalysis ?? []}
+            />
+          </div>
+          <div className="flex min-w-0 lg:col-span-2">
+            <ScoreTrend />
+          </div>
         </div>
       </section>
+      <Link to={`/analyses/:analysisId/explorer`} className="...">
+        Explore Codebase
+      </Link>
     </section>
   );
 };
