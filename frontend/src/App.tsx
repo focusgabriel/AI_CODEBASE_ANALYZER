@@ -19,7 +19,7 @@ import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
 import Metrics from "./pages/MetricsPage";
 import AnalysisOverview from "./pages/AnalysisOverview";
-
+import CodebaseExplorer from "./components/CodebaseExplorer";
 
 const App = () => {
   const location = useLocation();
@@ -43,7 +43,6 @@ const App = () => {
 
     void getDashboard();
   }, []);
-
 
   // const reports = dashboardData?.reports ?? [];
 
@@ -102,7 +101,10 @@ const App = () => {
             path="/reports"
             element={
               <ProtectedRoute>
-                <ReportPage reports={dashboardData?.reports} getAnalysis={dashboardData?.getAnalysis} />
+                <ReportPage
+                  reports={dashboardData?.reports}
+                  getAnalysis={dashboardData?.getAnalysis}
+                />
               </ProtectedRoute>
             }
           />
@@ -123,10 +125,21 @@ const App = () => {
             }
           />
           <Route
+            path="/analyses/:analysisId/explorer"
+            element={
+              <ProtectedRoute>
+                <CodebaseExplorer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/metrics"
             element={
               <ProtectedRoute>
-                <Metrics analyses={dashboardData?.getAnalysis} initialAnalysisId="6a7e84d5565febbea73ca69e" />
+                <Metrics
+                  analyses={dashboardData?.getAnalysis}
+                  initialAnalysisId="6a7e84d5565febbea73ca69e"
+                />
               </ProtectedRoute>
             }
           />
@@ -144,7 +157,6 @@ const App = () => {
                       averageScore: 0,
                     }
                   }
-
                 />
               </ProtectedRoute>
             }
