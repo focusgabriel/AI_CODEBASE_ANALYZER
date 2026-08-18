@@ -81,30 +81,30 @@ export async function analyzeRepository(
       }
 
       const ast = parseFile(
-        file.extension,
-        file.content,
-      );
+  file.extension,
+  file.content,
+);
 
-      if (!ast) {
-        console.log("⚠️ NO AST:", file.path);
-        continue;
-      }
+if (!ast) {
+  console.log("⚠️ NO AST:", file.path);
+  continue;
+}
 
-      const astMetrics =
-        extractMetrics(ast);
+const astMetrics =
+  extractMetrics(ast);
 
-      const lineMetrics =
-        extractLineMetrics(file.content);
+const lineMetrics =
+  extractLineMetrics(file.content);
 
-      const metrics: MetricDto = {
-        ...astMetrics,
-        ...lineMetrics,
-      };
+const metrics: MetricDto = {
+  ...astMetrics,
+  ...lineMetrics,
+};
 
-      metricsByPath.set(
-        file.path,
-        metrics,
-      );
+metricsByPath.set(
+  file.path,
+  metrics,
+);
     } catch (error) {
       console.error(
         "❌ FAILED TO ANALYZE FILE:",
