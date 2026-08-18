@@ -18,6 +18,7 @@ import {
   deleteAnalysis,
   renameAnalysis,
 } from "../services/analysis.services";
+import api from "../api/fetch";
 
 interface AnalysisData {
   // getAnalysis: Analysis[];
@@ -431,6 +432,7 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
                     score={<ScoreCircle score={Number(score.toFixed(0))} />}
                     onEdit={() => handleEdit(item)}
                     onDelete={() => void handleDelete(item)}
+                    onClick = {item._id}
                   />
                 )}
               </div>
