@@ -81,9 +81,9 @@ export async function analyzeRepository(
       }
 
       const ast = parseFile(
-  file.extension,
-  file.content,
-);
+        file.extension,
+        file.content,
+      );
 
 if (!ast) {
   console.log("⚠️ NO AST:", file.path);
@@ -112,6 +112,7 @@ metricsByPath.set(
           path: file.path,
           extension: file.extension,
           language: file.language,
+          content: file.content,
           error,
         },
       );
