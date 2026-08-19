@@ -1,8 +1,17 @@
 import type { ChangeEvent } from "react";
+import { ChevronDown } from "lucide-react";
 
 export interface AnalysisOption {
   _id: string;
+  userId: string;
   name: string;
+  status: string;
+  sourceLocation: string;
+  reportId: string;
+  startedAt: Date;
+  completedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface AnalysisSelectorProps {
@@ -16,36 +25,38 @@ export default function AnalysisSelector({
   selectedAnalysisId,
   onChange,
 }: AnalysisSelectorProps) {
-  const handleChange = (
-    event: ChangeEvent<HTMLSelectElement>,
-  ) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     onChange(event.target.value);
   };
 
   return (
-    <div className="w-full max-w-sm">
+    <div className="w-full">
       <label
         htmlFor="analysis"
-        className="mb-2 block text-sm font-medium text-[#44445A]"
+        className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-slate-400"
       >
-        Analysis
+        Select Analysis
       </label>
 
-      <select
-        id="analysis"
-        value={selectedAnalysisId}
-        onChange={handleChange}
-        className="w-full rounded-xl border border-[#ECECF4] bg-white px-4 py-3 text-sm text-[#202033] outline-none transition focus:border-[#7C3AED] focus:ring-2 focus:ring-[#7C3AED]/10"
-      >
-        {analyses.map((analysis) => (
-          <option
-            key={analysis._id}
-            value={analysis._id}
-          >
-            {analysis.name || "Unnamed Analysis"}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          id="analysis"
+          value={selectedAnalysisId}
+          onChange={handleChange}
+          className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-10 text-sm font-medium text-white outline-none backdrop-blur-sm transition-all duration-200 hover:border-white/20 focus:border-indigo-400/60 focus:ring-2 focus:ring-indigo-400/20"
+        >
+          {analyses.map(analysis => (
+            <option
+              key={analysis._id}
+              value={analysis._id}
+              className="bg-slate-900 text-white"
+            >
+              {analysis.name || "Unnamed Analysis"}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      </div>
     </div>
   );
 }
