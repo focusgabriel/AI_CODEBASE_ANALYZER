@@ -20,6 +20,21 @@ const tokenRefreshClient = axios.create({
   withCredentials: true,
 });
 
+let refreshPromise: Promise<void> | null = null;
+
+function refreshAccessToken() {
+  if (!refreshPromise) {
+    refreshPromise = tokenRefreshClient
+      .post("/refresh", {}, { withCredentials: true })
+      .then(() => undefined)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+}
+
 // Endpoints that should never trigger a token refresh
 const AUTH_ENDPOINTS = ["/auth/login", "/auth/register"];
 
@@ -46,12 +61,18 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await tokenRefreshClient.post("/refresh", {}, {
-          withCredentials: true,
-        });
+        await refreshAccessToken();
 
         return api(originalRequest);
       } catch (refreshError) {
+        // Another tab may have rotated the shared HttpOnly cookies first. Retry
+        // once with the browser's latest cookies before ending the session.
+        try {
+          return await api(originalRequest);
+        } catch {
+          // The refresh token is genuinely unavailable, expired, or revoked.
+        }
+
         const isAuthPage = PUBLIC_ROUTES.some(
           (route) =>
             window.location.pathname === route ||
