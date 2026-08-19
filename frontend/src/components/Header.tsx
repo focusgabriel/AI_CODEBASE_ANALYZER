@@ -22,6 +22,7 @@ import Logo from "./Logo";
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   "/overview": { title: "Welcome back", subtitle: "Here's an overview of your codebase analyses" },
   "/reports": { title: "Reports", subtitle: "A Review of your Codebase" },
+  "/metrics": { title: "Metrics", subtitle: "Here's a metrics of your repositories" },
   "/analytics": {
     title: "Analytics",
     subtitle: "All your Analysis in one place",
