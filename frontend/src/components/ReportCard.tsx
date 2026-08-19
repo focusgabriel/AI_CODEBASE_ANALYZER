@@ -11,7 +11,7 @@ interface ReportsProps {
 
 const TONE_STYLES: Record<
   NonNullable<ReportsProps["tone"]>,
-  { icon: string; badge: string; groupHover: string; bar: string }
+  { icon: string; badge: string; groupHover: string; bar: string; glow: string }
 > = {
   indigo: {
     icon: "bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white",
@@ -19,6 +19,7 @@ const TONE_STYLES: Record<
       "border-indigo-200 bg-indigo-50 text-indigo-700 group-hover:border-indigo-600 group-hover:bg-indigo-600 group-hover:text-white",
     groupHover: "hover:border-indigo-200 hover:shadow-indigo-100",
     bar: "bg-indigo-400",
+    glow: "group-hover:shadow-indigo-200/50",
   },
   red: {
     icon: "bg-red-50 text-red-600 group-hover:bg-red-600 group-hover:text-white",
@@ -26,6 +27,7 @@ const TONE_STYLES: Record<
       "border-red-200 bg-red-50 text-red-700 group-hover:border-red-600 group-hover:bg-red-600 group-hover:text-white",
     groupHover: "hover:border-red-200 hover:shadow-red-100",
     bar: "bg-red-400",
+    glow: "group-hover:shadow-red-200/50",
   },
   amber: {
     icon: "bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white",
@@ -33,6 +35,7 @@ const TONE_STYLES: Record<
       "border-amber-200 bg-amber-50 text-amber-700 group-hover:border-amber-500 group-hover:bg-amber-500 group-hover:text-white",
     groupHover: "hover:border-amber-200 hover:shadow-amber-100",
     bar: "bg-amber-400",
+    glow: "group-hover:shadow-amber-200/50",
   },
   blue: {
     icon: "bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white",
@@ -40,6 +43,7 @@ const TONE_STYLES: Record<
       "border-blue-200 bg-blue-50 text-blue-700 group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white",
     groupHover: "hover:border-blue-200 hover:shadow-blue-100",
     bar: "bg-blue-400",
+    glow: "group-hover:shadow-blue-200/50",
   },
   green: {
     icon: "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white",
@@ -47,6 +51,7 @@ const TONE_STYLES: Record<
       "border-emerald-200 bg-emerald-50 text-emerald-700 group-hover:border-emerald-600 group-hover:bg-emerald-600 group-hover:text-white",
     groupHover: "hover:border-emerald-200 hover:shadow-emerald-100",
     bar: "bg-emerald-400",
+    glow: "group-hover:shadow-emerald-200/50",
   },
   violet: {
     icon: "bg-violet-50 text-violet-600 group-hover:bg-violet-600 group-hover:text-white",
@@ -54,6 +59,7 @@ const TONE_STYLES: Record<
       "border-violet-200 bg-violet-50 text-violet-700 group-hover:border-violet-600 group-hover:bg-violet-600 group-hover:text-white",
     groupHover: "hover:border-violet-200 hover:shadow-violet-100",
     bar: "bg-violet-400",
+    glow: "group-hover:shadow-violet-200/50",
   },
   orange: {
     icon: "bg-orange-50 text-orange-600 group-hover:bg-orange-600 group-hover:text-white",
@@ -61,6 +67,7 @@ const TONE_STYLES: Record<
       "border-orange-200 bg-orange-50 text-orange-700 group-hover:border-orange-600 group-hover:bg-orange-600 group-hover:text-white",
     groupHover: "hover:border-orange-200 hover:shadow-orange-100",
     bar: "bg-orange-400",
+    glow: "group-hover:shadow-orange-200/50",
   },
   pink: {
     icon: "bg-pink-50 text-pink-600 group-hover:bg-pink-600 group-hover:text-white",
@@ -68,6 +75,7 @@ const TONE_STYLES: Record<
       "border-pink-200 bg-pink-50 text-pink-700 group-hover:border-pink-600 group-hover:bg-pink-600 group-hover:text-white",
     groupHover: "hover:border-pink-200 hover:shadow-pink-100",
     bar: "bg-pink-400",
+    glow: "group-hover:shadow-pink-200/50",
   },
 };
 
@@ -81,18 +89,18 @@ export const ReportsCard = ({
 
   return (
     <section
-      className={`group relative flex items-center justify-between gap-3 overflow-hidden border border-transparent bg-white py-3 pl-5 pr-4 transition-all duration-200 hover:shadow-md ${styles.groupHover} hover:bg-gray-50/70`}
+      className={`group relative flex items-center justify-between gap-3 overflow-hidden border border-transparent bg-white px-5 py-4 transition-all duration-300 hover:shadow-lg ${styles.groupHover} ${styles.glow} hover:bg-gray-50/70`}
     >
       {/* Left accent bar */}
       <span
         className={`absolute inset-y-0 left-0 w-1 origin-bottom scale-y-0 transition-transform duration-300 group-hover:origin-top group-hover:scale-y-100 ${styles.bar}`}
       />
 
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3.5">
         <div
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 group-hover:scale-110 ${styles.icon}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${styles.icon}`}
         >
-          <FileWarning className="h-5 w-5 transition-transform duration-200 group-hover:rotate-6" />
+          <FileWarning className="h-5 w-5 transition-transform duration-300 group-hover:rotate-6" />
         </div>
 
         <div className="min-w-0">
@@ -106,7 +114,7 @@ export const ReportsCard = ({
       </div>
 
       <div
-        className={`flex shrink-0 items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold transition-all duration-200 group-hover:scale-105 ${styles.badge}`}
+        className={`flex shrink-0 items-center gap-1 rounded-full border px-3 py-1.5 text-[11px] font-bold transition-all duration-300 group-hover:scale-105 ${styles.badge}`}
       >
         {issues}
       </div>
