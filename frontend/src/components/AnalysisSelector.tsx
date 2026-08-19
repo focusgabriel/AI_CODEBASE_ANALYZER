@@ -43,7 +43,7 @@ export default function AnalysisSelector({
           id="analysis"
           value={selectedAnalysisId}
           onChange={handleChange}
-          className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-10 text-sm font-medium text-white outline-none backdrop-blur-sm transition-all duration-200 hover:border-white/20 focus:border-indigo-400/60 focus:ring-2 focus:ring-indigo-400/20"
+          className="w-full cursor-pointer appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 pr-10 text-sm font-medium text-black outline-none backdrop-blur-sm transition-all duration-200 hover:border-white/20 focus:border-indigo-400/60 focus:ring-2 focus:ring-indigo-400/20"
         >
           {analyses.map(analysis => (
             <option
