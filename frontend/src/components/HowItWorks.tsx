@@ -1,12 +1,10 @@
+/** @format */
+
 const steps = [
   {
     number: "1",
     title: "Upload your codebase",
-    description: (
-      <>
-        Upload a ZIP file of your project
-      </>
-    ),
+    description: <>Upload a ZIP file of your project</>,
   },
   {
     number: "2",
@@ -27,6 +25,17 @@ const steps = [
         Receive detailed reports and
         <br />
         actionable recommendations
+      </>
+    ),
+  },
+  {
+    number: "4",
+    title: "Clean up",
+    description: (
+      <>
+        Your files are automatically deleted from our servers,
+        <br />
+        ensuring complete privacy and security
       </>
     ),
   },
@@ -59,11 +68,7 @@ const HowItWorks = () => {
         <h2 className="text-[16px] font-bold leading-tight text-[#17172a]">
           How it works
         </h2>
-
-        
       </div>
-
-      
 
       <div className="flex flex-1 flex-col justify-between">
         {steps.map((step, index) => (
@@ -111,11 +116,7 @@ const HowItWorks = () => {
             )}
           </div>
         ))}
-
-        
       </div>
-       
-      
     </section>
   );
 };
