@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { UserDto } from "../dtos/auth.dto.js";
 import { authModel } from "../models/auth.models.js";
 
@@ -12,11 +11,23 @@ export async function LoginAccont(email:string) {
   })
 }
 
-export async function RefreshTokenCreation(userId: string, refreshToken: string){
-  return authModel.findOne({
-    _id: new mongoose.Types.ObjectId(userId),
-    refreshToken
-  })
+export async function rotateRefreshToken(
+  userId: string,
+  currentRefreshTokenHash: string,
+  nextRefreshTokenHash: string,
+) {
+  return authModel.findOneAndUpdate(
+    { _id: userId, refreshToken: currentRefreshTokenHash },
+    { $set: { refreshToken: nextRefreshTokenHash } },
+    { new: true },
+  );
+}
+
+export async function revokeRefreshToken(refreshTokenHash: string) {
+  return authModel.updateOne(
+    { refreshToken: refreshTokenHash },
+    { $set: { refreshToken: null } },
+  );
 }
 
 export async function getUser(userId:string){

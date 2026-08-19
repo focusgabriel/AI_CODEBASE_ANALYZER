@@ -1,17 +1,30 @@
 import {NextFunction, Request, Response} from "express";
-import jwt from "jsonwebtoken";
 import { AppError } from "../errors/AppError.js";
+import { verifyAccessToken } from "../../utils/jwt.js";
+
+function getAccessToken(req: Request): string | undefined {
+  if (req.cookies.accessToken) {
+    return req.cookies.accessToken;
+  }
+
+  const authorization = req.get("authorization");
+  if (!authorization?.startsWith("Bearer ")) {
+    return undefined;
+  }
+
+  return authorization.slice("Bearer ".length).trim() || undefined;
+}
 
 export const authMiddleware = (req:Request, res:Response, next:NextFunction) => {
-  const token = req.cookies.accessToken;
+  const token = getAccessToken(req);
 
   if (!token) {
     return next(new AppError("Unauthorized", 401));
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
-    if (typeof decoded === "string" || !("sub" in decoded)) {
+    const decoded = verifyAccessToken(token);
+    if (typeof decoded === "string" || typeof decoded.sub !== "string" || !decoded.sub) {
       return next(new AppError("Invalid Token", 401));
     }
     req.user = {

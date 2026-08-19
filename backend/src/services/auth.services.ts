@@ -1,7 +1,6 @@
 import { AppError } from "../core/errors/AppError.js";
-import { UserDto, UserDtoRespone } from "../dtos/auth.dto.js";
-import { getUser, LoginAccont, RefreshTokenCreation, RegisterAccount } from "../repositories/auth.repository.js";
-import bcrypt from "bcrypt";
+import { UserDtoRespone } from "../dtos/auth.dto.js";
+import { getUser, LoginAccont, RegisterAccount, revokeRefreshToken, rotateRefreshToken } from "../repositories/auth.repository.js";
 
 interface CreateUser {
   name: string,
@@ -9,10 +8,6 @@ interface CreateUser {
   password: string,
   // verificationToken: string,
   // verificationTokenExpires: Date
-}
-
-interface LoginUser{
-  email:string
 }
 
 export async function RegisterNewAccount(
@@ -43,15 +38,20 @@ export async function LoginToAccount(
 
 export async function RefreshTokenCreate(
   userId: string,
-  refreshToken: string
+  currentRefreshTokenHash: string,
+  nextRefreshTokenHash: string,
 ) {
-  const user = await RefreshTokenCreation(userId, refreshToken);
+  const user = await rotateRefreshToken(userId, currentRefreshTokenHash, nextRefreshTokenHash);
 
   if (!user) {
-    throw new AppError("User not found", 401);
+    throw new AppError("Invalid refresh token", 401);
   }
 
   return user;
+}
+
+export async function RevokeRefreshToken(refreshTokenHash: string) {
+  await revokeRefreshToken(refreshTokenHash);
 }
 
 export async function getCurrentUser(

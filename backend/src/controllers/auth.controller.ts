@@ -1,11 +1,22 @@
 import { NextFunction, Request, Response } from "express";
-import { getCurrentUser, LoginToAccount, RefreshTokenCreate, RegisterNewAccount } from "../services/auth.services.js";
-import crypto from "crypto"
+import { getCurrentUser, LoginToAccount, RefreshTokenCreate, RegisterNewAccount, RevokeRefreshToken } from "../services/auth.services.js";
+import crypto from "crypto";
 import bcrypt  from "bcrypt"
 // import { sendVerificationEmail } from "../utils/emailSender/verificationEmail.js";
 import { AppError } from "../core/errors/AppError.js";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
-import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN_MAX_AGE_MS, generateAccessToken, generateRefreshToken, REFRESH_TOKEN_MAX_AGE_MS, verifyRefreshToken } from "../utils/jwt.js";
+import { env } from "../core/config/env.js";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  path: "/",
+};
+
+function hashRefreshToken(token: string) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
 
 export async function RegisterAccountController(
   req: Request,
@@ -25,7 +36,7 @@ export async function RegisterAccountController(
 
     // const user = await RegisterNewAccount({name, email, password:hashedPassword, verificationToken:hashedToken, verificationTokenExpires:expireToken})
 
-    const user = await RegisterNewAccount({name, email, password:hashedPassword})
+    await RegisterNewAccount({name, email, password:hashedPassword})
 
     // const verificationUrl = `${process.env.CLIENT_URL}/verify-email/${verifiedToken}`;
 
@@ -59,8 +70,6 @@ export async function LoginAccountController(
 
     const user = await LoginToAccount(email);
 
-    console.log(user);
-
     if(!user){
       throw new AppError("Invalid Credentials", 401);
     }
@@ -74,27 +83,18 @@ export async function LoginAccountController(
 
     const accessToken = generateAccessToken( user._id.toString() );
     const refreshToken = generateRefreshToken( user._id.toString() );
-    user.refreshToken = refreshToken;
+    user.refreshToken = hashRefreshToken(refreshToken);
     await user.save();
-    
-    const cookieOptions = {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
-      path: "/",
-    };
-
 
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
-      // maxAge:  15 * 60 * 1000,
-      maxAge:  7 * 24 * 60 * 60 * 1000,
+      maxAge: ACCESS_TOKEN_MAX_AGE_MS,
     });
 
 
-    res.cookie("refreshToken", user.refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       ...cookieOptions,
-      maxAge:  7 * 24 * 60 * 60 * 1000,
+      maxAge: REFRESH_TOKEN_MAX_AGE_MS,
     });
 
     return res.status(200).json({
@@ -119,48 +119,36 @@ export async function RefreshTokenController(
     // const { refreshToken } = req.body;
     const refreshToken = req.cookies.refreshToken;
     if(!refreshToken){
-      throw new AppError("Refresh Token is required.", 400)
+      throw new AppError("Refresh token is required", 401);
     }
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET!
-    ) as { sub: string };
-
-    if(typeof decoded === "string" || !("sub" in decoded)){
-      throw new AppError("Invalid token", 400);
+    let decoded: ReturnType<typeof verifyRefreshToken>;
+    try {
+      decoded = verifyRefreshToken(refreshToken);
+    } catch {
+      throw new AppError("Invalid refresh token", 401);
     }
 
-    const user = await RefreshTokenCreate(decoded.sub, refreshToken);
-    if (!user) {
-      throw new AppError("Invalid refresh token", 400);
+    if(typeof decoded === "string" || typeof decoded.sub !== "string" || !decoded.sub){
+      throw new AppError("Invalid refresh token", 401);
     }
-    // Generate a new access token
+
+    const newRefreshToken = generateRefreshToken(decoded.sub);
+    const user = await RefreshTokenCreate(
+      decoded.sub,
+      hashRefreshToken(refreshToken),
+      hashRefreshToken(newRefreshToken),
+    );
     const accessToken = generateAccessToken(user._id.toString());
 
-    // Generate a new refresh token
-    const newRefreshToken = generateRefreshToken(user._id.toString());
-
-    user.refreshToken = newRefreshToken;
-
-    const cookieOptions = {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
-      path: "/",
-    };
-
-    await user.save();
-    // Return it
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
-      // maxAge:  15 * 60 * 1000,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: ACCESS_TOKEN_MAX_AGE_MS,
     });
 
 
     res.cookie("refreshToken", newRefreshToken, {
       ...cookieOptions,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: REFRESH_TOKEN_MAX_AGE_MS,
     });
 
     return res.status(200).json({
@@ -179,17 +167,16 @@ export async function LogoutAccountController(
   next: NextFunction
 ) {
   try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      await RevokeRefreshToken(hashRefreshToken(refreshToken));
+    }
+
     res.clearCookie("accessToken", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
-      path: "/",
+      ...cookieOptions,
     });
     res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax" as const,
-      path: "/",
+      ...cookieOptions,
     });
 
     return res.status(200).json({
