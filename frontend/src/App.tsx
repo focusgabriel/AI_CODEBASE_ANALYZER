@@ -164,7 +164,7 @@ const App = () => {
             }
           />
           <Route
-            path="/analytics"
+            path="/analyses"
             element={
               <ProtectedRoute>
                 <AnalyticsPage
