@@ -11,8 +11,8 @@ const router = Router();
 
 router.post(
   "/:analysisId/upload",
-  upload.single("repository"),
   authMiddleware,
+  upload.single("repository"),
   uploadRepositoryController,
 );
 

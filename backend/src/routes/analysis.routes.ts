@@ -22,8 +22,8 @@ router.post("/", authMiddleware, createAnalysisController);
 
 router.post(
   "/:analysisId/upload",
-  upload.single("repository"),
   authMiddleware,
+  upload.single("repository"),
   uploadRepositoryController,
 );
 router.get(
