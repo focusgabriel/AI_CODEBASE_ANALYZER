@@ -43,11 +43,14 @@ const Dashboard = () => {
   const [dashboardData, setDashboard] = useState<DashboardResponse | null>(
     null,
   );
+  const [analytics, setAnalytics] = useState([]);
 
   useEffect(() => {
     const getDashboard = async () => {
       try {
         const response = await api.get("/dashboard");
+        const res = await api.get("/analyses");
+        setAnalytics(res.data.getAnalysis);
         setDashboard(response.data);
       } catch (error) {
         console.log(error);
@@ -58,6 +61,10 @@ const Dashboard = () => {
   }, []);
 
   const reports = dashboardData?.reports ?? [];
+  const analysisId = analytics.map(item => item._id);
+  // const getAnalysisId = analysisId?.map((item) => item)
+  const getOneAnalysisId = analysisId?.map((item) => item)
+  console.log(getOneAnalysisId[0])
 
   const averageOf = (
     key: "codeQuality" | "security" | "architecture" | "technologies",
@@ -218,7 +225,10 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-      <Link to={`/analyses/:analysisId/explorer`} className="...">
+      <Link
+        to={`/analyses/${getOneAnalysisId[0]}/explorer`}
+        className="border-4 border-l-indigo-500 border-b-indigo-500 p-5 text-[16px] text-indigo-500 font-semibold bg-white"
+      >
         Explore Codebase
       </Link>
     </section>
