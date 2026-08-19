@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Code2, Sparkles, TrendingUp } from "lucide-react";
 import type { DashboardResponse } from "../types/dashboard";
 import api from "../api/fetch";
-import UploadRepository from "../pages/Upload";
+import UploadOverview from "./UploadOverview";
 import HowItWorks from "./HowItWorks";
 import AnalysisField from "./AnalysisField";
 import OverallCodebaseScore from "./OverallCodebaseScore";
@@ -150,19 +150,19 @@ const Dashboard = () => {
         </div>
 
         {/* Three-panel grid */}
-        <div className="relative grid grid-cols-1 gap-4 p-4 sm:p-5 lg:grid-cols-12 lg:gap-5">
-          {/* Upload — takes the most space */}
-          <div className="lg:col-span-5">
-            <UploadRepository />
+        <div className="relative grid grid-cols-1 items-stretch gap-4 p-4 sm:p-5 lg:grid-cols-12 lg:gap-5">
+          {/* Upload — compact widget matching sibling panel heights */}
+          <div className="flex lg:col-span-5">
+            <UploadOverview />
           </div>
 
           {/* How it works */}
-          <div className="lg:col-span-3">
+          <div className="flex lg:col-span-3">
             <HowItWorks />
           </div>
 
           {/* Recent analysis */}
-          <div className="lg:col-span-4">
+          <div className="flex lg:col-span-4">
             <AnalysisField
               getAnalysis={dashboardData?.getAnalysis ?? []}
               scoreTrend={
@@ -225,12 +225,6 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-      <Link
-        to={`/analyses/${getOneAnalysisId[0]}/explorer`}
-        className="border-4 border-l-indigo-500 border-b-indigo-500 p-5 text-[16px] text-indigo-500 font-semibold bg-white"
-      >
-        Explore Codebase
-      </Link>
     </section>
   );
 };
