@@ -14,7 +14,7 @@ import Header from "./components/Header";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import api from "./api/fetch";
 import { useEffect, useState } from "react";
-import type { DashboardResponse } from "./types/dashboard";
+import type { Analysis, DashboardResponse } from "./types/dashboard";
 import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
 import Metrics from "./pages/MetricsPage";
@@ -30,11 +30,14 @@ const App = () => {
   const [dashboardData, setDashboard] = useState<DashboardResponse | null>(
     null,
   );
+  const [analysis, setAnalysis] = useState([]);
 
   useEffect(() => {
     const getDashboard = async () => {
       try {
         const response = await api.get("/dashboard");
+        const res = await api.get("/analyses");
+        setAnalysis(res.data.getAnalysis)
         setDashboard(response.data);
       } catch (error) {
         console.log(error);
@@ -42,9 +45,26 @@ const App = () => {
     };
 
     void getDashboard();
-  }, []);
+  }, [analysis]);
 
-  // const reports = dashboardData?.reports ?? [];
+  // useEffect(() => {
+  //   const getAnalysisId = async () => {
+  //     try {
+  //       const response = await api.get("/analyses");
+
+  //       setAnalysis(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   void getAnalysisId;
+  // }, [analysis]);
+
+
+  const analysisId = analysis.map((item) => item._id);
+  const getOneAnalysisId = analysisId.map((item) => item)
+  console.log(getOneAnalysisId[0])
 
   return (
     <div
@@ -137,8 +157,8 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Metrics
-                  analyses={dashboardData?.getAnalysis}
-                  initialAnalysisId="6a7e84d5565febbea73ca69e"
+                  getAnalysis={dashboardData?.getAnalysis}
+                  initialAnalysisId={`6a84608af0f61fc1eb157a6b`}
                 />
               </ProtectedRoute>
             }
