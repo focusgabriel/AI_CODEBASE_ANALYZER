@@ -1,5 +1,6 @@
 /** @format */
 
+import { type AxiosProgressEvent } from "axios";
 import api from "../api/fetch";
 import type { Analysis } from "../types/dashboard";
 
@@ -17,6 +18,7 @@ export const createAnalysis = async () => {
 export async function uploadRepository(
   analysisId: string,
   file: File,
+  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void,
 ) {
   const formData = new FormData();
 
@@ -24,9 +26,31 @@ export async function uploadRepository(
 
   const response = await api.post(`/analyses/${analysisId}/upload`, formData, {
     withCredentials: true,
+    onUploadProgress,
   });
 
   return response.data
+}
+
+export type AnalysisBackendStatus =
+  | "PENDING"
+  | "PROCESSING"
+  | "COMPLETED"
+  | "FAILED";
+
+export async function getAnalysisStatus(analysisId: string) {
+  const response = await api.get<{
+    success: boolean;
+    data: {
+      name: string;
+      status: AnalysisBackendStatus;
+      reportId?: string;
+      completedAt?: string;
+      createdAt?: string;
+    };
+  }>(`/analyses/${analysisId}/`, { withCredentials: true });
+
+  return response.data;
 }
 
 interface AnalysisQueryParams {
