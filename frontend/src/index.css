@@ -123,6 +123,36 @@ body {
     animation: fade-slide-in 0.35s ease-out;
   }
 
+  @keyframes progress-shimmer {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(420%);
+    }
+  }
+
+  .progress-shimmer {
+    animation: progress-shimmer 1.4s ease-in-out infinite;
+  }
+
+  /* Cycle through informative processing-step labels (one visible at a time) */
+  @keyframes processing-step-cycle {
+    0%, 18% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    22%, 100% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  .processing-step {
+    opacity: 0;
+    animation: processing-step-cycle 5.6s linear infinite;
+  }
+
   @media (max-width: 640px) {
     .auth-card {
       @apply max-w-full rounded-xl px-4 py-6;
