@@ -59,7 +59,7 @@ const AnalysisField = ({ getAnalysis, scoreTrend }: AnalysisData) => {
           type="button"
           className="cursor-pointer rounded-lg px-2.5 py-1 text-[12px] font-semibold text-indigo-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
         >
-          <Link to="/analytics"> 
+          <Link to="/analyses"> 
             View All
           </Link>
         </button>
