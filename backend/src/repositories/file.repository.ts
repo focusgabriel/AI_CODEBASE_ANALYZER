@@ -111,3 +111,14 @@ export async function analyzeSourceFile(
     
   })
 }
+
+
+export async function getFileByIdAndAnalysisId(
+  fileId: mongoose.Types.ObjectId,
+  analysisId: mongoose.Types.ObjectId,
+) {
+  return FileModel.findOne({
+    _id: fileId,
+    analysisId,
+  }).lean();
+}

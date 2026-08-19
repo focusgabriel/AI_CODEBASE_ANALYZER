@@ -64,3 +64,12 @@ export async function getUploadByUserId(
     },
   ]);
 }
+
+
+export async function getUploadByAnalysisId(
+  analysisId: mongoose.Types.ObjectId,
+) {
+  return UploadModel.findOne({
+    analysisId,
+  }).lean();
+}

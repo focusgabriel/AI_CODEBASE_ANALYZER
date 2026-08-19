@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
-import mongoose, { StringExpressionOperatorReturningNumber } from "mongoose";
+import mongoose from "mongoose"
 import { getAnalysisFile, gettingFilesByAnalysisId, gettingFilesByUser } from "../services/file.services.js";
 import { extractFileMetrics } from "../services/metrics.services.js";
 import { readFileContent } from "../utils/file-reader.js";
