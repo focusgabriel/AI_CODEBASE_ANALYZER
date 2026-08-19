@@ -6,7 +6,8 @@ export function generateAccessToken(userId: string) {
   },
   process.env.JWT_ACCESS_SECRET!,
   {
-    expiresIn: "15m",
+    // expiresIn: "15m",
+       expiresIn:"7d"
   } 
 )
 }

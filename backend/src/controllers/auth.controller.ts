@@ -39,7 +39,7 @@ export async function RegisterAccountController(
     return res.status(201).json(
       {
         success:true,
-        msg: "Registration successful."}
+        msg: "Registration successful, you can login in now"}
     );
     
 
@@ -70,7 +70,7 @@ export async function LoginAccountController(
       throw new AppError("Invalid Credentials", 400);
     }
 
-    console.log("User:", user._id.toString())
+    // console.log("User:", user._id.toString())
 
     const accessToken = generateAccessToken( user._id.toString() );
     const refreshToken = generateRefreshToken( user._id.toString() );
@@ -87,7 +87,8 @@ export async function LoginAccountController(
 
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
-      maxAge:  15 * 60 * 1000,
+      // maxAge:  15 * 60 * 1000,
+      maxAge:  7 * 24 * 60 * 60 * 1000,
     });
 
 
@@ -152,7 +153,8 @@ export async function RefreshTokenController(
     // Return it
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
-      maxAge:  15 * 60 * 1000,
+      // maxAge:  15 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
 
@@ -180,13 +182,13 @@ export async function LogoutAccountController(
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: "lax" as const,
       path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: "lax" as const,
       path: "/",
     });
 
