@@ -82,7 +82,7 @@ const UploadRepository = () => {
         if (analysisId) {
           setTimeout(() => {
             navigate(`/analyses/${analysisId}`);
-          }, 800);
+          }, 2000);
         }
       }
     }, duration);
