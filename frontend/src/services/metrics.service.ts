@@ -7,7 +7,7 @@ export async function getMetrics(
   analysisId: string,
 ): Promise<MetricsResponse> {
   const response = await api.get(
-    `/metrics/${analysisId}/`,
+    `/metrics/${analysisId}`,
   );
 
   return response.data;

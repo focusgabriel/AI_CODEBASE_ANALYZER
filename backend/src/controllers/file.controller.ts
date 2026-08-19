@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../core/errors/AppError.js";
-import mongoose from "mongoose";
+import mongoose, { StringExpressionOperatorReturningNumber } from "mongoose";
 import { getAnalysisFile, gettingFilesByAnalysisId, gettingFilesByUser } from "../services/file.services.js";
 import { extractFileMetrics } from "../services/metrics.services.js";
+import { readFileContent } from "../utils/file-reader.js";
 
 
 
@@ -142,6 +143,7 @@ export async function getAnalysisFileController(
 }
 
 
+
 export async function getFileMetricsController(
   req: Request,
   res: Response,
@@ -152,10 +154,7 @@ export async function getFileMetricsController(
       fileId,
     } = req.params;
 
-    if (
-      !analysisId ||
-      !fileId
-    ) {
+    if (!analysisId || !fileId) {
       return res.status(400).json({
         success: false,
         message:
@@ -163,11 +162,16 @@ export async function getFileMetricsController(
       });
     }
 
-    const file =
-      await getAnalysisFile(
-        analysisId as string,
-        fileId as string,
-      );
+    const file = await getAnalysisFile(
+      analysisId as string,
+      fileId as string,
+    );
+
+    console.log("📁 FILE:", {
+      id: file?._id,
+      path: file?.path,
+      extension: file?.extension,
+    });
 
     if (!file) {
       return res.status(404).json({
@@ -176,11 +180,24 @@ export async function getFileMetricsController(
       });
     }
 
+    console.log("📖 READING FILE:", file.path);
+
+    const content =
+      await readFileContent(file.path);
+
+      console.log("📖 FILE CONTENT:", {
+        length: content.length,
+        preview: content.slice(0, 100),
+      });
+
+    console.log("🧠 EXTRACTING METRICS...");
+
     const metrics =
       extractFileMetrics(
         file.extension,
-        file.language,
+        content,
       );
+    console.log(metrics?.classes)
 
     if (!metrics) {
       return res.status(422).json({
@@ -196,14 +213,22 @@ export async function getFileMetricsController(
     });
   } catch (error) {
     console.error(
-      "Failed to calculate file metrics:",
+    "❌ FAILED TO CALCULATE FILE METRICS",
+    {
+      analysisId: req.params.analysisId,
+      fileId: req.params.fileId,
       error,
-    );
+    },
+  );
 
-    return res.status(500).json({
-      success: false,
-      message:
-        "Failed to calculate file metrics",
-    });
+  return res.status(500).json({
+    success: false,
+    message:
+      "Failed to calculate file metrics",
+    error:
+      error instanceof Error
+        ? error.message
+        : String(error),
+  });
   }
 }
