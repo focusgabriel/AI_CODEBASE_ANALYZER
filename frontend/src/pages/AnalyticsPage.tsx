@@ -52,7 +52,7 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
         previous.search === search ? previous : { ...previous, search },
       );
       setPage(1);
-    }, 300);
+    }, 500);
 
     return () => window.clearTimeout(timer);
   }, [searchInput]);
