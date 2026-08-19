@@ -1,6 +1,7 @@
 import { AnalysisCard } from "./AnalysisCard";
 import ScoreCircle from "./Score";
 import type { Analysis, ScoreTrend } from "../types/dashboard";
+import { Link } from "react-router-dom";
 
 interface AnalysisData {
   getAnalysis: Analysis[];
@@ -58,7 +59,9 @@ const AnalysisField = ({ getAnalysis, scoreTrend }: AnalysisData) => {
           type="button"
           className="cursor-pointer rounded-lg px-2.5 py-1 text-[12px] font-semibold text-indigo-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
         >
-          View All
+          <Link to="/analytics"> 
+            View All
+          </Link>
         </button>
       </div>
 
