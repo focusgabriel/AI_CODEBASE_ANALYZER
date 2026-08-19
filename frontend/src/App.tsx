@@ -14,12 +14,11 @@ import Header from "./components/Header";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import api from "./api/fetch";
 import { useEffect, useState } from "react";
-import type { Analysis, DashboardResponse } from "./types/dashboard";
+import type { DashboardResponse } from "./types/dashboard";
 import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
 import Metrics from "./pages/MetricsPage";
 import AnalysisOverview from "./pages/AnalysisOverview";
-import CodebaseExplorer from "./components/CodebaseExplorer";
 
 const App = () => {
   const location = useLocation();
@@ -144,14 +143,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/analyses/:analysisId/explorer"
             element={
               <ProtectedRoute>
                 <CodebaseExplorer />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/metrics"
             element={
