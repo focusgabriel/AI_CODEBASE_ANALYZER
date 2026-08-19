@@ -27,7 +27,7 @@ const AnalysisField = ({ getAnalysis, scoreTrend }: AnalysisData) => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+    <div className="flex h-auto w-full flex-col rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
       <div className="mb-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
