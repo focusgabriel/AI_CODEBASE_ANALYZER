@@ -1,3 +1,5 @@
+/** @format */
+
 import { FileArchive, Pencil, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { JSX } from "react/jsx-runtime";
@@ -28,7 +30,10 @@ export const AnaltyicsCard = ({
       <div className="group w-full rounded-xl border border-transparent bg-white px-3 py-2.5 transition-all duration-200 hover:border-slate-100 hover:bg-slate-50/70">
         <div className="grid grid-cols-12 items-center gap-3">
           {/* Title column */}
-          <Link to={onClick} className="col-span-4 flex min-w-0 items-center gap-2.5">
+          <Link
+            to={onClick}
+            className="col-span-4 flex min-w-0 items-center gap-2.5"
+          >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-colors duration-200 group-hover:bg-indigo-600 group-hover:text-white">
               <FileArchive className="h-5 w-5" />
             </div>
