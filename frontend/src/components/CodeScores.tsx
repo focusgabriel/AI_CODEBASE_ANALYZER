@@ -25,8 +25,8 @@ const CodeScores = ({codeQuality, security,maintainability,technologies }: CodeI
       </h2>
 
       {/* Main card */}
-      <div className="w-full rounded-2xl border border-[#ECECF4] bg-white p-3">
-        <div className="grid min-h-[228px] w-full grid-cols-3 gap-3 rounded-[14px] border border-[#F0F0F6] bg-white p-4">
+      <div className="w-full grid-cols-2 lg:flex rounded-2xl border border-[#ECECF4] bg-white p-3">
+        <div className="grid min-h-[228px] w-full grid-cols-2 gap-3 rounded-[14px] border border-[#F0F0F6] bg-white p-4 lg:grid-cols-3">
           <ScoreCards
             icon={Code}
             overview="Code Quality"
