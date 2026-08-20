@@ -101,15 +101,14 @@ export default function OverallCodebaseScore({
 
       {/* Main card */}
       <div className="w-full rounded-2xl border border-[#ECECF4] bg-white p-3">
-        <div className="flex min-h-[228px] w-full items-center rounded-[14px] border border-[#F0F0F6] bg-white px-6 py-5">
+        <div className="flex w-full flex-col items-center gap-6 rounded-[14px] border border-[#F0F0F6] bg-white px-6 py-6 sm:min-h-[228px] sm:flex-row sm:items-center sm:gap-0 sm:px-6 sm:py-5">
           {/* Score circle */}
-          <div className="flex w-[42%] min-w-[230px] items-center justify-center">
-            <div className="relative h-[190px] w-[190px]">
+          <div className="flex w-full shrink-0 items-center justify-center sm:w-[42%] sm:min-w-[230px]">
+            <div className="relative aspect-square h-auto w-[150px] sm:h-[190px] sm:w-[190px]">
               <svg
-                width="190"
-                height="190"
                 viewBox="0 0 190 190"
-                className="-rotate-90"
+                className="h-full w-full -rotate-90"
+                aria-hidden="true"
               >
                 <defs>
                   {/* Progress gradient */}
@@ -156,7 +155,7 @@ export default function OverallCodebaseScore({
               {/* Center content */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span
-                  className="text-[50px] font-semibold leading-none tracking-[-2px]"
+                  className="text-[40px] font-semibold leading-none tracking-[-2px] sm:text-[50px]"
                   style={{
                     color: config.color,
                   }}
@@ -172,10 +171,10 @@ export default function OverallCodebaseScore({
           </div>
 
           {/* Right content */}
-          <div className="flex flex-1 flex-col justify-center">
+          <div className="flex w-full flex-1 flex-col items-center justify-center text-center sm:items-start sm:text-left">
             {/* Rating */}
             <h3
-              className="text-[21px] font-semibold leading-tight"
+              className="text-[18px] font-semibold leading-tight sm:text-[21px]"
               style={{
                 color: config.color,
               }}
