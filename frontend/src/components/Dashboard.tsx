@@ -1,7 +1,7 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { Code2, Sparkles, TrendingUp } from "lucide-react";
+import { Code2, Sparkles, Summary, TrendingUp } from "lucide-react";
 import type { DashboardResponse } from "../types/dashboard";
 import api from "../api/fetch";
 import UploadOverview from "./UploadOverview";
@@ -197,7 +197,7 @@ const Dashboard = () => {
         <div className="relative mb-4 flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-200">
-              <Sparkles className="h-5 w-5" aria-hidden="true" />
+              <Summary className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
               <h2 className="text-base font-bold tracking-tight text-slate-900 sm:text-lg">
