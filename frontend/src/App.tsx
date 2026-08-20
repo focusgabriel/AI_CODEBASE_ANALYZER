@@ -20,6 +20,9 @@ import ReportPage from "./pages/ReportPage";
 import Metrics from "./pages/MetricsPage";
 import AnalysisOverview from "./pages/AnalysisOverview";
 import Logout from "./auth/Logout";
+import VerifyEmail from "./pages/verifyEmail";
+import NewPassword from "./auth/NewPassword";
+import ForgotPassword from "./auth/ForgotPassword";
 
 const App = () => {
   const location = useLocation();
@@ -189,6 +192,34 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/verify-email/:token"
+            element={
+              <PublicRoute>
+                <VerifyEmail />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/reset-password/:token"
+            element={
+              <PublicRoute>
+                <NewPassword />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/forgotPassword"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+
         </Routes>
       </main>
     </div>
