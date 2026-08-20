@@ -19,7 +19,6 @@ import {
   deleteAnalysis,
   renameAnalysis,
 } from "../services/analysis.services";
-import api from "../api/fetch";
 
 interface AnalysisData {
   scoreTrend: ScoreTrend;
@@ -115,6 +114,8 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
       return Array.from({ length: totalPages }, (_, index) => index + 1);
     }
 
+    console.log("totalPage:", totalPages);
+
     const pages = new Set([1, totalPages, page - 1, page, page + 1]);
     return [...pages]
       .filter(item => item >= 1 && item <= totalPages)
@@ -122,7 +123,10 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
   }, [page, totalPages]);
 
   const firstVisibleAnalysis = totalAnalyses === 0 ? 0 : (page - 1) * limit + 1;
+  console.log(totalAnalyses);
+  console.log(firstVisibleAnalysis);
   const lastVisibleAnalysis = Math.min(page * limit, totalAnalyses);
+  console.log(lastVisibleAnalysis);
   const hasActiveFilters = Boolean(filters.search || filters.status || order !== "desc");
 
   const resetFilters = () => {
@@ -359,8 +363,9 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
         <div className="divide-y divide-slate-100">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+              {/* <p className="loader"></p> */}
               <LoaderCircle className="h-6 w-6 animate-spin text-indigo-500" aria-hidden="true" />
-              <p className="text-sm font-medium text-slate-500">Loading analyses…</p>
+              <p className="text-sm font-medium text-slate-500">Loading analysis…</p>
             </div>
           ) : reportData?.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
