@@ -1,13 +1,13 @@
 import { AppError } from "../core/errors/AppError.js";
-import { UserDtoRespone } from "../dtos/auth.dto.js";
-import { getUser, LoginAccont, RegisterAccount, revokeRefreshToken, rotateRefreshToken } from "../repositories/auth.repository.js";
+import { UserDtoRespone, VerificatioDto } from "../dtos/auth.dto.js";
+import { getEmailforEmailReset, getResetPassword, getUser, getVerification, LoginAccont, RegisterAccount, revokeRefreshToken, rotateRefreshToken } from "../repositories/auth.repository.js";
 
 interface CreateUser {
   name: string,
   email: string,
   password: string,
-  // verificationToken: string,
-  // verificationTokenExpires: Date
+  verificationToken: string,
+  verificationTokenExpires: Date
 }
 
 export async function RegisterNewAccount(
@@ -19,6 +19,9 @@ export async function RegisterNewAccount(
     userId: register._id.toString(),
     name: register.name,
     email: register.email,
+    password: register.password,
+    verificationToken: register.verificationToken,
+    verificationTokenExpires: register.verificationTokenExpires,
   }
 }
 
@@ -68,4 +71,38 @@ export async function getCurrentUser(
 
   return user;
 
+}
+
+
+export async function verifyAccount(
+  verificationToken: string
+): Promise<VerificatioDto> {
+  const verify = await getVerification(verificationToken);
+
+  if(!verify) {
+    throw new AppError("Verification token is invalid or has expired", 400);
+  }
+
+  return {
+    verificationToken
+  }
+}
+
+
+export async function forgotPassword(
+  email: string
+) {
+
+  const user = await getEmailforEmailReset(email);
+
+  return user;
+}
+
+export async function ResetPassword(
+  passwordResetToken: string
+) {
+  
+  const token = await getResetPassword(passwordResetToken);
+
+  return token;
 }
