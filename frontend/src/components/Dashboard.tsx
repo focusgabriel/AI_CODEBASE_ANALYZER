@@ -1,7 +1,7 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { Code2, Sparkles, Summary, TrendingUp } from "lucide-react";
+import { Code2, Summary, TrendingUp } from "lucide-react";
 import type { DashboardResponse } from "../types/dashboard";
 import api from "../api/fetch";
 import UploadOverview from "./UploadOverview";
@@ -11,7 +11,6 @@ import OverallCodebaseScore from "./OverallCodebaseScore";
 import CodeScores from "./CodeScores";
 import ReportField from "./ReportField";
 import ScoreTrend from "./ScoreTrend";
-import { Link } from "react-router-dom";
 
 /** Counts up from 0 to target when the component mounts. */
 const useCountUp = (target: number, duration = 1200) => {
@@ -64,7 +63,7 @@ const Dashboard = () => {
   const analysisId = analytics.map(item => item._id);
   // const getAnalysisId = analysisId?.map((item) => item)
   const getOneAnalysisId = analysisId?.map((item) => item)
-  console.log(getOneAnalysisId[0])
+  // console.log(getOneAnalysisId[0])
 
   const averageOf = (
     key: "codeQuality" | "security" | "architecture" | "technologies",
