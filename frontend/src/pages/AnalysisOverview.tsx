@@ -1,5 +1,7 @@
+/** @format */
+
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -12,9 +14,11 @@ import {
   Package,
   Shield,
   Sparkles,
+  Text,
   Type,
 } from "lucide-react";
 import api from "../api/fetch";
+import { ExportPDF } from "../services/export.services";
 
 interface Analysis {
   name: string;
@@ -83,6 +87,10 @@ export default function AnalysisOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const ExportReport = async () => {
+    await ExportPDF(analysisId);
+    console.log("Id to export", analysisId)
+  };
   useEffect(() => {
     if (!analysisId) {
       setError("Analysis ID is missing.");
@@ -123,7 +131,9 @@ export default function AnalysisOverview() {
     return (
       <main className="p-6">
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-6">
-          <h2 className="font-semibold text-rose-700">Unable to load analysis</h2>
+          <h2 className="font-semibold text-rose-700">
+            Unable to load analysis
+          </h2>
           <p className="mt-1 text-sm text-rose-600">{error}</p>
         </div>
       </main>
@@ -134,7 +144,9 @@ export default function AnalysisOverview() {
     return (
       <main className="p-6">
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-          <h2 className="font-semibold text-slate-900">Analysis data unavailable</h2>
+          <h2 className="font-semibold text-slate-900">
+            Analysis data unavailable
+          </h2>
         </div>
       </main>
     );
@@ -145,7 +157,9 @@ export default function AnalysisOverview() {
       {/* ── Hero Header ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         {/* Subtle decorative gradient */}
+
         <div className="pointer-events-none absolute -right-32 -top-32 h-64 w-64 rounded-full bg-indigo-50 blur-3xl" />
+
         <div className="pointer-events-none absolute -bottom-32 -left-32 h-64 w-64 rounded-full bg-slate-50 blur-3xl" />
 
         <div className="relative flex flex-col gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
@@ -161,7 +175,11 @@ export default function AnalysisOverview() {
             <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500">
               <span>{formatDate(analysis.createdAt)}</span>
               <span className="h-1 w-1 rounded-full bg-slate-300" />
-              <span className="capitalize">{analysis.status.toLowerCase()}</span>
+              <span
+                className={`${analysis.status === "COMPLETED" ? "text-green-600" : "text-red-500"} capitalize`}
+              >
+                {analysis.status.toLowerCase()}
+              </span>
               <span className="h-1 w-1 rounded-full bg-slate-300" />
               <span>{analysis.sourceType}</span>
             </div>
@@ -195,14 +213,42 @@ export default function AnalysisOverview() {
           />
 
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            <MetricCard label="Total Lines" value={metrics.totalLines} icon={FileText} />
-            <MetricCard label="Code Lines" value={metrics.codeLines} icon={Code2} />
-            <MetricCard label="Comments" value={metrics.commentLines} icon={FileCode2} />
-            <MetricCard label="Functions" value={metrics.functions} icon={FunctionSquare} />
-            <MetricCard label="Imports" value={metrics.imports} icon={Package} />
-            <MetricCard label="Exports" value={metrics.exports} icon={GitBranch} />
+            <MetricCard
+              label="Total Lines"
+              value={metrics.totalLines}
+              icon={FileText}
+            />
+            <MetricCard
+              label="Code Lines"
+              value={metrics.codeLines}
+              icon={Code2}
+            />
+            <MetricCard
+              label="Comments"
+              value={metrics.commentLines}
+              icon={FileCode2}
+            />
+            <MetricCard
+              label="Functions"
+              value={metrics.functions}
+              icon={FunctionSquare}
+            />
+            <MetricCard
+              label="Imports"
+              value={metrics.imports}
+              icon={Package}
+            />
+            <MetricCard
+              label="Exports"
+              value={metrics.exports}
+              icon={GitBranch}
+            />
             <MetricCard label="Classes" value={metrics.classes} icon={Layers} />
-            <MetricCard label="Interfaces" value={metrics.interfaces} icon={Type} />
+            <MetricCard
+              label="Interfaces"
+              value={metrics.interfaces}
+              icon={Type}
+            />
           </div>
         </section>
       )}
@@ -214,7 +260,9 @@ export default function AnalysisOverview() {
             <Sparkles className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <h2 className="text-base font-semibold text-slate-900">AI Analysis Summary</h2>
+            <h2 className="text-base font-semibold text-slate-900">
+              AI Analysis Summary
+            </h2>
             <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600">
               {report.summary}
             </p>
@@ -330,7 +378,9 @@ export default function AnalysisOverview() {
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-base font-semibold text-rose-900">Detected Risks</h2>
+              <h2 className="text-base font-semibold text-rose-900">
+                Detected Risks
+              </h2>
               <div className="mt-4 space-y-3">
                 {report.risks.map((risk, index) => (
                   <div key={`${risk}-${index}`} className="flex gap-3">
@@ -343,6 +393,16 @@ export default function AnalysisOverview() {
           </div>
         </section>
       )}
+
+      <div className="fixed bottom-6 right-6 z-50">
+        <button
+          onClick={ExportReport}
+          className="group flex cursor-pointer items-center gap-2.5 rounded-full bg-indigo-600 py-3 pl-5 pr-6 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-600/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:translate-y-0 active:shadow-md"
+        >
+          <FileText size={18} className="transition-transform duration-200 group-hover:scale-110" />
+          export report
+        </button>
+      </div>
     </main>
   );
 }
@@ -351,11 +411,19 @@ export default function AnalysisOverview() {
 /* COMPONENTS                      */
 /* ─────────────────────────────── */
 
-function SectionHeader({ title, description }: { title: string; description?: string }) {
+function SectionHeader({
+  title,
+  description,
+}: {
+  title: string;
+  description?: string;
+}) {
   return (
     <div>
       <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-      {description && <p className="mt-1 text-sm text-slate-500">{description}</p>}
+      {description && (
+        <p className="mt-1 text-sm text-slate-500">{description}</p>
+      )}
     </div>
   );
 }
@@ -391,7 +459,9 @@ function ScoreCard({ label, score }: { label: string; score: number }) {
         />
       </div>
 
-      <p className="mt-2 text-xs font-medium text-slate-400">{getScoreLabel(score)}</p>
+      <p className="mt-2 text-xs font-medium text-slate-400">
+        {getScoreLabel(score)}
+      </p>
     </div>
   );
 }
@@ -443,7 +513,9 @@ function InsightList({
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex items-center gap-2.5">
         {Icon && (
-          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconClass ?? "bg-slate-50 text-slate-500"}`}>
+          <div
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconClass ?? "bg-slate-50 text-slate-500"}`}
+          >
             <Icon className="h-4 w-4" />
           </div>
         )}
@@ -453,7 +525,9 @@ function InsightList({
       <div className="mt-4 space-y-3">
         {items.map((item, index) => (
           <div key={`${item}-${index}`} className="flex gap-3">
-            <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${dotClass ?? "bg-slate-400"}`} />
+            <span
+              className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${dotClass ?? "bg-slate-400"}`}
+            />
             <p className="text-sm leading-6 text-slate-600">{item}</p>
           </div>
         ))}
@@ -491,6 +565,7 @@ function OverviewSkeleton() {
           <div key={index} className="h-24 rounded-xl bg-slate-100" />
         ))}
       </div>
+
       <div className="h-40 rounded-2xl bg-slate-100" />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="h-48 rounded-xl bg-slate-100" />
