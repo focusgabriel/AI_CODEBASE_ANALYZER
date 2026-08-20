@@ -47,6 +47,9 @@ export async function RefreshTokenCreate(
     throw new AppError("Invalid refresh token", 401);
   }
 
+
+  console.log("services refreshtoken create:", user);
+
   return user;
 }
 
