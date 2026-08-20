@@ -19,7 +19,7 @@ export async function rotateRefreshToken(
   return authModel.findOneAndUpdate(
     { _id: userId, refreshToken: currentRefreshTokenHash },
     { $set: { refreshToken: nextRefreshTokenHash } },
-    { new: true },
+    { returnDocument: "after"},
   );
 }
 
@@ -32,4 +32,44 @@ export async function revokeRefreshToken(refreshTokenHash: string) {
 
 export async function getUser(userId:string){
   return authModel.findById(userId);
+}
+
+// const hashedToken = crypto
+// export const tokenHashed = (Token:string) => {
+  
+//   hashedToken
+//     .createHash("sha256")
+//     .update(Token)
+//     .digest("hex");
+
+//     return hashedToken;
+// }
+export async function getVerification(
+  verificationToken: string,
+) {
+  const get_verification = authModel.findOne({
+    verificationToken,
+    verificationTokenExpires: {
+      $gt: new Date()
+    }
+  });
+
+  return get_verification
+}
+
+export async function getEmailforEmailReset(
+  email: string
+) {
+  return authModel.findOne({ email });
+}
+
+export async function getResetPassword(
+  passwordResetToken: string,
+) {
+  return authModel.findOne({
+    passwordResetToken,
+    passwordResetExpires: {
+      $gt: new Date()
+    }
+  })
 }
