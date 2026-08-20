@@ -20,9 +20,15 @@ import { toast } from "react-hot-toast";
 import Logo from "./Logo";
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
-  "/overview": { title: "Welcome back", subtitle: "Here's an overview of your codebase analyses" },
+  "/overview": {
+    title: "Welcome back",
+    subtitle: "Here's an overview of your codebase analyses",
+  },
   "/reports": { title: "Reports", subtitle: "A Review of your Codebase" },
-  "/metrics": { title: "Metrics", subtitle: "Here's a metrics of your repositories" },
+  "/metrics": {
+    title: "Metrics",
+    subtitle: "Here's a metrics of your repositories",
+  },
   "/analytics": {
     title: "Analytics",
     subtitle: "All your Analysis in one place",
@@ -42,11 +48,10 @@ const Header = () => {
   // const [dashboard, setDashboard] = useState<DashboardResponse | null>(null)
   const { user, logout } = useAuth();
 
-  const pageInfo =
-    PAGE_TITLES[location.pathname] 
-    // || (location.pathname.startsWith("/edit/")
-    //   ? { title: "Edit Transaction", subtitle: "Update your record" }
-    //   : { title: "Dashboard", subtitle: "Welcome back" });
+  const pageInfo = PAGE_TITLES[location.pathname];
+  // || (location.pathname.startsWith("/edit/")
+  //   ? { title: "Edit Transaction", subtitle: "Update your record" }
+  //   : { title: "Dashboard", subtitle: "Welcome back" });
 
   // Set greeting based on time of day
   useEffect(() => {
@@ -126,7 +131,6 @@ const Header = () => {
           scrolled
             ? "bg-white/80 shadow-[0_1px_3px_0_rgba(0,0,0,0.04),0_1px_2px_-1px_rgba(0,0,0,0.02)] backdrop-blur-xl"
             : "bg-transparent"
-            
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
@@ -140,7 +144,9 @@ const Header = () => {
               <h1 className="truncate text-base font-bold text-slate-900 sm:text-lg">
                 {pageInfo?.title}
               </h1>
-              <p className="hidden lg:inline text-[14px] text-slate-400 tracking-wide">{pageInfo?.subtitle}</p>
+              <p className="hidden lg:inline text-[14px] text-slate-400 tracking-wide">
+                {pageInfo?.subtitle}
+              </p>
               <div className="hidden items-center gap-1.5 text-xs text-slate-400 sm:flex">
                 <CalendarDays size={12} strokeWidth={1.5} />
                 <span>{dateStr}</span>
@@ -302,8 +308,9 @@ const Header = () => {
                             />
                             Settings
                           </button>
-                          <button
-                            onClick={handleLogout}
+                          <Link
+                            to="/logout"
+                            onClick={() => setProfileOpen(false)}
                             className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 border border-red-100"
                           >
                             <LogOut
@@ -312,7 +319,7 @@ const Header = () => {
                               className="shrink-0"
                             />
                             Sign out
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>
