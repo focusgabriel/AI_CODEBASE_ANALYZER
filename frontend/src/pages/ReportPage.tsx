@@ -394,9 +394,9 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
       </div>
 
       {/* ── Main Content ───────────────────────────────────────── */}
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="mt-8 grid w-full gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         {/* Left: Tabs + Report list */}
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           {/* Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 bg-slate-50/50 p-3">
             {TAB_CONFIG.map(({ id, label, icon: Icon }) => {
@@ -494,7 +494,7 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
         </div>
 
         {/* Right: Sidebar */}
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full min-w-0 flex-col gap-4 lg:w-auto">
           {/* Active tab summary */}
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <div
