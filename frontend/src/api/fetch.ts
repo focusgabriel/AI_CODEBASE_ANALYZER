@@ -3,6 +3,7 @@ import axios, {
   type AxiosRequestConfig,
 } from "axios";
 import { PUBLIC_ROUTES } from "../constants";
+import Logout from "../auth/Logout";
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
@@ -30,9 +31,9 @@ function refreshAccessToken() {
       .finally(() => {
         refreshPromise = null;
       });
-  }
+    }
 
-  return refreshPromise;
+    return refreshPromise;
 }
 
 // Endpoints that should never trigger a token refresh
@@ -42,6 +43,16 @@ api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
+
+    if (!error.response || !window.navigator.onLine) {
+      console.warn("Network disconnected. Preserving session.");
+      return Promise.reject(error); // Do NOT log out here!
+    }
+
+    if (error.response.status === 401 && error.config.url.includes('/refresh-token')) {
+      // Refresh token itself is expired or revoked -> Safe to log out
+      Logout();
+    }
 
     // Nothing to retry or refresh without a config
     if (!originalRequest) {
