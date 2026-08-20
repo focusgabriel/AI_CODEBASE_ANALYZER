@@ -89,7 +89,7 @@ export const ReportsCard = ({
 
   return (
     <section
-      className={`group relative flex items-center justify-between gap-3 overflow-hidden border border-transparent bg-white px-5 py-4 transition-all duration-300 hover:shadow-lg ${styles.groupHover} ${styles.glow} hover:bg-gray-50/70`}
+      className={`group relative flex flex-col gap-3 overflow-hidden border border-transparent bg-white px-4 py-4 transition-all duration-300 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-5 ${styles.groupHover} ${styles.glow} hover:bg-gray-50/70`}
     >
       {/* Left accent bar */}
       <span
@@ -104,17 +104,17 @@ export const ReportsCard = ({
         </div>
 
         <div className="min-w-0">
-          <h2 className="max-w-[60%] truncate text-[13px] font-semibold text-gray-900">
+          <h2 className="truncate text-[13px] font-semibold text-gray-900">
             {title}
           </h2>
-          <p className="mt-0.5 w-[90%] text-[13px] leading-relaxed text-gray-500">
+          <p className="mt-0.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500 sm:line-clamp-none">
             {content}
           </p>
         </div>
       </div>
 
       <div
-        className={`flex shrink-0 items-center gap-1 rounded-full border px-3 py-1.5 text-[11px] font-bold transition-all duration-300 group-hover:scale-105 ${styles.badge}`}
+        className={`flex shrink-0 items-center gap-1 self-start rounded-full border px-3 py-1.5 text-[11px] font-bold transition-all duration-300 group-hover:scale-105 sm:self-center ${styles.badge}`}
       >
         {issues}
       </div>
