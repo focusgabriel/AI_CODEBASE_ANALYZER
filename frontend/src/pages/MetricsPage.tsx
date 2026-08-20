@@ -9,6 +9,8 @@ import {
   FunctionSquare,
   GitBranch,
   Layers,
+  Loader,
+  LoaderCircle,
   Package,
   TrendingUp,
   Type,
@@ -116,7 +118,39 @@ export default function Metrics({
     };
   }, [metrics]);
 
-  if (!getAnalysis?.length) {
+  // While analyses are still loading (undefined/null), show a skeleton
+  // instead of prematurely displaying the "no analyses" warning.
+  if (!getAnalysis) {
+    return (
+      <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="border-b border-slate-200 pb-6">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="mb-2 flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest text-indigo-500">
+                <span className="h-px w-6 bg-indigo-300" />
+                Repository Metrics
+              </div>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                Codebase Intelligence
+              </h1>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500">
+                Structural metrics of the analyzed codebase — line counts,
+                composition, and detected elements.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 justify-center flex-col flex items-center">
+          {/* <MetricsSkeleton /> */}
+          <LoaderCircle className="h-6 w-6 animate-spin text-indigo-500 aria-hidden:true" />
+          <p className="text-sm font-medium text-slate-500"> Loading Metrics...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (getAnalysis.length === 0) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center p-6">
         <div className="max-w-md rounded-xl border border-slate-200 bg-white p-10 text-center">
@@ -135,6 +169,7 @@ export default function Metrics({
   }
 
   return (
+    
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* ── Document Header ─────────────────────────────────────── */}
       <div className="border-b border-slate-200 pb-6">
