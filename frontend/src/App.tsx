@@ -19,6 +19,7 @@ import UploadPage from "./pages/UploadPage";
 import ReportPage from "./pages/ReportPage";
 import Metrics from "./pages/MetricsPage";
 import AnalysisOverview from "./pages/AnalysisOverview";
+import Logout from "./auth/Logout";
 
 const App = () => {
   const location = useLocation();
@@ -36,7 +37,7 @@ const App = () => {
       try {
         const response = await api.get("/dashboard");
         const res = await api.get("/analyses");
-        setAnalysis(res.data.getAnalysis)
+        setAnalysis(res.data.getAnalysis);
         setDashboard(response.data);
       } catch (error) {
         console.log(error);
@@ -60,10 +61,9 @@ const App = () => {
   //   void getAnalysisId;
   // }, [analysis]);
 
-
-  const analysisId = analysis.map((item) => item._id);
-  const getOneAnalysisId = analysisId.map((item) => item)
-  console.log(getOneAnalysisId[0])
+  const analysisId = analysis.map(item => item._id);
+  const getOneAnalysisId = analysisId.map(item => item);
+  // console.log(getOneAnalysisId[0])
 
   return (
     <div
@@ -177,6 +177,15 @@ const App = () => {
                     }
                   }
                 />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRoute>
+                <Logout />
               </ProtectedRoute>
             }
           />
