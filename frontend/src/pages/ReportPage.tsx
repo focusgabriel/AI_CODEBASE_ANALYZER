@@ -7,6 +7,7 @@ import {
   ArrowBigRightDash,
   BarChart3,
   CheckCircle2,
+  CodeXml,
   FileText,
   Inbox,
   Lightbulb,
@@ -55,7 +56,7 @@ function plural(count: number, word: string): string {
   return count === 1 ? word : `${word}s`;
 }
 
-type CardTone = "red" | "amber" | "blue" | "green" | "violet" | "orange" | "pink";
+type CardTone = "indigo" | "red" | "amber" | "blue" | "green" | "violet" | "orange" | "pink";
 
 function getCardData(
   item: Reports,
@@ -198,77 +199,122 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
 
   const activeTabConfig = TAB_CONFIG.find(t => t.id === activeTab) ?? TAB_CONFIG[0];
 
-  return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      {/* ── Hero Header ─────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 px-6 py-8 sm:px-10 sm:py-10">
-        {/* Decorative blobs */}
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -left-16 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute right-1/3 top-0 h-40 w-40 rounded-full bg-sky-500/10 blur-2xl" />
+  // Score color based on value
+  const scoreColor =
+    stats.avgScore >= 80
+      ? "from-emerald-500 to-teal-500"
+      : stats.avgScore >= 60
+        ? "from-indigo-500 to-violet-500"
+        : stats.avgScore >= 40
+          ? "from-amber-500 to-orange-500"
+          : "from-rose-500 to-red-500";
 
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+  const scoreTextColor =
+    stats.avgScore >= 80
+      ? "text-emerald-600"
+      : stats.avgScore >= 60
+        ? "text-indigo-600"
+        : stats.avgScore >= 40
+          ? "text-amber-600"
+          : "text-rose-600";
+
+  const scoreLabel =
+    stats.avgScore >= 80
+      ? "Excellent"
+      : stats.avgScore >= 60
+        ? "Good"
+        : stats.avgScore >= 40
+          ? "Needs Work"
+          : "Critical";
+
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* ── Document Header ─────────────────────────────────────── */}
+      <div className="border-b border-slate-200 pb-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5" />
+            <div className="mb-2 flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest text-indigo-500">
+              <span className="h-px w-6 bg-indigo-300" />
               Code Analysis Reports
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-              Your Codebase{" "}
-              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-sky-400 bg-clip-text text-transparent">
-                Health Report
-              </span>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+              Codebase Health Report
             </h1>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400 sm:text-[15px]">
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500">
               A comprehensive breakdown of your project's security, code quality,
               architecture, and best practices — all in one place.
             </p>
           </div>
 
-          {/* Overall score ring */}
-          <div className="flex shrink-0 items-center gap-5 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-            <div className="relative flex h-20 w-20 items-center justify-center">
-              <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="34"
-                  fill="none"
-                  stroke="rgba(255,255,255,0.1)"
-                  strokeWidth="6"
-                />
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="34"
-                  fill="none"
-                  stroke="url(#scoreGradient)"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeDasharray={`${(stats.avgScore / 100) * 213.6} 213.6`}
-                />
-                <defs>
-                  <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#818cf8" />
-                    <stop offset="100%" stopColor="#38bdf8" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute flex flex-col items-center">
-                <span className="text-2xl font-bold text-white">{stats.avgScore}</span>
-                <span className="text-[9px] font-medium uppercase tracking-wider text-slate-400">
-                  Avg Score
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                <TrendingUp className="h-4 w-4 text-emerald-400" />
-                {stats.totalReports} {plural(stats.totalReports, "Project")}
-              </div>
-              <div className="flex items-center gap-2 text-sm text-slate-400">
-                <FileText className="h-4 w-4 text-indigo-400" />
-                {stats.totalFindings} total findings
+          {/* ── Outstanding Avg Score Section ─────────────────────── */}
+          <div className="w-full max-w-sm shrink-0">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              {/* Top accent bar */}
+              <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${scoreColor}`} />
+
+              {/* Decorative soft glow */}
+              <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-indigo-100/40 blur-2xl" />
+
+              <div className="relative flex items-center gap-5">
+                {/* Score ring */}
+                <div className="relative flex h-24 w-24 shrink-0 items-center justify-center">
+                  <svg className="h-24 w-24 -rotate-90" viewBox="0 0 96 96">
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      fill="none"
+                      stroke="#e2e8f0"
+                      strokeWidth="7"
+                    />
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      fill="none"
+                      stroke="url(#avgScoreGradient)"
+                      strokeWidth="7"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(stats.avgScore / 100) * 251.2} 251.2`}
+                      className="transition-all duration-1000 ease-out"
+                    />
+                    <defs>
+                      <linearGradient id="avgScoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#6366f1" />
+                        <stop offset="100%" stopColor="#8b5cf6" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute flex flex-col items-center">
+                    <span className={`text-3xl font-bold tabular-nums ${scoreTextColor}`}>
+                      {stats.avgScore}
+                    </span>
+                    <span className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">
+                      / 100
+                    </span>
+                  </div>
+                </div>
+
+                {/* Score details */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`inline-flex items-center gap-1 rounded-full bg-gradient-to-r ${scoreColor} px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white`}>
+                      <CodeXml  className="h-3 w-3" />
+                      {scoreLabel}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-[13px] font-semibold text-slate-800">
+                    Average Score
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    Across {stats.totalReports} {plural(stats.totalReports, "project")}
+                  </p>
+
+                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                    <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
+                    <span className="font-medium">{stats.totalFindings} total findings</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -276,62 +322,71 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
       </div>
 
       {/* ── Stat Cards Row ─────────────────────────────────────── */}
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-8 mb-4 flex items-center gap-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-700">
+          Report Summary
+        </h2>
+        <div className="h-px flex-1 bg-slate-200" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {[
           {
             label: "Total Reports",
             value: stats.totalReports,
             icon: FileText,
-            gradient: "from-indigo-500 to-violet-500",
-            shadow: "shadow-indigo-500/20",
+            accent: "bg-indigo-500",
+            iconBg: "bg-indigo-50 text-indigo-600",
           },
           {
             label: "Top Issues",
             value: stats.totalIssues,
             icon: AlertTriangle,
-            gradient: "from-rose-500 to-red-500",
-            shadow: "shadow-rose-500/20",
+            accent: "bg-rose-500",
+            iconBg: "bg-rose-50 text-rose-600",
           },
           {
             label: "Findings",
             value: stats.totalFindings,
             icon: ShieldAlert,
-            gradient: "from-amber-500 to-orange-500",
-            shadow: "shadow-amber-500/20",
+            accent: "bg-amber-500",
+            iconBg: "bg-amber-50 text-amber-600",
           },
           {
             label: "Recommendations",
             value: stats.totalRecommendations,
             icon: Lightbulb,
-            gradient: "from-sky-500 to-blue-500",
-            shadow: "shadow-sky-500/20",
+            accent: "bg-sky-500",
+            iconBg: "bg-sky-50 text-sky-600",
           },
           {
             label: "Strengths",
             value: stats.totalStrengths,
             icon: CheckCircle2,
-            gradient: "from-emerald-500 to-green-500",
-            shadow: "shadow-emerald-500/20",
+            accent: "bg-emerald-500",
+            iconBg: "bg-emerald-50 text-emerald-600",
           },
-        ].map(({ label, value, icon: Icon, gradient, shadow }) => (
+        ].map(({ label, value, icon: Icon, accent, iconBg }) => (
           <div
             key={label}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 transition-all duration-200 hover:border-slate-300 hover:shadow-sm"
           >
             <div
-              className={`absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r ${gradient} opacity-60 transition-opacity duration-300 group-hover:opacity-100`}
+              className={`absolute inset-x-0 top-0 h-0.5 ${accent} opacity-70 transition-opacity duration-200 group-hover:opacity-100`}
             />
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg ${shadow} transition-transform duration-300 group-hover:scale-110`}
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${iconBg} transition-transform duration-200 group-hover:scale-105`}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="truncate text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                <p className="truncate text-[11px] font-medium uppercase tracking-wider text-slate-400">
                   {label}
                 </p>
-                <p className="text-xl font-bold text-slate-900">{value}</p>
+                <p className="mt-0.5 text-xl font-semibold tracking-tight text-slate-900">
+                  {value}
+                </p>
               </div>
             </div>
           </div>
@@ -339,12 +394,12 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
       </div>
 
       {/* ── Main Content ───────────────────────────────────────── */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
         {/* Left: Tabs + Report list */}
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           {/* Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 bg-slate-50/50 p-3">
-            {TAB_CONFIG.map(({ id, label, icon: Icon, accent }) => {
+            {TAB_CONFIG.map(({ id, label, icon: Icon }) => {
               const isActive = activeTab === id;
 
               return (
@@ -355,7 +410,7 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
                   aria-pressed={isActive}
                   title={label}
                   className={[
-                    "relative inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-3 py-2 text-[13px] font-semibold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-indigo-400/60",
+                    "relative inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-indigo-400/60",
                     isActive
                       ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20"
                       : "bg-transparent text-slate-500 hover:bg-white hover:text-slate-800 hover:shadow-sm active:scale-[0.97]",
@@ -441,7 +496,7 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
         {/* Right: Sidebar */}
         <div className="flex flex-col gap-4">
           {/* Active tab summary */}
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <div
               className={`bg-gradient-to-r ${activeTabConfig.accent} px-5 py-4`}
             >
@@ -475,7 +530,7 @@ const ReportPage = ({ reports, getAnalysis }: ReportsData) => {
           </div>
 
           {/* Quick insights */}
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-indigo-500" />
               <h3 className="text-sm font-bold text-slate-800">Quick Insights</h3>
