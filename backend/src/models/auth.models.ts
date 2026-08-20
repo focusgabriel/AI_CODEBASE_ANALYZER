@@ -7,11 +7,11 @@ export interface Iuser{
   refreshToken?:string | null,
   createdAt?:Date,
   updatedAt?:Date,
-  // isVerified: boolean,
-  // verificationToken: string | undefined,
-  // verificationTokenExpires: Date | undefined,
-  // passwordResetToken?: string | undefined;
-  // passwordResetExpires?: Date | undefined;
+  isVerified: boolean,
+  verificationToken: string | undefined,
+  verificationTokenExpires: Date | undefined,
+  passwordResetToken?: string | undefined;
+  passwordResetExpires?: Date | undefined;
   
 }
 
@@ -44,30 +44,30 @@ export const UserModel = new Schema<Iuser>({
     default: null
   },
 
-  // isVerified: {
-  //   type: Boolean,
-  //   default: false
-  // },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
 
-  // verificationToken: {
-  //   type: String, 
-  //   default: null
-  // },
+  verificationToken: {
+    type: String, 
+    default: null
+  },
 
-  // verificationTokenExpires: {
-  //   type: Date,
-  //   default: null
-  // },
+  verificationTokenExpires: {
+    type: Date,
+    default: null
+  },
 
-  // passwordResetToken: {
-  //   type: String,
-  //   default: null,
-  // },
+  passwordResetToken: {
+    type: String,
+    default: null,
+  },
 
-  // passwordResetExpires: {
-  //   type: Date,
-  //   default: null,
-  // },
+  passwordResetExpires: {
+    type: Date,
+    default: null,
+  },
 
 },
   {
