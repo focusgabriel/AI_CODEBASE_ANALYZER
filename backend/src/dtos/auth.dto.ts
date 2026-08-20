@@ -2,17 +2,17 @@ export interface UserDto{
   name: string,
   email: string,
   password: string,
-  // verificationToken: string,
-  // verificationTokenExpires: Date
+  verificationToken: string,
+  verificationTokenExpires: Date
 }
 
 export interface UserDtoRespone {
   userId: string,
   name: string,
   email: string,
-  // password: string,
-  // verificationToken: string,
-  // verificationTokenExpires: Date,
+  password: string,
+  verificationToken: string | undefined,
+  verificationTokenExpires: Date | undefined,
 }
 
 export interface LoginDtoResponse {
@@ -21,4 +21,8 @@ export interface LoginDtoResponse {
   password: string,
   accessToken: string,
   refreshToken: string
+}
+
+export interface VerificatioDto {
+  verificationToken: string | undefined,
 }
