@@ -1,5 +1,5 @@
-// import { transporter } from "../../config/mail.js";
-// import passwordResetTemplate from "./templates/passwordResetTemplate.js";
+import apiInstance from "../../config/brevo.js";
+import resetPasswordTemplate from "./templates/passwordResetTemplate.js";
 
 // export const sendResetPasswordEmail = async (
 //   email: string,
@@ -14,22 +14,20 @@
 // };
 
 
-// import apiInstance from "../../config/brevo.js";
-// import passwordResetTemplate from "./templates/passwordResetTemplate.js";
 
-// export const sendResetPasswordEmail = async (
-//   email: string,
-//   resetLink: string,
-//   newUser:string
-// ) => {
-//   await apiInstance.sendTransacEmail({
-//     sender: {
-//       name: "Trackio",
-//       email: "charlesuchendu750@gmail.com",
+export const sendResetPasswordEmail = async (
+  email: string,
+  resetLink: string,
+  newUser:string
+) => {
+  await apiInstance.sendTransacEmail({
+    sender: {
+      name: "PlainSight",
+      email: "charlesuchendu750@gmail.com",
       
-//     },
-//     to: [{ email }],
-//     subject: "Reset your Trackio Password",
-//     htmlContent: passwordResetTemplate(resetLink, newUser),
-//   });
-// };
+    },
+    to: [{ email }],
+    subject: "Reset your PlainSight Password",
+    htmlContent: resetPasswordTemplate(resetLink, newUser),
+  });
+};
