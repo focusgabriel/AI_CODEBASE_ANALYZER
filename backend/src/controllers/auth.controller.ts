@@ -82,8 +82,8 @@ export async function LoginAccountController(
     // console.log("User:", user._id.toString())
 
     const accessToken = generateAccessToken( user._id.toString() );
-    const refreshToken = generateRefreshToken( user._id.toString() );
-    user.refreshToken = hashRefreshToken(refreshToken);
+    const newRefreshToken = generateRefreshToken( user._id.toString() );
+    user.refreshToken = hashRefreshToken(newRefreshToken);
     await user.save();
 
     res.cookie("accessToken", accessToken, {
@@ -92,10 +92,13 @@ export async function LoginAccountController(
     });
 
 
-    res.cookie("refreshToken", refreshToken, {
+    res.cookie("refreshToken", newRefreshToken, {
       ...cookieOptions,
       maxAge: REFRESH_TOKEN_MAX_AGE_MS,
     });
+
+    console.log("access token:", accessToken);
+    console.log("refresh token:", newRefreshToken);
 
     return res.status(200).json({
       success: true,
@@ -140,12 +143,15 @@ export async function RefreshTokenController(
     );
     const accessToken = generateAccessToken(user._id.toString());
 
+    console.log("new access token", accessToken);
+    
     res.cookie("accessToken", accessToken, {
       ...cookieOptions,
       maxAge: ACCESS_TOKEN_MAX_AGE_MS,
     });
 
 
+    console.log('refresh token activated', refreshToken);
     res.cookie("refreshToken", newRefreshToken, {
       ...cookieOptions,
       maxAge: REFRESH_TOKEN_MAX_AGE_MS,
