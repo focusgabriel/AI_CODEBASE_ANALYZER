@@ -1,37 +1,69 @@
-// import { NextFunction, Request, Response } from "express";
-// import { AppError } from "../core/errors/AppError.js";
-// import { getReportForUser } from "../services/report.services.js";
+import mongoose from "mongoose";
+import type {
+  Request,
+  Response,
+} from "express";
+import { getReportByAnalysisId } from "../services/report.services.js";
+import { generateAnalysisReportPdf } from "../utils/analysis-report-pdf.js";
 
-// export async function getReportController(
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) {
-//   const { analysisId, userId } = req.params;
+export async function exportAnalysisReportController(
+  req: Request,
+  res: Response,
+) {
+  try {
+    const { analysisId } =
+      req.params;
 
-//   if (!userId || !analysisId) {
-//     return next(
-//       new AppError("Missing analysisId or userId", 400),
-//     );
-//   }
+    if (
+      !analysisId ||
+      !mongoose.isValidObjectId(
+        analysisId,
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid analysis ID",
+      });
+    }
 
-//   try {
-//     const report = await getReportForUser(
-//       analysisId as string,
-//       userId as string,
-//     );
+    if (!req.user?.id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
-//     if (!report) {
-//       return next(
-//         new AppError("Report not found", 404),
-//       );
-//     }
+    const report =
+      await getReportByAnalysisId(
+        new mongoose.Types.ObjectId(
+          analysisId as string,
+        ),
+        new mongoose.Types.ObjectId(
+          req.user.id,
+        ),
+      );
 
-//     return res.status(200).json({
-//       success: true,
-//       data: report,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: "Analysis report not found",
+      });
+    }
+
+    generateAnalysisReportPdf(
+      report,
+      res,
+    );
+  } catch (error) {
+    console.error(
+      "Failed to export analysis report:",
+      error,
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        "Failed to export analysis report",
+    });
+  }
+}

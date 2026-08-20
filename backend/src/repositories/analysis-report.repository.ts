@@ -5,6 +5,7 @@ import type {
 } from "../dtos/llm-analysis.dto.js";
 import { AnalysisReportModel } from "../models/analyis-report.model.js";
 import { AnalysisModel } from "../models/analysis.models.js";
+import { AnalysisReportDocument } from "../utils/analysis-report-pdf.js";
 
 export async function createAnalysisReport(
   analysisId: mongoose.Types.ObjectId,
@@ -48,4 +49,15 @@ export async function getAnalysisReports(
   }).sort({createdAt: -1}).lean();
 
   return reports;
+}
+
+
+export async function getAnalysisReportsForExport(
+  analysisId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId,
+) {
+  return AnalysisReportModel.findOne({
+    analysisId,
+    userId,
+  }).lean<AnalysisReportDocument>().exec();
 }

@@ -4,7 +4,7 @@ import { findAnalysisForUser } from "../repositories/analysis.repository.js";
 // import { findReportById } from "../repositories/report.repository.js";
 
 // import { createReport } from "../repositories/report.repository.js";
-import { getAnalysisReport } from "../repositories/analysis-report.repository.js";
+import { getAnalysisReport, getAnalysisReportsForExport } from "../repositories/analysis-report.repository.js";
 
 // export async function saveReport(
 //     analysisId: string,
@@ -34,4 +34,15 @@ export async function getReportForUser(
     }
 
     return getAnalysisReport(analysis.reportId);
+}
+
+
+export async function getReportByAnalysisId(
+  analysisId: mongoose.Types.ObjectId,
+  userId: mongoose.Types.ObjectId,
+) {
+  return getAnalysisReportsForExport(
+    analysisId,
+    userId,
+  );
 }

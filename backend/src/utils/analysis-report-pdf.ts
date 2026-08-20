@@ -1,0 +1,310 @@
+import PDFDocument from "pdfkit";
+import type { Response } from "express";
+import mongoose from "mongoose";
+
+export interface AnalysisReportDocument {
+  analysisId: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
+
+  summary: string;
+
+  scores: {
+    architecture: number;
+    codeQuality: number;
+    technologies: number;
+    security: number;
+    overall: number;
+  };
+
+  architecture: {
+    overview: string;
+    patterns: string[];
+    concerns: string[];
+  };
+
+  codeQuality: {
+    strengths: string[];
+    weaknesses: string[];
+  };
+
+  technologies: {
+    strengths: string[];
+    concerns: string[];
+  };
+
+  security: {
+    findings: string[];
+    recommendations: string[];
+  };
+
+  recommendations: string[];
+
+  risks: string[];
+}
+function addSectionTitle(
+  doc: PDFKit.PDFDocument,
+  title: string,
+) {
+  doc
+    .moveDown()
+    .fontSize(16)
+    .font("Helvetica-Bold")
+    .text(title);
+
+  doc.moveDown(0.4);
+}
+
+function addBulletList(
+  doc: PDFKit.PDFDocument,
+  items: string[],
+) {
+  for (const item of items) {
+    doc
+      .fontSize(10)
+      .font("Helvetica")
+      .text(`• ${item}`, {
+        indent: 10,
+        paragraphGap: 4,
+      });
+  }
+}
+
+export function generateAnalysisReportPdf(
+  report: AnalysisReportDocument,
+  res: Response,
+) {
+  const doc = new PDFDocument({
+    margin: 50,
+    size: "A4",
+  });
+
+  res.setHeader(
+    "Content-Type",
+    "application/pdf",
+  );
+
+  res.setHeader(
+    "Content-Disposition",
+    'attachment; filename="analysis-report.pdf"',
+  );
+
+  doc.pipe(res);
+
+  // Header
+  doc
+    .fontSize(24)
+    .font("Helvetica-Bold")
+    .text("AI Codebase Analyzer");
+
+  doc
+    .moveDown(0.3)
+    .fontSize(11)
+    .font("Helvetica")
+    .text("Repository Analysis Report");
+
+  doc.moveDown();
+
+  // Overall score
+  doc
+    .fontSize(18)
+    .font("Helvetica-Bold")
+    .text(
+      `Overall Score: ${report.scores.overall}`,
+    );
+
+  doc.moveDown();
+
+  // Score breakdown
+  addSectionTitle(
+    doc,
+    "Score Breakdown",
+  );
+
+  doc.fontSize(11).font("Helvetica");
+
+  doc.text(
+    `Architecture: ${report.scores.architecture}`,
+  );
+
+  doc.text(
+    `Code Quality: ${report.scores.codeQuality}`,
+  );
+
+  doc.text(
+    `Technologies: ${report.scores.technologies}`,
+  );
+
+  doc.text(
+    `Security: ${report.scores.security}`,
+  );
+
+  // Summary
+  addSectionTitle(doc, "Executive Summary");
+
+  doc
+    .fontSize(10)
+    .font("Helvetica")
+    .text(report.summary, {
+      lineGap: 4,
+    });
+
+  // Architecture
+  addSectionTitle(doc, "Architecture");
+
+  doc
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Overview");
+
+  doc
+    .fontSize(10)
+    .font("Helvetica")
+    .text(report.architecture.overview);
+
+  if (report.architecture.patterns.length) {
+    doc
+      .moveDown(0.5)
+      .fontSize(11)
+      .font("Helvetica-Bold")
+      .text("Patterns");
+
+    addBulletList(
+      doc,
+      report.architecture.patterns,
+    );
+  }
+
+  if (report.architecture.concerns.length) {
+    doc
+      .moveDown(0.5)
+      .fontSize(11)
+      .font("Helvetica-Bold")
+      .text("Concerns");
+
+    addBulletList(
+      doc,
+      report.architecture.concerns,
+    );
+  }
+
+  // Code quality
+  addSectionTitle(
+    doc,
+    "Code Quality",
+  );
+
+  doc
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Strengths");
+
+  addBulletList(
+    doc,
+    report.codeQuality.strengths,
+  );
+
+  doc
+    .moveDown(0.5)
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Weaknesses");
+
+  addBulletList(
+    doc,
+    report.codeQuality.weaknesses,
+  );
+
+  // Technologies
+  addSectionTitle(
+    doc,
+    "Technologies",
+  );
+
+  doc
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Strengths");
+
+  addBulletList(
+    doc,
+    report.technologies.strengths,
+  );
+
+  doc
+    .moveDown(0.5)
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Concerns");
+
+  addBulletList(
+    doc,
+    report.technologies.concerns,
+  );
+
+  // Security
+  addSectionTitle(
+    doc,
+    "Security",
+  );
+
+  doc
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Findings");
+
+  addBulletList(
+    doc,
+    report.security.findings,
+  );
+
+  doc
+    .moveDown(0.5)
+    .fontSize(11)
+    .font("Helvetica-Bold")
+    .text("Recommendations");
+
+  addBulletList(
+    doc,
+    report.security.recommendations,
+  );
+
+  // General recommendations
+  if (
+    report.recommendations?.length
+  ) {
+    addSectionTitle(
+      doc,
+      "Recommendations",
+    );
+
+    addBulletList(
+      doc,
+      report.recommendations,
+    );
+  }
+
+  // Risks
+  addSectionTitle(
+    doc,
+    "Risks",
+  );
+
+  addBulletList(
+    doc,
+    report.risks,
+  );
+
+  // Footer
+  doc
+    .moveDown(2)
+    .fontSize(8)
+    .font("Helvetica")
+    .text(
+      `Generated by AI Codebase Analyzer • ${new Date().toLocaleString()}`,
+      {
+        align: "center",
+      },
+    );
+
+  doc.end();
+}

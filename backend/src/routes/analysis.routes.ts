@@ -15,6 +15,7 @@ import { createAnalysisController, deleteAnalysisController, getAllAnalysisForUs
 import { uploadRepositoryController } from "../controllers/upload.controller.js";
 import { errorHandler } from "../core/middlewares/errorHandler.js";
 import { authMiddleware } from "../core/middlewares/authMiddleware.js";
+import { exportAnalysisReportController } from "../controllers/analysis-report.controller.js";
 
 const router = Router();
 
@@ -54,6 +55,13 @@ router.delete(
   "/:analysisId",
   authMiddleware,
   deleteAnalysisController,
+);
+
+
+router.get(
+  "/:analysisId/export",
+  authMiddleware,
+  exportAnalysisReportController,
 );
 
 export default router;

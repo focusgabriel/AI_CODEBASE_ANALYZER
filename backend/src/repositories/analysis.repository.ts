@@ -175,7 +175,6 @@ export async function getUserScoreTrend(userId: string) {
     .sort({
       createdAt: -1,
     })
-    .limit(7)
     .lean();
 
   const reportIds = analyses

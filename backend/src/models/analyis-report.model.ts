@@ -1,36 +1,37 @@
 import mongoose from "mongoose";
-const analysisReportSchema = new mongoose.Schema(
+import { AnalysisReportDocument } from "../utils/analysis-report-pdf.js";
+export const analysisReportSchema = new mongoose.Schema<AnalysisReportDocument>(
   {
     scores: {
       architecture: {
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
       },
       codeQuality: {
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
       },
       technologies: {
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
       },
       security: {
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
       },
       overall: {
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
       },
     },
 
