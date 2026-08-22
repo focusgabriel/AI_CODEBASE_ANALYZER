@@ -1,10 +1,10 @@
 /** @format */
-
+//  for referencing
 import { useRef, useState, useEffect, useCallback } from "react";
 import { CheckCircle2, UploadCloud } from "lucide-react";
 import {
   createAnalysis,
-  getAnalysisStatus,
+  subscribeToAnalysisStatus,
   uploadRepository,
   type AnalysisBackendStatus,
 } from "../services/analysis.services";
@@ -39,7 +39,7 @@ const UploadOverview = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const statusStreamRef = useRef<EventSource | null>(null);
   const mountedRef = useRef(true);
   const finalizedRef = useRef(false);
 
@@ -48,17 +48,17 @@ const UploadOverview = () => {
     finalizedRef.current = false;
     return () => {
       mountedRef.current = false;
-      if (pollRef.current) {
-        clearInterval(pollRef.current);
-        pollRef.current = null;
+      if (statusStreamRef.current) {
+        statusStreamRef.current.close();
+        statusStreamRef.current = null;
       }
     };
   }, []);
 
-  const stopPolling = useCallback(() => {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
+  const stopStatusStream = useCallback(() => {
+    if (statusStreamRef.current) {
+      statusStreamRef.current.close();
+      statusStreamRef.current = null;
     }
   }, []);
 
@@ -66,7 +66,7 @@ const UploadOverview = () => {
     (analysisId: string) => {
       if (finalizedRef.current) return;
       finalizedRef.current = true;
-      stopPolling();
+      stopStatusStream();
       setPhase("done");
 
       toast.success("Repository analyzed successfully", {
@@ -80,35 +80,39 @@ const UploadOverview = () => {
         }
       }, 1800);
     },
-    [navigate, stopPolling],
+    [navigate, stopStatusStream],
   );
 
-  const startPolling = useCallback(
+  const startStatusStream = useCallback(
     (analysisId: string) => {
-      stopPolling();
-      pollRef.current = setInterval(async () => {
-        try {
-          const statusResponse = await getAnalysisStatus(analysisId);
-          const currentStatus: AnalysisBackendStatus = statusResponse.data.status;
+      stopStatusStream();
 
+      statusStreamRef.current = subscribeToAnalysisStatus(
+        analysisId,
+        currentStatus => {
           if (!mountedRef.current) return;
 
           if (currentStatus === "COMPLETED") {
             finalize(analysisId);
           } else if (currentStatus === "FAILED") {
             finalizedRef.current = true;
-            stopPolling();
+            stopStatusStream();
             setPhase("error");
             setError(
               "The server reported an error while analysing your repository. Please try again.",
             );
+          } else if (currentStatus === "PROCESSING") {
+            setPhase("processing");
           }
-        } catch (pollError) {
-          console.warn("[upload-overview] status poll failed:", pollError);
-        }
-      }, POLL_INTERVAL_MS);
+        },
+        () => {
+          if (mountedRef.current && !finalizedRef.current) {
+            console.warn("[upload-overview] status stream disconnected");
+          }
+        },
+      );
     },
-    [finalize, stopPolling],
+    [finalize, stopStatusStream],
   );
 
   const handleUpload = async (file: File) => {
@@ -129,7 +133,7 @@ const UploadOverview = () => {
       const analysisResponse = await createAnalysis();
       const newAnalysisId = analysisResponse.analysisId;
 
-      startPolling(newAnalysisId);
+      startStatusStream(newAnalysisId);
 
       await uploadRepository(newAnalysisId, file, progressEvent => {
         if (progressEvent.total) {
@@ -152,7 +156,7 @@ const UploadOverview = () => {
           : "Upload failed. Please try again.";
 
       finalizedRef.current = true;
-      stopPolling();
+      stopStatusStream();
       setPhase("error");
       setError(message);
     }
