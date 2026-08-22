@@ -9,56 +9,27 @@ const Logo = ({ variant = "sidebar" }: LogoProps) => {
   if (variant === "sidebar") {
     return (
       <div className="flex h-12 w-full items-center justify-center rounded-xl bg-linear-to-br from-indigo-600 to-indigo-700 text-white shadow-sm shadow-indigo-200/60">
-        {/* Mobile: wallet icon only */}
+        {/* Icon - always visible, centered when collapsed */}
         <svg
-          className="h-5 w-5 shrink-0 lg:hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-code-xml-icon lucide-code-xml shrink-0"
         >
-          <path
-            d="M19 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2v-2"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M21 12a2 2 0 00-2-2h-4a2 2 0 100 4h4a2 2 0 002-2z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="16.5" cy="12" r="0.75" fill="currentColor" />
+          <path d="m18 16 4-4-4-4" />
+          <path d="m6 8-4 4 4 4" />
+          <path d="m14.5 4-5 16" />
         </svg>
 
-        {/* Desktop: wallet icon + full branded "Trackiu" text */}
-        <span className="hidden lg:flex lg:w-full lg:items-center lg:justify-center lg:gap-2">
-          <svg
-            className="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M19 7V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2v-2"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M21 12a2 2 0 00-2-2h-4a2 2 0 100 4h4a2 2 0 002-2z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <circle cx="16.5" cy="12" r="0.75" fill="currentColor" />
-          </svg>
-          <div className="w-[50%] font-medium text-white">
-          </div>
+        {/* Text - hidden until sidebar is hovered/focused (matches nav items) */}
+        <span className="hidden lg:group-hover/sidebar:inline lg:group-focus-within/sidebar:inline">
+          <p className="ml-2 font-medium text-white">CodeRadar</p>
         </span>
       </div>
     );
@@ -67,7 +38,7 @@ const Logo = ({ variant = "sidebar" }: LogoProps) => {
   if (variant === "header") {
     return (
       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-indigo-600 to-indigo-700 text-white shadow-sm shrink-0">
-        <svg
+        {/* <svg
           className="h-5 w-5"
           viewBox="0 0 24 24"
           fill="none"
@@ -88,7 +59,9 @@ const Logo = ({ variant = "sidebar" }: LogoProps) => {
             strokeLinejoin="round"
           />
           <circle cx="16.5" cy="12" r="0.75" fill="currentColor" />
-        </svg>
+        </svg> */}
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code-xml-icon lucide-code-xml"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
       </div>
     );
   }
