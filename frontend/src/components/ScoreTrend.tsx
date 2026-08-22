@@ -10,14 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { getScoreTrend } from "../services/analysisScores.services";
-
-
-interface ScoreTrendItem {
-  analysisId: string;
-  score: number;
-  date: string;
-}
+import type { ScoreTrend as DashboardScoreTrend } from "../types/dashboard";
 
 interface ChartData {
   date: string;
@@ -25,40 +18,35 @@ interface ChartData {
   fullDate: string;
 }
 
-export default function ScoreTrend() {
+export default function ScoreTrend({
+  scoreTrend,
+}: {
+  scoreTrend?: DashboardScoreTrend;
+}) {
   const [data, setData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadScoreTrend() {
-      try {
-        const result: ScoreTrendItem[] = await getScoreTrend();
+    if (!scoreTrend) return;
 
-        const formattedData = result.map(item => ({
-          date: new Date(item.date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          }),
+    const formattedData = scoreTrend.trend.map(item => ({
+      date: new Date(item.date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
 
-          score: item.score,
+      score: item.score,
 
-          fullDate: new Date(item.date).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          }),
-        }));
+      fullDate: new Date(item.date).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+    }));
 
-        setData(formattedData);
-      } catch (error) {
-        console.error("Failed to load score trend:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadScoreTrend();
-  }, []);
+    setData(formattedData);
+    setLoading(false);
+  }, [scoreTrend]);
 
   if (loading) {
     return (
