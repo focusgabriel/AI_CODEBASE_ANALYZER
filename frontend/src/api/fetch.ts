@@ -3,7 +3,6 @@ import axios, {
   type AxiosRequestConfig,
 } from "axios";
 import { PUBLIC_ROUTES } from "../constants";
-import Logout from "../auth/Logout";
 
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
@@ -50,8 +49,11 @@ api.interceptors.response.use(
     }
 
     if (error.response.status === 401 && error.config.url.includes('/refresh-token')) {
-      // Refresh token itself is expired or revoked -> Safe to log out
-      Logout();
+      // Refresh token itself is expired or revoked -> Safe to log out.
+      // Dispatch the event the AuthProvider listens for, so it clears
+      // auth state and redirects to /login (instead of calling the
+      // Logout React component as a function, which did nothing).
+      window.dispatchEvent(new Event("auth:logout"));
     }
 
     // Nothing to retry or refresh without a config
