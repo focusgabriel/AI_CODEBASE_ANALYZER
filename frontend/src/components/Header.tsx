@@ -29,6 +29,10 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
     title: "Metrics",
     subtitle: "Here's a metrics of your repositories",
   },
+  "/upload": {
+    title: "Uploads",
+    subtitle: "upload your zip file to get insights"
+  },
   "/analytics": {
     title: "Analytics",
     subtitle: "All your Analysis in one place",
@@ -96,21 +100,21 @@ const Header = () => {
   let userName = user?.name;
   let userEmail = user?.email ?? "";
 
-  const handleLogout = async () => {
-    setProfileOpen(false);
-    try {
-      await logout();
-      toast.success("Logged out successfully", {
-        position: "top-right",
-        duration: 3000,
-      });
-    } catch {
-      toast.error("Failed to log out", {
-        position: "top-right",
-        duration: 3000,
-      });
-    }
-  };
+  // const handleLogout = async () => {
+  //   setProfileOpen(false);
+  //   try {
+  //     await logout();
+  //     toast.success("Logged out successfully", {
+  //       position: "top-right",
+  //       duration: 3000,
+  //     });
+  //   } catch {
+  //     toast.error("Failed to log out", {
+  //       position: "top-right",
+  //       duration: 3000,
+  //     });
+  //   }
+  // };
 
   const userInitial =
     userName?.split(" ")[1]?.charAt(0).toUpperCase() ??
@@ -233,13 +237,12 @@ const Header = () => {
                   </div>
 
                   <div className="border-t border-slate-100 p-1.5">
-                    <button
-                      onClick={handleLogout}
+                    <Link to="/logout"
                       className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-rose-600 transition-colors hover:bg-rose-50"
                     >
                       <LogOut size={15} strokeWidth={1.5} />
                       Sign out
-                    </button>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -311,7 +314,7 @@ const Header = () => {
                           <Link
                             to="/logout"
                             onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 border border-red-100"
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 border border-red-100 cursor-pointer"
                           >
                             <LogOut
                               size={16}
