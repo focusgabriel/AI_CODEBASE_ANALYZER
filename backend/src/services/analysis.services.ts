@@ -11,6 +11,7 @@ import { updateAnalysisStatus } from "../repositories/newstatus.repository.js";
 import mongoose, { SortOrder } from "mongoose";
 import { AppError } from "../core/errors/AppError.js";
 import { getMetricsByUser } from "../repositories/metrics.repository.js";
+import { emitAnalysisStatusUpdate } from "./status-events.services.js";
 const analysisId = randomUUID();
 
 export async function createAnalysis(
@@ -38,6 +39,10 @@ export async function updateStatus(
   analysisId: mongoose.Types.ObjectId, statusUpdate: AnalysisStatus, reportId?: string
 ) {
   const newResult = await updateAnalysisStatus(analysisId, statusUpdate, reportId);
+
+  if (newResult) {
+    emitAnalysisStatusUpdate(analysisId.toString(), statusUpdate);
+  }
 
   return newResult
 }
