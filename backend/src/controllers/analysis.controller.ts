@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
 import { Request, Response, NextFunction } from "express";
 import { createAnalysis, deleteAnalysis, getAllAnalysisForUser, getAnalysisCount, getAnalysisForUser, getScoreTrend, renameAnalysis } from "../services/analysis.services.js";
 import { AppError } from "../core/errors/AppError.js";
+import { subscribeToAnalysisStatus } from "../services/status-events.services.js";
 
 export const createAnalysisController = async (
   req: Request,
@@ -21,6 +23,48 @@ export const createAnalysisController = async (
     return res.status(201).json({
       success: true,
       data: analysis,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const streamAnalysisStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { analysisId } = req.params;
+    const userId = req.user!.id;
+
+    if (!analysisId || !mongoose.Types.ObjectId.isValid(analysisId as string)) {
+      return next(new AppError("Valid analysis ID is required", 400));
+    }
+
+    const analysis = await getAnalysisForUser(analysisId as string, userId);
+
+    if (!analysis) {
+      return next(new AppError("Analysis not found", 404));
+    }
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("Connection", "keep-alive");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders?.();
+
+    const unsubscribe = subscribeToAnalysisStatus(analysisId as string, res);
+    const initialPayload = JSON.stringify({
+      analysisId,
+      status: analysis.status,
+      timestamp: Date.now(),
+    });
+
+    res.write(`event: status\ndata: ${initialPayload}\n\n`);
+
+    req.on("close", () => {
+      unsubscribe();
     });
   } catch (error) {
     next(error);
