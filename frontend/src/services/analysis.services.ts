@@ -106,3 +106,34 @@ export async function deleteAnalysis(
 
   return response.data;
 }
+
+export function subscribeToAnalysisStatus(
+  analysisId: string,
+  onStatus: (status: AnalysisBackendStatus) => void,
+  onError?: (event: Event) => void,
+) {
+  const source = new EventSource(
+    `${import.meta.env.VITE_API_URL}/analyses/${analysisId}/events`,
+    { withCredentials: true },
+  );
+
+  source.onmessage = event => {
+    try {
+      const payload = JSON.parse(event.data) as {
+        status?: AnalysisBackendStatus;
+      };
+
+      if (payload.status) {
+        onStatus(payload.status);
+      }
+    } catch (error) {
+      console.warn("[analysis] invalid SSE payload:", error);
+    }
+  };
+
+  if (onError) {
+    source.onerror = onError;
+  }
+
+  return source;
+}

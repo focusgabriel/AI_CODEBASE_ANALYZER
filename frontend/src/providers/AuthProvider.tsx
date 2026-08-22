@@ -1,26 +1,27 @@
+/** @format */
+
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/fetch";
 import { AuthContext, type User } from "../lib/AuthContext";
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const checkAuth = useCallback(async () => {
+  const checkAuth = useCallback(async (signal?: AbortSignal) => {
     try {
-      const { data } = await api.get("/auth/me");
+      const { data } = await api.get("/auth/me", { signal });
       setUser(data.user);
     } catch {
+      if (signal?.aborted) return;
       setUser(null);
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -37,7 +38,13 @@ export function AuthProvider({
 
   // Check auth when app loads
   useEffect(() => {
-    checkAuth();
+    const controller = new AbortController();
+
+    void checkAuth(controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [checkAuth]);
 
   // Listen for automatic logout events from the interceptor
