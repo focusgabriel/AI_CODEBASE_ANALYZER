@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import refreshClient from "../api/fetch";
 import toast from "react-hot-toast";
+import api from "../api/fetch";
 
 const VerifyEmail = () => {
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const VerifyEmail = () => {
   useEffect(() => {
     const emailVerify = async () => {
       try {
-        const res = await refreshClient.get(`/auth/verify-email/${token}`);
+        const res = await api.get(`/auth/verify-email/${token}`);
 
         if(!res.data) {
           setErrorMsg("Invalid verification link");
@@ -29,7 +29,7 @@ const VerifyEmail = () => {
           })
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/login");
         }, 4000);
 
       } catch (error) {
