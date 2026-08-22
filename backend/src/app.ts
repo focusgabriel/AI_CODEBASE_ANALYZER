@@ -37,9 +37,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser());
 
 app.use("/api/v1/analyses", limiter, analysisRoutes);
-app.use("/api/v1/reports", limiter, reportRoutes);
+app.use("/api/v1/reports", limiter,  reportRoutes);
 app.use("/api/v1", authRoutes);
-app.use("/api/v1/metrics", limiter, metricsRoutes);
+app.use("/api/v1/metrics", limiter,  metricsRoutes);
 app.use("/api/v1/upload", limiter, uploadRoutes);
 app.use("/api/v1/dashboard", limiter, dashboardRoutes);
 app.use("/api/v1/files", limiter, fileRoutes);
