@@ -1,5 +1,5 @@
 /** @format */
-
+// for referencing
 import { useRef, useState, useEffect, useCallback } from "react";
 import {
   AlertCircle,
@@ -17,6 +17,7 @@ import {
 import {
   createAnalysis,
   getAnalysisStatus,
+  subscribeToAnalysisStatus,
   uploadRepository,
   type AnalysisBackendStatus,
 } from "../services/analysis.services";
@@ -24,9 +25,21 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const FEATURE_PILLS = [
-  { icon: ShieldCheck, label: "Secure upload", color: "text-emerald-600 bg-emerald-50 border-emerald-100" },
-  { icon: Zap, label: "AI-powered", color: "text-indigo-600 bg-indigo-50 border-indigo-100" },
-  { icon: Lock, label: "Private", color: "text-violet-600 bg-violet-50 border-violet-100" },
+  {
+    icon: ShieldCheck,
+    label: "Secure upload",
+    color: "text-emerald-600 bg-emerald-50 border-emerald-100",
+  },
+  {
+    icon: Zap,
+    label: "AI-powered",
+    color: "text-indigo-600 bg-indigo-50 border-indigo-100",
+  },
+  {
+    icon: Lock,
+    label: "Private",
+    color: "text-violet-600 bg-violet-50 border-violet-100",
+  },
 ];
 
 /**
@@ -52,11 +65,12 @@ const UploadRepository = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [serverStatus, setServerStatus] = useState<AnalysisBackendStatus>("PENDING");
+  const [serverStatus, setServerStatus] =
+    useState<AnalysisBackendStatus>("PENDING");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const statusStreamRef = useRef<EventSource | null>(null);
   const mountedRef = useRef(true);
   const finalizedRef = useRef(false);
 
@@ -65,17 +79,17 @@ const UploadRepository = () => {
     finalizedRef.current = false;
     return () => {
       mountedRef.current = false;
-      if (pollRef.current) {
-        clearInterval(pollRef.current);
-        pollRef.current = null;
+      if (statusStreamRef.current) {
+        statusStreamRef.current.close();
+        statusStreamRef.current = null;
       }
     };
   }, []);
 
-  const stopPolling = useCallback(() => {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
+  const stopStatusStream = useCallback(() => {
+    if (statusStreamRef.current) {
+      statusStreamRef.current.close();
+      statusStreamRef.current = null;
     }
   }, []);
 
@@ -83,7 +97,7 @@ const UploadRepository = () => {
     (analysisId: string) => {
       if (finalizedRef.current) return;
       finalizedRef.current = true;
-      stopPolling();
+      stopStatusStream();
       setPhase("done");
       setServerStatus("COMPLETED");
 
@@ -96,39 +110,45 @@ const UploadRepository = () => {
         if (mountedRef.current) {
           navigate(`/analyses/${analysisId}`);
         }
-      }, 1800);
+      }, 2000);
     },
-    [navigate, stopPolling],
+    [navigate, stopStatusStream],
   );
 
-  const startPolling = useCallback(
+  const startStatusStream = useCallback(
     (analysisId: string) => {
-      stopPolling();
-      pollRef.current = setInterval(async () => {
-        try {
-          const statusResponse = await getAnalysisStatus(analysisId);
-          const currentStatus = statusResponse.data.status;
+      stopStatusStream();
 
+      statusStreamRef.current = subscribeToAnalysisStatus(
+        analysisId,
+        currentStatus => {
           if (!mountedRef.current) return;
 
           setServerStatus(currentStatus);
+
+          if (currentStatus === "PROCESSING") {
+            setPhase("processing");
+          }
 
           if (currentStatus === "COMPLETED") {
             finalize(analysisId);
           } else if (currentStatus === "FAILED") {
             finalizedRef.current = true;
-            stopPolling();
+            stopStatusStream();
             setPhase("error");
             setError(
               "The server reported an error while analysing your repository. Please try again.",
             );
           }
-        } catch (pollError) {
-          console.warn("[upload] status poll failed:", pollError);
-        }
-      }, POLL_INTERVAL_MS);
+        },
+        () => {
+          if (mountedRef.current && !finalizedRef.current) {
+            console.warn("[upload] status stream disconnected");
+          }
+        },
+      );
     },
-    [finalize, stopPolling],
+    [finalize, stopStatusStream],
   );
 
   const handleUpload = async (file: File) => {
@@ -150,10 +170,8 @@ const UploadRepository = () => {
       const analysisResponse = await createAnalysis();
       const newAnalysisId = analysisResponse.analysisId;
 
-      // Keep the real server status in sync while the pipeline runs.
-      startPolling(newAnalysisId);
+      startStatusStream(newAnalysisId);
 
-      // Real byte-level progress via the XMLHttpRequest underneath Axios.
       await uploadRepository(newAnalysisId, file, progressEvent => {
         if (progressEvent.total) {
           const pct = Math.round(
@@ -161,16 +179,12 @@ const UploadRepository = () => {
           );
           setUploadProgress(prev => Math.max(prev, Math.min(pct, 100)));
 
-          // Bytes are fully transmitted but the controller is still working.
           if (pct >= 100) {
             setPhase("processing");
           }
         }
       });
 
-      // The POST only resolves after the backend fully completed every step
-      // (extract → scan → analyze → report → COMPLETED). This is the
-      // authoritative success signal.
       finalize(newAnalysisId);
     } catch (uploadError: unknown) {
       const message =
@@ -179,7 +193,7 @@ const UploadRepository = () => {
           : "Upload failed. Please try again.";
 
       finalizedRef.current = true;
-      stopPolling();
+      stopStatusStream();
       setPhase("error");
       setError(message);
     }
@@ -199,9 +213,7 @@ const UploadRepository = () => {
   const statusTitle = useCallback(() => {
     switch (phase) {
       case "uploading":
-        return uploadProgress >= 100
-          ? "Finishing upload…"
-          : "Uploading ZIP…";
+        return uploadProgress >= 100 ? "Finishing upload…" : "Uploading ZIP…";
       case "processing":
         return "Processing your repository…";
       case "done":
@@ -246,8 +258,8 @@ const UploadRepository = () => {
               Upload your repository
             </h1>
             <p className="mt-2 max-w-lg text-sm leading-relaxed text-slate-500 sm:text-base">
-              Get an AI-powered analysis with rich insights in seconds. Drop your
-              codebase and let our engine do the rest.
+              Get an AI-powered analysis with rich insights in seconds. Drop
+              your codebase and let our engine do the rest.
             </p>
           </div>
 
@@ -366,7 +378,11 @@ const UploadRepository = () => {
                 }`}
               >
                 {busy ? (
-                  <Loader2 size={42} strokeWidth={1.8} className="animate-spin" />
+                  <Loader2
+                    size={42}
+                    strokeWidth={1.8}
+                    className="animate-spin"
+                  />
                 ) : phase === "done" ? (
                   <CheckCircle2 size={42} strokeWidth={1.8} />
                 ) : (
@@ -452,11 +468,9 @@ const UploadRepository = () => {
                     </span>
                   </div>
 
-                  <p
-                    id="upload-help"
-                    className="mt-5 text-xs text-slate-400"
-                  >
-                    ZIP archives only. Keep your repository structure for best results.
+                  <p id="upload-help" className="mt-5 text-xs text-slate-400">
+                    ZIP archives only. Keep your repository structure for best
+                    results.
                   </p>
                 </div>
               )}
