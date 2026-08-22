@@ -1,22 +1,22 @@
 /** @format */
 
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { navItems } from "../constants";
 import Logo from "./Logo";
 import { LogOut } from "lucide-react";
-import { useAuth } from "../lib/useAuth";
+// import { useAuth } from "../lib/useAuth";
 
 const SideBar = () => {
   const { pathname } = useLocation();
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch {
-      // State is cleared in AuthProvider even if the request fails
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await logout();
+  //   } catch {
+  //     // State is cleared in AuthProvider even if the request fails
+  //   }
+  // };
 
   return (
     <aside className="sidebar-xs-bottom group/sidebar flex h-screen w-16 shrink-0 flex-col border-r border-slate-100 bg-white px-1.5 py-4 transition-[width,box-shadow] duration-300 ease-in-out lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:hover:w-54 lg:hover:shadow-xl lg:focus-within:w-54 lg:focus-within:shadow-xl">
@@ -55,8 +55,7 @@ const SideBar = () => {
 
       {/* Logout - always visible on mobile in bottom nav */}
       <div className="flex justify-center lg:mt-auto lg:border-t lg:border-slate-100 lg:pt-3">
-        <button
-          onClick={handleLogout}
+        <Link to="/logout"
           title="Logout"
           className="hidden w-full items-center justify-center gap-3 rounded-lg px-3 py-2 text-lg font-medium text-red-500 transition-all duration-200 hover:bg-red-50 hover:text-red-600 sm:flex lg:group-hover/sidebar:justify-start lg:group-focus-within/sidebar:justify-start"
         >
@@ -64,7 +63,7 @@ const SideBar = () => {
           <span className="hidden text-sm lg:group-hover/sidebar:inline lg:group-focus-within/sidebar:inline">
             Logout
           </span>
-        </button>
+        </Link>
       </div>
     </aside>
   );
