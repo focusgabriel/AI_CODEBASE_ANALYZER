@@ -1,9 +1,8 @@
 /** @format */
 
 import { useEffect, useState } from "react";
-import { Code2, Summary, TrendingUp } from "lucide-react";
+import { Code2, Loader2, Summary, TrendingUp } from "lucide-react";
 import type { DashboardResponse } from "../types/dashboard";
-import api from "../api/fetch";
 import UploadOverview from "./UploadOverview";
 import HowItWorks from "./HowItWorks";
 import AnalysisField from "./AnalysisField";
@@ -12,58 +11,68 @@ import CodeScores from "./CodeScores";
 import ReportField from "./ReportField";
 import ScoreTrend from "./ScoreTrend";
 
-/** Counts up from 0 to target when the component mounts. */
+/** Animates a non-negative number whenever the target changes. */
 const useCountUp = (target: number, duration = 1200) => {
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    if (target <= 0) return; // value stays at initial 0
+    const safeTarget = Number.isFinite(target) ? Math.max(target, 0) : 0;
+    const safeDuration = Number.isFinite(duration)
+      ? Math.max(duration, 1)
+      : 1200;
 
-    let frame: number;
+    if (safeTarget === 0) {
+      setValue(0);
+      return;
+    }
+
+    let frame: number | undefined;
     const start = performance.now();
 
     const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
+      const progress = Math.min((now - start) / safeDuration, 1);
       const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
-      setValue(Math.round(target * eased));
+      setValue(Math.round(safeTarget * eased));
 
       if (progress < 1) frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
 
-    return () => cancelAnimationFrame(frame);
+    return () => {
+      if (frame !== undefined) cancelAnimationFrame(frame);
+    };
   }, [target, duration]);
 
   return value;
 };
 
-const Dashboard = () => {
-  const [dashboardData, setDashboard] = useState<DashboardResponse | null>(
-    null,
-  );
-  const [analytics, setAnalytics] = useState([]);
-
-  useEffect(() => {
-    const getDashboard = async () => {
-      try {
-        const response = await api.get("/dashboard");
-        const res = await api.get("/analyses");
-        setAnalytics(res.data.getAnalysis);
-        setDashboard(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    void getDashboard();
-  }, []);
+const Dashboard = ({
+  dashboardData,
+}: {
+  dashboardData: DashboardResponse | null;
+}) => {
+  if (!dashboardData) {
+    return (
+      <section className="flex min-h-[60vh] items-center justify-center px-2 pb-8 sm:px-4 lg:px-6">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-700">
+              Loading your dashboard…
+            </p>
+            <p className="mt-1 text-[13px] text-slate-500">
+              Fetching your codebase analysis.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const reports = dashboardData?.reports ?? [];
-  const analysisId = analytics.map(item => item._id);
-  // const getAnalysisId = analysisId?.map((item) => item)
-  const getOneAnalysisId = analysisId?.map((item) => item)
-  // console.log(getOneAnalysisId[0])
 
   const averageOf = (
     key: "codeQuality" | "security" | "architecture" | "technologies",
@@ -178,7 +187,7 @@ const Dashboard = () => {
       </div>
 
       {/* —— Score cards —— */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <OverallCodebaseScore
           score={dashboardData?.scoreTrend.averageScore ?? 0}
         />
@@ -187,6 +196,7 @@ const Dashboard = () => {
           security={securityOverall.toFixed(1)}
           maintainability={architectureOverall.toFixed(1)}
           technologies={technologiesOverall.toFixed(1)}
+
         />
       </div>
 
@@ -220,7 +230,7 @@ const Dashboard = () => {
             />
           </div>
           <div className="flex min-w-0 lg:col-span-2">
-            <ScoreTrend />
+            <ScoreTrend scoreTrend={dashboardData?.scoreTrend} />
           </div>
         </div>
       </section>
