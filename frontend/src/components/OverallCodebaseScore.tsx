@@ -74,11 +74,15 @@ export default function OverallCodebaseScore({
   maxScore = 100,
   title = "Overall Codebase Score",
 }: OverallCodebaseScoreProps) {
-  const safeScore = Math.max(0, Math.min(score, maxScore));
+  const safeMaxScore =
+    Number.isFinite(maxScore) && maxScore > 0 ? maxScore : 100;
+  const safeScore = Number.isFinite(score)
+    ? Math.max(0, Math.min(score, safeMaxScore))
+    : 0;
 
   const config = getScoreConfig(safeScore);
 
-  const percentage = maxScore > 0 ? (safeScore / maxScore) * 100 : 0;
+  const percentage = (safeScore / safeMaxScore) * 100;
 
   const delta =
     previousScore !== null && previousScore !== undefined
@@ -101,10 +105,10 @@ export default function OverallCodebaseScore({
 
       {/* Main card */}
       <div className="w-full rounded-2xl border border-[#ECECF4] bg-white p-3">
-        <div className="flex w-full flex-col items-center gap-6 rounded-[14px] border border-[#F0F0F6] bg-white px-6 py-6 sm:min-h-[228px] sm:flex-row sm:items-center sm:gap-0 sm:px-6 sm:py-5">
+        <div className="flex w-full min-w-0 flex-col items-center gap-6 rounded-[14px] border border-[#F0F0F6] bg-white px-4 py-6 sm:min-h-[228px] sm:flex-row sm:items-center sm:gap-4 sm:px-5 sm:py-5 lg:gap-6">
           {/* Score circle */}
-          <div className="flex w-full shrink-0 items-center justify-center sm:w-[42%] sm:min-w-[230px]">
-            <div className="relative aspect-square h-auto w-[150px] sm:h-[190px] sm:w-[190px]">
+          <div className="flex w-full shrink-0 items-center justify-center sm:w-[42%] sm:min-w-0">
+            <div className="relative aspect-square h-auto w-[min(100%,150px)] sm:h-[190px] sm:w-[190px]">
               <svg
                 viewBox="0 0 190 190"
                 className="h-full w-full -rotate-90"
@@ -164,14 +168,14 @@ export default function OverallCodebaseScore({
                 </span>
 
                 <span className="mt-2 text-[13px] font-medium text-[#777791]">
-                  / {maxScore}
+                  / {safeMaxScore}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Right content */}
-          <div className="flex w-full flex-1 flex-col items-center justify-center text-center sm:items-start sm:text-left">
+          <div className="flex min-w-0 w-full flex-1 flex-col items-center justify-center text-center sm:items-start sm:text-left">
             {/* Rating */}
             <h3
               className="text-[18px] font-semibold leading-tight sm:text-[21px]"
