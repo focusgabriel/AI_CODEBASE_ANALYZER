@@ -29,26 +29,33 @@ const App = () => {
   const isAuthRoute = PUBLIC_ROUTES.some(
     r => location.pathname === r || location.pathname.startsWith(r + "/"),
   );
+  const isLogoutRoute = location.pathname.startsWith("/logout");
 
   const [dashboardData, setDashboard] = useState<DashboardResponse | null>(
     null,
   );
-  const [analysis, setAnalysis] = useState([]);
-
   useEffect(() => {
+    if (isAuthRoute) return;
+
+    let isActive = true;
+
     const getDashboard = async () => {
       try {
         const response = await api.get("/dashboard");
-        const res = await api.get("/analyses");
-        setAnalysis(res.data.getAnalysis);
-        setDashboard(response.data);
+        if (isActive) {
+          setDashboard(response.data);
+        }
       } catch (error) {
-        console.log(error);
+        console.error("Failed to load dashboard data:", error);
       }
     };
 
     void getDashboard();
-  }, [analysis]);
+
+    return () => {
+      isActive = false;
+    };
+  }, [isAuthRoute]);
 
   // useEffect(() => {
   //   const getAnalysisId = async () => {
@@ -64,8 +71,8 @@ const App = () => {
   //   void getAnalysisId;
   // }, [analysis]);
 
-  const analysisId = analysis.map(item => item._id);
-  const getOneAnalysisId = analysisId.map(item => item);
+  // const analysisId = analysis.map(item => item._id);
+  // const getOneAnalysisId = analysisId.map(item => item);
   // console.log(getOneAnalysisId[0])
 
   return (
@@ -77,7 +84,7 @@ const App = () => {
       }
     >
       <Toaster position="top-right" />
-      {!isAuthRoute && <SideBar />}
+      {!isAuthRoute && !isLogoutRoute && <SideBar />}
       <main
         className={
           isAuthRoute
@@ -85,7 +92,7 @@ const App = () => {
             : "main-with-bottom-sidebar h-full w-full flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 lg:pl-16"
         }
       >
-        {!isAuthRoute && <Header />}
+        {!isAuthRoute && !isLogoutRoute && <Header />}
         <Routes>
           <Route
             path="/"
@@ -115,7 +122,7 @@ const App = () => {
             path="/overview"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Dashboard dashboardData={dashboardData} />
               </ProtectedRoute>
             }
           />
@@ -219,7 +226,6 @@ const App = () => {
               </PublicRoute>
             }
           />
-
         </Routes>
       </main>
     </div>
