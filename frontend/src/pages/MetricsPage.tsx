@@ -9,7 +9,6 @@ import {
   FunctionSquare,
   GitBranch,
   Layers,
-  Loader,
   LoaderCircle,
   Package,
   TrendingUp,
