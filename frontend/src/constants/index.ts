@@ -1,4 +1,4 @@
-import { BarChart3, BookCheck, FileText, LayoutDashboard, Lightbulb, Settings } from "lucide-react";
+import { BarChart3, BookCheck, FileText, LayoutDashboard, Settings, Upload } from "lucide-react";
 
 export const process = [
   {title:"Upload ZIP"},
@@ -16,6 +16,7 @@ export const footerLinks = [
 
 export const navItems = [
   { name: "Overview", icon: LayoutDashboard, href:"/overview"},
+  { name:"Upload", icon:Upload, href:"/upload"},
   { name: "Reports", icon: FileText, href:"/reports" },
   { name: "Analytics", icon: BarChart3, href:"/analyses" },
   { name: "Metrics", icon: BookCheck, href:"/metrics"  },
