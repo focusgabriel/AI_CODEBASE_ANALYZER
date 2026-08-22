@@ -1,7 +1,8 @@
 import { BrevoClient, Brevo } from "@getbrevo/brevo";
 
-console.log(process.env.BREVO_API_KEY)
 const apiKey = process.env.BREVO_API_KEY;
+console.log(apiKey)
+
 
 if (!apiKey) {
   throw new Error("Missing BREVO_API_KEY environment variable");
