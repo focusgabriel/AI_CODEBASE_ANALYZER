@@ -2,27 +2,20 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LogOut, ArrowLeft, AlertTriangle, Loader2 } from "lucide-react";
+import { LogOut, ArrowLeft, Loader2 } from "lucide-react";
 import { useAuth } from "../lib/useAuth";
-import api from "../api/fetch";
-// import type { DashboardResponse } from "../../types/dashboard";
 
 const Logout = () => {
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleConfirmLogout = async () => {
     setIsLoggingOut(true);
-    try {
-      await api.post("/auth/logout");
-    } catch {
-      // proceed anyway
-    }
-    // Small delay so the spinner shows
-    setTimeout(() => {
-      navigate("/", { replace: true });
-    }, 400);
+    // logout() calls the API, clears the auth state (setUser(null)),
+    // and navigates to /login — so PublicRoute won't bounce us back
+    // to /overview because isAuthenticated is now false.
+    await logout();
   };
 
   const handleCancel = () => {
@@ -74,12 +67,12 @@ const Logout = () => {
             </div> */}
 
             {/* Actions */}
-            <div className="mt-7 flex flex-col gap-2.5 sm:flex-row-reverse">
+            <div className="mt-7 flex flex-col gap-2.5 sm:flex-row-reverse items-center justify-center">
               {/* Confirm logout */}
               <button
                 onClick={handleConfirmLogout}
                 disabled={isLoggingOut}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-br from-rose-500 to-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-rose-200 transition-all duration-200 hover:from-rose-600 hover:to-rose-700 hover:shadow-md hover:shadow-rose-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-35"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-br from-rose-500 to-rose-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-rose-200 transition-all duration-200 hover:from-rose-600 hover:to-rose-700 hover:shadow-md hover:shadow-rose-200 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-35 cursor-pointer"
               >
                 {isLoggingOut ? (
                   <>
@@ -88,7 +81,7 @@ const Logout = () => {
                   </>
                 ) : (
                   <>
-                    <LogOut size={16} strokeWidth={2} />
+                    <LogOut size={16} strokeWidth={2}  />
                     Sign out
                   </>
                 )}
