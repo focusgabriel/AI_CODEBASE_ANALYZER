@@ -123,10 +123,7 @@ const AnalyticsPage = ({ scoreTrend }: AnalysisData) => {
   }, [page, totalPages]);
 
   const firstVisibleAnalysis = totalAnalyses === 0 ? 0 : (page - 1) * limit + 1;
-  console.log(totalAnalyses);
-  console.log(firstVisibleAnalysis);
   const lastVisibleAnalysis = Math.min(page * limit, totalAnalyses);
-  console.log(lastVisibleAnalysis);
   const hasActiveFilters = Boolean(filters.search || filters.status || order !== "desc");
 
   const resetFilters = () => {
